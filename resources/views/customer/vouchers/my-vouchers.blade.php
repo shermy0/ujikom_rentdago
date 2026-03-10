@@ -38,7 +38,7 @@
 }
 
 .vouchers-header .back-btn:hover {
-    background: #667eea;
+    background: #ee4d2d;
     color: white;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .voucher-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
     padding: 16px;
     color: white;
     display: flex;
@@ -96,7 +96,7 @@
 .voucher-discount {
     font-size: 28px;
     font-weight: 700;
-    color: #667eea;
+    color: #ee4d2d;
     margin-bottom: 12px;
     display: flex;
     align-items: center;
@@ -127,7 +127,7 @@
 }
 
 .copy-btn {
-    background: #667eea;
+    background: #ee4d2d;
     color: white;
     border: none;
     padding: 6px 12px;
@@ -138,7 +138,7 @@
 }
 
 .copy-btn:hover {
-    background: #5568d3;
+    background: #d44226;
 }
 
 .copy-btn:active {
@@ -160,7 +160,7 @@
 
 .detail-row i {
     width: 20px;
-    color: #667eea;
+    color: #ee4d2d;
 }
 
 .voucher-footer {
@@ -181,7 +181,7 @@
 }
 
 .usage-badge {
-    background: #667eea;
+    background: #ee4d2d;
     color: white;
     padding: 4px 10px;
     border-radius: 12px;
@@ -255,7 +255,7 @@
 .btn-browse {
     display: inline-block;
     padding: 12px 24px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -265,7 +265,7 @@
 
 .btn-browse:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.4);
     color: white;
 }
 
