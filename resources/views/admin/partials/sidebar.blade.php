@@ -103,6 +103,13 @@
             </a>
         </div>
 
+        <div class="menu-item">
+            <a href="{{ route('admin.reports.index') }}"
+                class="menu-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+                <i class="bi bi-bar-chart-line menu-icon"></i>
+                <span>Laporan</span>
+            </a>
+        </div>
 
         <div class="menu-item">
             <a href="{{ route('admin.settings.index') }}"

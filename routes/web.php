@@ -20,6 +20,7 @@ use App\Http\Controllers\Seller\MyPageSellerController;
 use App\Http\Controllers\Seller\SellerProductController;
 use App\Http\Controllers\Seller\SellerProductRentalController;
 use App\Http\Controllers\Admin\RentalController;
+use App\Http\Controllers\Admin\ReportController;
 
 use App\Http\Controllers\Seller\ScanQRController;
 use App\Http\Controllers\CustomerShopController;
@@ -197,6 +198,12 @@ Route::middleware(['auth', 'role:admin'])
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
             Route::get('/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
+        });
+
+        // Reports / Laporan
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])->name('index');
+            Route::get('/export-pdf', [ReportController::class, 'exportPdf'])->name('pdf');
         });
     });
 
