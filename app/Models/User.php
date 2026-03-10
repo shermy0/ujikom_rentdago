@@ -24,7 +24,7 @@ class User extends Authenticatable
         'avatar',
         'password',
         'phone_verified_at',
-        'user_verified_at',
+       
     ];
 
     protected $hidden = [
@@ -34,7 +34,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'phone_verified_at' => 'datetime',
-        'user_verified_at'  => 'datetime',
+       
     ];
 
     public function shop()

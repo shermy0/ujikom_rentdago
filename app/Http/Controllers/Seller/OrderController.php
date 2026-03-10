@@ -79,87 +79,6 @@ class OrderController extends Controller
 
         return view('seller.orders.show', compact('order', 'availableCouriers'));
     }
-
-    /**
-     * 🔔 Static method: Send new order notification to seller
-     * Can be called from anywhere, e.g., CustomerOrderController
-     */
-    public static function sendNewOrderNotification($order)
-    {
-        try {
-            $order->load(['user', 'productRental.product.shop.user']);
-
-            $shop = $order->productRental->product->shop;
-
-            if (!$shop || !$shop->user || !$shop->user->phone) {
-                Log::warning('Shop owner phone not found for order notification', [
-                    'order_id' => $order->id,
-                    'shop_id' => $shop->id ?? null
-                ]);
-                return;
-            }
-
-            $customer = $order->user;
-            $phone = $shop->user->phone;
-
-            // Format nomor telepon
-            if (substr($phone, 0, 1) === '0') {
-                $phone = '62' . substr($phone, 1);
-            }
-
-            $message = "*🛒 PESANAN BARU MASUK!*\n\n";
-            $message .= "Halo *{$shop->user->name}*,\n\n";
-            $message .= "Ada pesanan baru di toko Anda!\n\n";
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n";
-            $message .= "*INFORMASI CUSTOMER*\n";
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n";
-            $message .= "👤 Nama: *{$customer->name}*\n";
-            $message .= "📱 Phone: {$customer->phone}\n";
-            $message .= "📧 Email: {$customer->email}\n";
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n";
-            $message .= "*DETAIL PESANAN*\n";
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n";
-            $message .= "📋 Kode Order: *{$order->order_code}*\n";
-            $message .= "🏪 Toko: *{$shop->name_store}*\n";
-            $message .= "📦 Produk: *{$order->productRental->product->name}*\n";
-            $message .= "⏱️ Durasi: *{$order->productRental->cycle_value} Jam*\n";
-            $message .= "💰 Total: *Rp " . number_format($order->total_amount, 0, ',', '.') . "*\n";
-            $message .= "🚚 Metode: *" . ucfirst($order->delivery_method) . "*\n";
-            $message .= "📅 Waktu Mulai: *" . Carbon::parse($order->start_time)->format('d/m/Y H:i') . "*\n";
-
-            if ($order->end_time) {
-                $message .= "📅 Waktu Selesai: *" . Carbon::parse($order->end_time)->format('d/m/Y H:i') . "*\n";
-            }
-
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-            if ($order->delivery_method === 'delivery' && $order->delivery_address_snapshot) {
-                $message .= "📍 *Alamat Pengiriman:*\n";
-                $message .= $order->delivery_address_snapshot . "\n\n";
-            }
-
-            $message .= "Lihat detail pesanan:\n";
-            $message .= route('seller.orders.show', $order->id) . "\n\n";
-            $message .= "⏰ " . now()->format('d/m/Y H:i') . "\n\n";
-            $message .= "Segera proses pesanan ini! 🚀";
-
-            kirimwa($phone, $message);
-
-            Log::info('New order notification sent to seller', [
-                'order_id' => $order->id,
-                'order_code' => $order->order_code,
-                'shop_id' => $shop->id,
-                'seller_phone' => $phone
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Failed to send order notification to seller', [
-                'order_id' => $order->id ?? null,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
     /**
      * Assign courier to delivery order
      */
@@ -328,33 +247,7 @@ class OrderController extends Controller
                 'assigned_by' => Auth::id()
             ]);
 
-            // Send WhatsApp notification to seller that order is assigned to courier
-            $seller = $shop->user;
-            $messageToSeller = "*🚚 PESANAN DALAM PERJALANAN*\n\n";
-            $messageToSeller .= "Halo *{$seller->name}*,\n\n";
-            $messageToSeller .= "Pesanan Anda sedang dalam perjalanan oleh kurir!\n\n";
-            $messageToSeller .= "━━━━━━━━━━━━━━━━━━\n";
-            $messageToSeller .= "*DETAIL PESANAN*\n";
-            $messageToSeller .= "━━━━━━━━━━━━━━━━━━\n";
-            $messageToSeller .= "📋 Kode Order: *{$order->order_code}*\n";
-            $messageToSeller .= "📦 Produk: *{$order->productRental->product->name}*\n";
-            $messageToSeller .= "👤 Customer: *{$order->user->name}*\n";
-            $messageToSeller .= "━━━━━━━━━━━━━━━━━━\n\n";
-            $messageToSeller .= "📝 *Informasi Kurir:*\n";
-            $messageToSeller .= "👤 Nama: *{$courier->user->name}*\n";
-            $messageToSeller .= "📞 Telepon: *{$courier->user->phone}*\n\n";
-            $messageToSeller .= "🔗 Lihat detail:\n";
-            $messageToSeller .= route('seller.orders.show', $order->id) . "\n\n";
-            $messageToSeller .= "⏰ " . now()->format('d/m/Y H:i') . "\n";
-
-            // Format seller phone number (remove leading 0, add 62)
-            $sellerPhone = $seller->phone;
-            if (substr($sellerPhone, 0, 1) === '0') {
-                $sellerPhone = '62' . substr($sellerPhone, 1);
-            }
-            kirimwa($sellerPhone, $messageToSeller);
-
-            return back()->with('success', 'Courier assigned successfully! Notification sent to ' . $courier->user->name);
+            return back()->with('success', 'Kurir berhasil ditugaskan! Pemberitahuan telah dikirim ke ' . $courier->user->name);
     }
 
     /**

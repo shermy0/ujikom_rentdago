@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\ProductRental;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Carbon\Carbon;
 
 class SellerController extends Controller
@@ -128,6 +131,36 @@ class SellerController extends Controller
         }
 
         $availableCouriers = $availableCouriersQuery->get();
+
+        // Auto-generate QR Code jika belum ada (support lokal & hosting)
+        if (
+            in_array($order->status, ['confirmed', 'ongoing']) &&
+            $order->payment_status === 'paid' &&
+            !$order->qr_code
+        ) {
+            try {
+                $qrCodePath = 'qrcodes/' . $order->order_code . '.png';
+                $fullPath = storage_path('app/public/' . $qrCodePath);
+
+                if (!file_exists(storage_path('app/public/qrcodes'))) {
+                    mkdir(storage_path('app/public/qrcodes'), 0755, true);
+                }
+
+                QrCode::format('png')
+                    ->size(400)
+                    ->margin(2)
+                    ->errorCorrection('H')
+                    ->generate($order->order_code, $fullPath);
+
+                $order->update(['qr_code' => $qrCodePath]);
+                $order->qr_code = $qrCodePath; // update in-memory juga
+            } catch (\Exception $e) {
+                Log::error('Auto QR generation failed for seller order detail', [
+                    'order_id' => $order->id,
+                    'error'    => $e->getMessage(),
+                ]);
+            }
+        }
 
         return view('seller.orders.show', compact('order', 'availableCouriers'))
             ->with('title', 'Order Detail');

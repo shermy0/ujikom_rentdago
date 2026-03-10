@@ -263,20 +263,20 @@
 
 <div class="courier-container">
     <!-- Header -->
-    <div class="courier-header-bar">
-        <div class="courier-header-back">
+        <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.mypage.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="courier-header-title">
+        <div class="create-header-title">
             Kurir Saya
         </div>
-        <div class="courier-header-spacer"></div>
+        <div class="create-header-spacer"></div>
     </div>
-
     <!-- Alert Messages -->
-    @if(session('success'))
+    {{-- @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" style="margin: 1rem; border-radius: 10px;">
         <i class="fa fa-check-circle"></i>
         {{ session('success') }}
@@ -290,7 +290,7 @@
         {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    @endif
+    @endif --}}
 
     <!-- Stats -->
     <div class="courier-stats">
@@ -347,12 +347,6 @@
             </div>
 
             <div class="courier-actions-row">
-                <a href="{{ route('seller.couriers.edit', $courier->id) }}" 
-                   class="btn-courier-action btn-edit">
-                    <i class="fa fa-edit"></i>
-                    Edit
-                </a>
-
                 <form action="{{ route('seller.couriers.toggle', $courier->id) }}" 
                       method="POST" 
                       style="margin: 0;">
@@ -370,12 +364,12 @@
                       style="margin: 0;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" 
-                            class="btn-courier-action btn-delete"
-                            onclick="return confirm('Yakin ingin menghapus kurir ini? Akun akan dihapus permanen!')">
-                        <i class="fa fa-trash"></i>
-                        Hapus
-                    </button>
+<button type="button"
+        class="btn-courier-action btn-delete btn-delete-courier"
+        data-id="{{ $courier->id }}">
+    <i class="fa fa-trash"></i>
+    Hapus
+</button>
                 </form>
             </div>
         </div>
@@ -394,4 +388,56 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ===============================
+    // DELETE COURIER CONFIRMATION
+    // ===============================
+    document.querySelectorAll('.btn-delete-courier').forEach(button => {
+        button.addEventListener('click', function () {
+
+            const form = this.closest('form');
+
+            Swal.fire({
+                title: 'Hapus Kurir?',
+                text: 'Kurir akan dihapus permanen. Lanjutkan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+
+        });
+    });
+
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: "{{ session('error') }}"
+        });
+    @endif
+
+});
+</script>
+
 @endsection

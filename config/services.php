@@ -36,7 +36,7 @@ return [
     ],
 
     'mapbox' => [
-        'token' => env('MAPBOX_TOKEN'),
+        'token' => env('MAPBOX_TOKEN', ''), // Default fallback
     ],
 
 ];

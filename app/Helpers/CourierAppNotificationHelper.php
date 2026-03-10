@@ -64,7 +64,7 @@ class CourierAppNotificationHelper
             
             // Adjust URL to point to courier app specific page if needed
             // For now assuming a route like courier.orders.show exists or general requests page
-            $url = "/courier/requests"; 
+            $url = "/kurir/orders"; 
 
             self::add($courierUserId, [
                 'type' => 'assignment',

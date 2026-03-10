@@ -149,7 +149,13 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || 'Login gagal');
+        }
+        return data;
+    })
     .then(data => {
         if (data.message === 'Login berhasil') {
             Swal.fire({
@@ -163,7 +169,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
                 window.location.href = data.redirect;
             });
         } else {
-            throw new Error(data.message);
+            throw new Error(data.message || 'Login gagal');
         }
     })
     .catch(error => {

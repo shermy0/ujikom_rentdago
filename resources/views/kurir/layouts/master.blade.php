@@ -357,6 +357,7 @@
     @endif
 
     @stack('scripts')
+    <script src="{{ asset('js/kurir-notification.js') }}?v={{ time() }}"></script>
 </body>
 
 </html>

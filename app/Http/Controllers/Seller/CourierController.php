@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Courier;
 use App\Models\User;
+use App\Models\ProductRental;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -167,15 +168,22 @@ class CourierController extends Controller
             );
 
             // Pesan sukses dengan info pengiriman WA
-            $successMessage = 'Courier berhasil ditambahkan!';
+            $successMessage = 'Kurir berhasil ditambahkan!';
             if ($waStatus) {
                 $successMessage .= ' Password telah dikirim ke WhatsApp kurir.';
             } else {
                 $successMessage .= ' Namun gagal mengirim password ke WhatsApp. Silakan reset password manual.';
             }
+if ($request->from === 'rental') {
+    return redirect()
+        ->route('seller.rentals.create')
+        ->with('success', 'Kurir berhasil ditambahkan. Silakan lanjutkan pembuatan paket rental.');
+}
 
-            return redirect()->route('seller.couriers.index')
-                           ->with('success', $successMessage);
+return redirect()
+    ->route('seller.couriers.index')
+    ->with('success', $successMessage);
+
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -227,13 +235,13 @@ class CourierController extends Controller
             DB::commit();
 
             return redirect()->route('seller.couriers.index')
-                           ->with('success', 'Data courier berhasil diperbarui!');
+                           ->with('success', 'Data kurir berhasil diperbarui!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error update courier: ' . $e->getMessage());
             return back()->withInput()
-                       ->with('error', 'Gagal memperbarui courier: ' . $e->getMessage());
+                       ->with('error', 'Gagal memperbarui Kurir: ' . $e->getMessage());
         }
     }
 
@@ -303,37 +311,54 @@ class CourierController extends Controller
         $status = $courier->status === 'active' ? 'diaktifkan' : 'dinonaktifkan';
 
         return redirect()->route('seller.couriers.index')
-                       ->with('success', "Courier berhasil {$status}!");
+                       ->with('success', "Kurir berhasil {$status}!");
     }
 
     /**
      * Hapus Courier
      */
-    public function destroy($id)
-    {
-        $user = Auth::user();
-        $shop = $user->shop;
+public function destroy($id)
+{
+    $user = Auth::user();
+    $shop = $user->shop;
 
-        $courier = Courier::where('shop_id', $shop->id)
-                         ->with('user')
-                         ->findOrFail($id);
+    $courier = Courier::where('shop_id', $shop->id)
+                     ->with('user')
+                     ->findOrFail($id);
 
-        DB::beginTransaction();
-        try {
-            $courierUser = $courier->user;
-            
-            $courier->delete();
-            $courierUser->delete();
+    // ===============================
+    // VALIDASI PRODUCT RENTAL DELIVERY
+    // ===============================
+    $hasDeliveryRental = ProductRental::whereHas('product', function ($q) use ($shop) {
+            $q->where('shop_id', $shop->id);
+        })
+        ->whereIn('is_delivery', ['delivery', 'pickup_delivery'])
+        ->exists();
 
-            DB::commit();
-
-            return redirect()->route('seller.couriers.index')
-                           ->with('success', 'Courier berhasil dihapus!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error delete courier: ' . $e->getMessage());
-            return back()->with('error', 'Gagal menghapus courier: ' . $e->getMessage());
-        }
+    if ($hasDeliveryRental) {
+        return back()->with(
+            'error',
+            'Kurir tidak dapat dihapus karena masih ada paket rental yang menggunakan metode pengiriman Antar.'
+        );
     }
+
+    DB::beginTransaction();
+    try {
+        $courierUser = $courier->user;
+        
+        $courier->delete();
+        $courierUser->delete();
+
+        DB::commit();
+
+        return redirect()->route('seller.couriers.index')
+                       ->with('success', 'Kurir berhasil dihapus!');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error delete courier: ' . $e->getMessage());
+        return back()->with('error', 'Gagal menghapus Kurir: ' . $e->getMessage());
+    }
+}
+
 }

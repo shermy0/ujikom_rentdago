@@ -82,7 +82,7 @@ class KurirController extends Controller
             }
         ])
             ->whereHas('shipments', function ($query) use ($courier) {
-                $query->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
+                $query->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
                     ->where(function ($q) use ($courier) {
                         // Priority 1: Specifically assigned to this courier
                         $q->where('courier_id', $courier->id)
@@ -159,7 +159,7 @@ class KurirController extends Controller
             'order.productRental.product.shop',
             'order.address'
         ])
-            ->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
+            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
             ->where(function ($q) use ($courier) {
                 // Show shipments assigned to this courier OR rejected by this courier
                 $q->where('courier_id', $courier->id)
@@ -372,7 +372,7 @@ class KurirController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Silakan pilih metode verifikasi untuk menyelesaikan pesanan.',
-                'redirect' => route('kurir.handover.options', $shipment->id)
+                'redirect' => route('kurir.delivery-photo.show', $shipment->id)
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -399,7 +399,7 @@ class KurirController extends Controller
 
         // Find the shipment
         $shipment = Shipment::where('order_id', $order->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
+            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
             ->where(function ($q) use ($courier) {
                 $q->where('courier_id', $courier->id)
                     ->orWhereNull('courier_id');
@@ -447,7 +447,7 @@ class KurirController extends Controller
 
         // Find the shipment (could be assigned to me or in pool)
         $shipment = Shipment::where('order_id', $order->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
+            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
             ->where(function ($q) use ($courier) {
                 $q->where('courier_id', $courier->id)
                     ->orWhereNull('courier_id');
@@ -465,10 +465,6 @@ class KurirController extends Controller
                 'courier_id' => $courier->id,
                 'order_id' => $order->id,
             ]);
-
-            // 🔔 SEND NOTIFICATIONS - Moved to DeliveryTrackingController::startTracking
-            // Customer will be notified when courier actually starts the trip (on_the_way status)
-            // \App\Helpers\CourierNotificationHelper::notifyAcceptance($order, $courier);
 
             return redirect()->route('kurir.orders')
                 ->with('success', 'Pengiriman berhasil diterima. Silakan lanjutkan pengiriman.');

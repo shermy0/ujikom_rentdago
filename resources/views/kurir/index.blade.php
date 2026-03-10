@@ -82,7 +82,7 @@
             <span class="activity-title">#{{ $recentShipment->order->order_code }}</span>
             <span class="activity-status">{{ \App\Models\Shipment::getStatusLabel($recentShipment->status) }}</span>
         </div>
-        <span class="activity-time">{{ $recentShipment->updated_at->diffForHumans() }}</span>
+        <span class="activity-time">{{ $recentShipment->updated_at->locale('id')->diffForHumans() }}</span>
     </div>
     @else
     <div class="empty-state">

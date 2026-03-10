@@ -230,9 +230,20 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) {
+            // Handle validation errors from Laravel (422)
+            if (response.status === 422 && data.errors) {
+                const firstError = Object.values(data.errors)[0][0];
+                throw new Error(firstError);
+            }
+            throw new Error(data.message || 'Registrasi gagal');
+        }
+        return data;
+    })
     .then(data => {
-        if (data.message && data.message.includes('berhasil')) {
+        if (data.success || (data.message && data.message.includes('berhasil'))) {
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
@@ -251,15 +262,8 @@ document.getElementById('register-form').addEventListener('submit', function(e) 
         }
     })
     .catch(error => {
-        // Parse error message
-        let errorText = 'Terjadi kesalahan, silakan coba lagi';
-        
-        if (error.message) {
-            errorText = error.message;
-        }
-        
         // Show error message
-        errorMessage.textContent = errorText;
+        errorMessage.textContent = error.message || 'Terjadi kesalahan, silakan coba lagi';
         errorAlert.style.display = 'block';
         
         // Reset button

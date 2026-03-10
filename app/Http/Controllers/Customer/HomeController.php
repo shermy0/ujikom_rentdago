@@ -95,18 +95,23 @@ class HomeController extends Controller
         ))->with('title', 'Beranda');
     }
 
-    public function show(Product $product)
-    {
-        $product->load([
-            'images',
-            'category',
-            'rentals',
-            'shop',
-        ]);
-
-        return view('home.product-detail', compact('product'))
-            ->with('title', 'Detail Produk');
+public function show(string $slug, Product $product)
+{
+    // validasi biar gak asal
+    if ($product->shop->slug !== $slug) {
+        abort(404);
     }
+
+    $product->load([
+        'images',
+        'category',
+        'rentals',
+        'shop',
+    ]);
+
+    return view('home.product-detail', compact('product'))
+        ->with('title', 'Detail Produk');
+}
 
     public function checkout(Product $product)
     {

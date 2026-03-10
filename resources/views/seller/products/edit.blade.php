@@ -391,17 +391,18 @@
 
     <div class="edit-product-container">
         <!-- Header -->
-        <div class="edit-header-bar">
-            <div class="edit-header-back">
-                <a href="{{ route('seller.products.index') }}">
-                    <i class="fa fa-arrow-left"></i>
-                </a>
-            </div>
-            <div class="edit-header-title">
-                Edit Produk
-            </div>
-            <div class="edit-header-spacer"></div>
+    <div class="create-header-bar">
+        <div class="create-header-back">
+            <a href="{{ route('seller.products.index') }}">
+                <i class="fa fa-arrow-left"></i>
+            </a>
         </div>
+        <div class="create-header-title">
+            Edit Produk
+        </div>
+        <div class="create-header-spacer"></div>
+    </div>
+
 
         <div class="form-section">
             @if ($errors->any())

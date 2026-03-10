@@ -38,13 +38,6 @@
                                    value="{{ old('app_name', $setting->app_name ?? '') }}" 
                                    placeholder="Contoh: Sserafim" required>
                         </div>
-
-                        <!-- Tentang -->
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Tentang</label>
-                            <textarea name="about" class="form-control" rows="4" 
-                                      placeholder="Deskripsi tentang aplikasi...">{{ old('about', $setting->about ?? '') }}</textarea>
-                        </div>
                     </div>
 
                     <!-- WhatsApp Gateway Section -->
@@ -75,47 +68,6 @@
                             <small class="text-muted">Format: 628xxxxxxxxxx (tanpa +)</small>
                         </div>
                     </div>
-
-                    <!-- Data Toko Section -->
-                    <div class="mb-5">
-                        <h6 class="fw-semibold mb-3 text-dark">Data Toko</h6>
-                        
-                        <!-- Alamat -->
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Alamat</label>
-                            <textarea name="address" class="form-control" rows="3" 
-                                      placeholder="Alamat lengkap toko...">{{ old('address', $setting->address ?? '') }}</textarea>
-                        </div>
-
-                        <!-- Jam Buka -->
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Jam Buka</label>
-                            <input type="text" name="open_time" class="form-control" 
-                                   value="{{ old('open_time', $setting->open_time ?? '') }}" 
-                                   placeholder="08:00 am - 12:00 pm">
-                        </div>
-
-                        <!-- Deskripsi Dokumen -->
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Deskripsi Dokumen</label>
-                            <textarea name="document_description" class="form-control" rows="3" 
-                                      placeholder="Dokumen yang diperlukan untuk sewa...">{{ old('document_description', $setting->document_description ?? '') }}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Footer Section -->
-                    <div class="mb-5">
-                        <h6 class="fw-semibold mb-3 text-dark">Footer</h6>
-                        
-                        <!-- Teks Footer -->
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Teks Footer</label>
-                            <textarea name="footer_text" class="form-control" rows="2" 
-                                      placeholder='Supported by <a href="https://example.com" target="_blank">Example</a>'>{{ old('footer_text', $setting->footer_text ?? '') }}</textarea>
-                            <small class="text-muted">Anda bisa menggunakan HTML</small>
-                        </div>
-                    </div>
-
                     <!-- Payment Gateway Section -->
                     <div class="mb-4">
                         <h6 class="fw-semibold mb-3 text-dark">Payment Gateway (Midtrans)</h6>

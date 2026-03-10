@@ -135,6 +135,9 @@ class SellerRequestController extends Controller
             // ✅ Kirim notifikasi Bell Customer
             CustomerNotificationHelper::notifySellerRequestSubmitted($user);
 
+            // 🔥 Kirim notifikasi ke Admin
+            CustomerNotificationHelper::notifyAdminSellerRequest($user);
+
             DB::commit();
 
             return redirect()->route('home')->with('success', 'Pengajuan menjadi seller berhasil dikirim! Tunggu persetujuan admin.');

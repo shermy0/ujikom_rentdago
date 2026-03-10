@@ -38,11 +38,30 @@ class DeliveryTrackingController extends Controller
                 Shipment::STATUS_ON_THE_WAY
             ])
             ->where('type', Shipment::TYPE_DELIVERY)
-            ->latest() // Get the latest valid one
+            ->latest('updated_at') // Fix: Use updated_at to get the most recently active shipment (matching View logic)
             ->first();
 
         if (!$shipment) {
+            \Illuminate\Support\Facades\Log::warning('StartTracking failed: No active shipment found', [
+                'order_id' => $id,
+                'courier_id' => $courier->id
+            ]);
             return response()->json(['success' => false, 'message' => 'Shipment not found or unauthorized'], 403);
+        }
+
+        // Additional safeguard: If multiple active shipments exist, prefer PICKED_UP/OTW over ASSIGNED
+        // (This handles rare cases of duplicate active shipments)
+        if ($shipment->status === Shipment::STATUS_ASSIGNED) {
+            $betterShipment = Shipment::where('order_id', $id)
+                ->where('courier_id', $courier->id)
+                ->where('type', Shipment::TYPE_DELIVERY)
+                ->whereIn('status', [Shipment::STATUS_PICKED_UP, Shipment::STATUS_ON_THE_WAY])
+                ->latest('updated_at')
+                ->first();
+
+            if ($betterShipment) {
+                $shipment = $betterShipment;
+            }
         }
 
         // VALIDATION:
@@ -63,9 +82,12 @@ class DeliveryTrackingController extends Controller
                 ? 'Anda harus melakukan scan QR pengambilan terlebih dahulu.'
                 : 'Status pengiriman tidak valid untuk memulai perjalanan.';
 
+            // DEBUG INFO appended to message
+            $debugInfo = " (Status: " . $shipment->status . ", Type: " . $shipment->type . ", ID: " . $shipment->id . ")";
+
             return response()->json([
                 'success' => false,
-                'message' => $msg
+                'message' => $msg . $debugInfo
             ], 403);
         }
 
@@ -77,9 +99,8 @@ class DeliveryTrackingController extends Controller
         }
 
         // 🔔 Notify Seller
-        // Only notify "In Transit" if it's delivery or Return Leg 2 (To Shop)
-        // If Return Leg 1 (To Customer), maybe different notif? "Kurir menuju lokasi penjemputan"
-        if ($shipment->type === Shipment::TYPE_DELIVERY || ($shipment->type === Shipment::TYPE_RETURN && $shipment->picked_up_at)) {
+        // Only notify "In Transit" if it's delivery
+        if ($shipment->type === Shipment::TYPE_DELIVERY) {
             \App\Helpers\CourierNotificationHelper::notifySellerInTransit($order, $courier);
         }
 
@@ -119,16 +140,10 @@ class DeliveryTrackingController extends Controller
         // 2. Auto-Arrival Detection
         $arrived = false;
         $distance = null;
-        $destLat = null;
-        $destLng = null;
 
-        // Determine Destination Logic
-        if ($shipment->type === Shipment::TYPE_DELIVERY) {
-            // Delivery: Always to Customer
-            $destLat = $shipment->order->address?->latitude;
-            $destLng = $shipment->order->address?->longitude;
-        }
-
+        // Delivery: Always to Customer
+        $destLat = $shipment->order->address?->latitude;
+        $destLng = $shipment->order->address?->longitude;
 
         // Calculate and Process Arrival
         if ($destLat && $destLng) {
@@ -143,6 +158,10 @@ class DeliveryTrackingController extends Controller
                         'is_tracking_active' => true,
                     ]);
                     $arrived = true;
+                    
+                    // 🔔 Notify Customer: Kurir Sudah Sampai
+                    \App\Helpers\CustomerNotificationHelper::notifyOrderArrived($shipment->order);
+                    
                     broadcast(new TrackingStopped($shipment->order))->toOthers();
                 }
             }
@@ -165,7 +184,8 @@ class DeliveryTrackingController extends Controller
         // Use precise query similar to startTracking
         $shipment = Shipment::where('order_id', $id)
             ->where('courier_id', $courier->id)
-            ->latest()
+            ->where('type', Shipment::TYPE_DELIVERY) // Ensure type is DELIVERY
+            ->latest('updated_at')
             ->first();
 
         if (!$shipment) {
@@ -180,6 +200,9 @@ class DeliveryTrackingController extends Controller
             'is_tracking_active' => false,
             'status' => Shipment::STATUS_ARRIVED,
         ]);
+
+        // 🔔 Notify Customer: Kurir Sudah Sampai
+        \App\Helpers\CustomerNotificationHelper::notifyOrderArrived($shipment->order ?? Order::find($id));
 
         broadcast(new TrackingStopped($shipment->order ?? Order::find($id)))->toOthers();
 

@@ -44,7 +44,7 @@ class SellerVoucherController extends Controller
 
         $vouchers = $query->latest()->paginate(10);
 
-        return view('seller.vouchers.index', compact('vouchers'));
+        return view('seller.vouchers.index', compact('vouchers'))->with('title', 'Kelola Voucher');
     }
 
     public function create()
@@ -57,7 +57,7 @@ class SellerVoucherController extends Controller
                 ->with('error', 'Buka toko terlebih dahulu.');
         }
 
-        return view('seller.vouchers.create');
+        return view('seller.vouchers.create')->with('title', 'Buat Voucher');
     }
 
     public function store(Request $request)
@@ -158,7 +158,7 @@ class SellerVoucherController extends Controller
             ->limit(10)
             ->get();
 
-        return view('seller.vouchers.show', compact('voucher', 'recentUsages'));
+        return view('seller.vouchers.show', compact('voucher', 'recentUsages'))->with('title', 'Detail Voucher');
     }
 
     public function edit($id)
@@ -173,7 +173,7 @@ class SellerVoucherController extends Controller
 
         $voucher = Voucher::where('shop_id', $shop->id)->findOrFail($id);
 
-        return view('seller.vouchers.edit', compact('voucher'));
+        return view('seller.vouchers.edit', compact('voucher'))->with('title', 'Edit Voucher');
     }
 
     public function update(Request $request, $id)

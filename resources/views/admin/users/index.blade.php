@@ -6,7 +6,7 @@
         <h5 class="mb-0">
             <i class="bi bi-people me-2"></i>Daftar User
         </h5>
-       
+
     </div>
     <div class="card-body">
         <!-- Filter & Search -->
@@ -14,8 +14,8 @@
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Cari nama atau telepon..." 
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Cari nama atau telepon..."
                            value="{{ request('search') }}">
                 </div>
             </div>
@@ -59,8 +59,7 @@
                         <th>Nama</th>
                         <th>Telepon</th>
                         <th>Role</th>
-                        <th>Status OTP</th>
-                        <th>Status Verifikasi</th>
+                        <th>Status</th>
                         <th>Dibuat</th>
                         <th style="width: 180px;">Aksi</th>
                     </tr>
@@ -71,8 +70,8 @@
                         <td>{{ $users->firstItem() + $index }}</td>
                         <td>
                             @if($user->avatar)
-                                <img src="{{ asset('storage/' . $user->avatar) }}" 
-                                     alt="{{ $user->name }}" 
+                                <img src="{{ asset('storage/' . $user->avatar) }}"
+                                     alt="{{ $user->name }}"
                                      class="rounded-circle"
                                      style="width: 40px; height: 40px; object-fit: cover;">
                             @else
@@ -113,36 +112,13 @@
                                 </span>
                             @endif
                         </td>
-                        <td>
-                            @if($user->user_verified_at)
-                                <span class="badge bg-success">
-                                    <i class="bi bi-shield-check me-1"></i>Disetujui
-                                </span>
-                                <small class="d-block text-muted mt-1" style="font-size: 11px;">
-                                    {{ $user->user_verified_at->format('d M Y') }}
-                                </small>
-                            @else
-                               @if($user->user_verified_at)
-                                <span class="badge bg-success">
-                                    <i class="bi bi-shield-check me-1"></i> Approved
-                                </span>
-                                <small class="d-block text-muted mt-1" style="font-size: 11px;">
-                                    {{ $user->user_verified_at->format('d M Y') }}
-                                </small>
-                            @else
-                                <span class="badge bg-danger">
-                                    <i class="bi bi-exclamation-circle me-1"></i> Belum Disetujui
-                                </span>
-                            @endif
 
-                            @endif
-                        </td>
                         <td>{{ $user->created_at->format('d M Y') }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
                                 <!-- Tombol Lihat -->
-                                <a href="{{ route('admin.users.show', $user) }}" 
-                                   class="btn btn-outline-info" 
+                                <a href="{{ route('admin.users.show', $user) }}"
+                                   class="btn btn-outline-info"
                                    title="Lihat Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>

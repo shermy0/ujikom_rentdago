@@ -66,6 +66,12 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        // Normalisasi nomor HP sebelum validasi
+        $normalizedPhone = $this->normalizePhone($request->phone ?? '');
+        
+        // Simpan versi normalisasi ke request agar validator menggunakan nilai ini
+        $request->merge(['phone' => $normalizedPhone]);
+
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string|max:255',
             'phone'    => 'required|string|unique:users,phone',
@@ -87,8 +93,8 @@ class AuthController extends Controller
         }
 
         try {
-            // Normalisasi nomor HP sebelum disimpan
-            $normalizedPhone = $this->normalizePhone($request->phone);
+            // Gunakan nomor yang sudah dinormalisasi
+            $normalizedPhone = $request->phone;
 
             // create user (role default customer)
             $user = User::create([
@@ -282,7 +288,7 @@ class AuthController extends Controller
 
             $user->update([
                 'phone_verified_at' => now(),
-                'user_verified_at' => now()
+                
             ]);
 
             // Login user otomatis setelah verifikasi
@@ -519,7 +525,10 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('phone', $request->phone)->first();
+        // Normalisasi nomor sebelum kueri
+        $normalizedPhone = $this->normalizePhone($request->phone);
+
+        $user = User::where('phone', $normalizedPhone)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([

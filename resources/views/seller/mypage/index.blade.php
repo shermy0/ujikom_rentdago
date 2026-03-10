@@ -551,6 +551,7 @@
     }
     
     .btn-action {
+        
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -611,6 +612,7 @@
     }
     
     .btn-account-action {
+        width: 50%;
         height: 50px;
         display: flex;
         align-items: center;

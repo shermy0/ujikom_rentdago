@@ -120,11 +120,6 @@ $setting = \App\Models\Setting::first();
             <div class="user-mini-info">
                 <span class="greeting-text">Selamat datang</span>
                 <strong class="user-name-text">{{ $user->name }}</strong>
-                <!-- @if(Auth::user()->role === 'seller')
-                <span class="user-role-badge seller-badge"><i class="fas fa-store"></i> Penjual</span>
-                @else
-                <span class="user-role-badge customer-badge"><i class="fas fa-user"></i> Pembeli</span>
-                @endif -->
             </div>
         </div>
     </div>
@@ -196,6 +191,7 @@ $setting = \App\Models\Setting::first();
         align-items: center;
         justify-content: space-between;
         margin-bottom: 12px;
+        position: relative;
     }
 
     /* App Branding */
@@ -289,12 +285,9 @@ $setting = \App\Models\Setting::first();
     }
 
     @keyframes badgePulse {
-
-        0%,
-        100% {
+        0%, 100% {
             transform: scale(1);
         }
-
         50% {
             transform: scale(1.1);
         }
@@ -352,28 +345,6 @@ $setting = \App\Models\Setting::first();
         font-weight: 600;
     }
 
-    .user-role-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-size: 10px;
-        font-weight: 600;
-        margin-top: 2px;
-        width: fit-content;
-    }
-
-    .seller-badge {
-        background: rgba(76, 175, 80, 0.9);
-        color: white;
-    }
-
-    .customer-badge {
-        background: rgba(33, 150, 243, 0.9);
-        color: white;
-    }
-
     /* ========================================
        ALERT SECTION - SEAMLESS
     ======================================== */
@@ -403,7 +374,6 @@ $setting = \App\Models\Setting::first();
             opacity: 0;
             transform: translateY(-10px);
         }
-
         to {
             opacity: 1;
             transform: translateY(0);
@@ -458,26 +428,38 @@ $setting = \App\Models\Setting::first();
     }
 
     /* ========================================
-       NOTIFICATION DROPDOWN - SEPARATED
+       NOTIFICATION DROPDOWN - FIXED POSITIONING
     ======================================== */
     .notification-dropdown {
         position: absolute;
-        top: 60px;
-        right: 16px;
+        top: 58px;
+        right: 0;
         width: 340px;
+        max-width: calc(100vw - 32px);
         background: white;
         border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
         display: none;
         flex-direction: column;
-        z-index: 1000;
+        z-index: 10000;
         overflow: hidden;
         border: 1px solid #e0e0e0;
     }
 
     .notification-dropdown.active {
         display: flex;
-        animation: slideDown 0.3s ease;
+        animation: dropdownSlide 0.3s ease;
+    }
+
+    @keyframes dropdownSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* SELLER Dropdown Specific */
@@ -582,7 +564,6 @@ $setting = \App\Models\Setting::first();
         from {
             opacity: 0;
         }
-
         to {
             opacity: 1;
         }
@@ -732,12 +713,9 @@ $setting = \App\Models\Setting::first();
 
     /* Icon Pulse Animation for Urgent Notifications */
     @keyframes iconPulse {
-
-        0%,
-        100% {
+        0%, 100% {
             transform: scale(1);
         }
-
         50% {
             transform: scale(1.15);
         }
@@ -796,15 +774,30 @@ $setting = \App\Models\Setting::first();
     /* ========================================
        RESPONSIVE
     ======================================== */
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
         .notification-dropdown {
-            width: calc(100vw - 24px) !important;
-            right: 12px !important;
-            max-height: 70vh;
+            width: calc(100vw - 24px);
+            right: 12px;
+            left: 12px;
+            max-height: 60vh;
         }
 
         .notif-dropdown-content {
-            max-height: calc(70vh - 140px);
+            max-height: calc(60vh - 120px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .notification-dropdown {
+            width: calc(100vw - 16px);
+            right: 8px;
+            left: 8px;
+            max-height: 55vh;
+            top: 56px;
+        }
+
+        .notif-dropdown-content {
+            max-height: calc(55vh - 110px);
         }
 
         .notif-item {
@@ -856,6 +849,10 @@ $setting = \App\Models\Setting::first();
 
         .user-name-text {
             font-size: 13px;
+        }
+
+        .notification-dropdown {
+            top: 54px;
         }
     }
 

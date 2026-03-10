@@ -307,8 +307,12 @@ class CustomerNotificationHelper
                 $order->load(['productRental.product', 'user']);
             }
 
+            if (!$order->relationLoaded('productRental.product.shop')) {
+                $order->load(['productRental.product.shop', 'user']);
+            }
+
             $title = 'Kurir Sudah Sampai! 📍';
-            $description = "Kurir telah sampai untuk pesanan {$order->productRental->product->name} #{$order->order_code}";
+            $description = "Kurir telah tiba di lokasi pengiriman untuk pesanan #{$order->order_code}.";
 
             self::add($order->user_id, [
                 'type' => 'order',
@@ -321,8 +325,15 @@ class CustomerNotificationHelper
             // WA Notification
             $message = "*📍 KURIR SUDAH SAMPAI*\n\n";
             $message .= "Halo *{$order->user->name}*,\n\n";
-            $message .= "Kurir telah tiba di lokasi pengiriman untuk pesanan #{$order->order_code}.\n";
-            $message .= "Silakan temui kurir untuk menerima pesanan Anda.\n\n";
+            $message .= "Kurir telah tiba di lokasi pengiriman! 🙏\n\n";
+            $message .= "━━━━━━━━━━━━━━━\n";
+            $message .= "*DETAIL PESANAN*\n";
+            $message .= "━━━━━━━━━━━━━━━\n";
+            $message .= " Kode Order: *{$order->order_code}*\n";
+            $message .= " Toko: *{$order->productRental->product->shop->name_store}*\n";
+            $message .= " Produk: *{$order->productRental->product->name}*\n";
+            $message .= "━━━━━━━━━━━━━━━\n\n";
+            $message .= "Silakan temui kurir untuk menerima pesanan Anda. Jangan lupa siapkan QR Code atau OTP jika diperlukan. 😊\n\n";
             $message .= "Terima kasih!";
 
             self::sendWa($order->user, $message);
@@ -588,6 +599,75 @@ class CustomerNotificationHelper
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to notify seller request rejected', ['error' => $e->getMessage()]);
+        }
+    }
+    /**
+     * 🔔 Notify: Customer has picked up order (Thanks Card)
+     */
+    public static function notifyOrderPickedUp($order)
+    {
+        try {
+            if (!$order->relationLoaded('productRental.product.shop')) {
+                $order->load(['productRental.product.shop', 'user']);
+            }
+
+            // WA Notification
+            $message = "*💝 TERIMA KASIH*\n\n";
+            $message .= "Halo *{$order->user->name}*,\n\n";
+            $message .= "Terima kasih sudah menyewa di toko kami! 🙏\n\n";
+            $message .= "━━━━━━━━━━━━━━━\n";
+            $message .= "*DETAIL PESANAN*\n";
+            $message .= "━━━━━━━━━━━━━━━\n";
+            $message .= " Kode Order: *{$order->order_code}*\n";
+            $message .= " Toko: *{$order->productRental->product->shop->name_store}*\n";
+            $message .= " Produk: *{$order->productRental->product->name}*\n";
+            $message .= "━━━━━━━━━━━━━━━\n\n";
+            $message .= "Kami harap Anda puas dengan layanan kami. Selamat menggunakan barang sewaan Anda! 😊";
+
+            self::sendWa($order->user, $message);
+
+            Log::info('✅ Order picked up thanks message sent', [
+                'order_id' => $order->id,
+                'user_id' => $order->user_id
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to notify order picked up', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 🔔 Notify: Admin for new Seller Request
+     */
+    public static function notifyAdminSellerRequest($user)
+    {
+        try {
+            // Find all admins
+            $admins = \App\Models\User::where('role', 'admin')->get();
+
+            foreach ($admins as $admin) {
+                if (empty($admin->phone)) continue;
+
+                $message = "*🔔 NOTIFIKASI ADMIN: PENGAJUAN SELLER BARU*\n\n";
+                $message .= "Halo *{$admin->name}*,\n\n";
+                $message .= "Ada pengajuan baru dari customer yang ingin menjadi seller.\n\n";
+                $message .= "━━━━━━━━━━━━━━━\n";
+                $message .= "*DETAIL CUSTOMER*\n";
+                $message .= "━━━━━━━━━━━━━━━\n";
+                $message .= " Nama: *{$user->name}*\n";
+                $message .= " Email: *{$user->email}*\n";
+                $message .= " Phone: *{$user->phone}*\n";
+                $message .= "━━━━━━━━━━━━━━━\n\n";
+                $message .= "Mohon segera cek dashboard admin untuk proses verifikasi.\n\n";
+                $message .= "Terima kasih!";
+
+                self::sendWa($admin, $message);
+            }
+
+            Log::info('✅ Admin notified for new seller request', [
+                'customer_id' => $user->id
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to notify admin for seller request', ['error' => $e->getMessage()]);
         }
     }
 }

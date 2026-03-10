@@ -42,9 +42,7 @@ $setting = \App\Models\Setting::first();
                 </div>
             </div>
 
-            <a href="#" class="header-icon-btn">
-                <i class="fas fa-cog"></i>
-            </a>
+
         </div>
     </div>
 </header>

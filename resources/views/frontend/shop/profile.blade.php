@@ -284,7 +284,11 @@
     @if($shop->products->count() > 0)
         <div class="product-grid">
             @foreach($shop->products as $product)
-                <a href="{{ route('customer.product.detail', ['product' => $product->id])  }}" class="product-card">
+              <a href="{{ route('customer.product.detail', [
+    'slug' => $shop->slug,
+    'product' => $product->id
+]) }}" class="product-card">
+
                     
                     {{-- PRODUCT IMAGE --}}
                     <div class="product-image">

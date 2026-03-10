@@ -115,7 +115,7 @@
             <div class="order-meta">
                 <span><i class="fas fa-user"></i> {{ $order->user->name }}</span>
                 <span><i class="fas fa-clock"></i>
-                    {{ \Carbon\Carbon::parse($order->end_time)->diffForHumans() }}
+                    {{ \Carbon\Carbon::parse($order->end_time)->locale('id')->diffForHumans() }}
                 </span>
             </div>
         </div>

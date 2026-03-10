@@ -17,28 +17,13 @@ class KurirQrController extends Controller
     /**
      * Show selection page for handover method
      */
-    public function showHandoverOptions($shipmentId)
-    {
-        $courier = Courier::where('user_id', Auth::id())->first();
-
-        if (!$courier) {
-            return redirect()->route('kurir.dashboard')->with('error', 'Data kurir tidak ditemukan');
-        }
-
-        $shipment = Shipment::with(['order.user', 'order.productRental.product', 'order.address'])
-            ->where('id', $shipmentId)
-            ->where('courier_id', $courier->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
-            ->firstOrFail();
-
-        // Check status - must be arrived to complete
-        if ($shipment->status !== Shipment::STATUS_ARRIVED) {
-            return redirect()->route('kurir.orders')
-                ->with('error', 'Pesanan harus dalam status "Sudah Sampai" sebelum diserahkan.');
-        }
-
-        return view('kurir.handover.options', compact('shipment'));
-    }
+    /**
+     * Show selection page for handover method (REMOVED)
+     */
+    // public function showHandoverOptions($shipmentId)
+    // {
+    //     // Removed as per request to skip to photo page
+    // }
 
     /**
      * Show delivery list for taking photo proof (Legacy/Photo method)
@@ -55,7 +40,7 @@ class KurirQrController extends Controller
         // Get active deliveries (status: on_the_way atau arrived)
         $activeDeliveries = Shipment::with(['order.user', 'order.productRental.product', 'order.address'])
             ->where('courier_id', $courier->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
+            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
             ->whereIn('status', [Shipment::STATUS_ON_THE_WAY, Shipment::STATUS_ARRIVED])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -77,7 +62,7 @@ class KurirQrController extends Controller
         $shipment = Shipment::with(['order.user', 'order.productRental.product', 'order.address'])
             ->where('id', $shipmentId)
             ->where('courier_id', $courier->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY, Shipment::TYPE_RETURN])
+            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
             ->firstOrFail();
 
         // Check status
@@ -164,7 +149,7 @@ class KurirQrController extends Controller
         $photoTimestamp = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
-            $prefix = ($shipment->type == Shipment::TYPE_RETURN) ? 'return_' : 'delivery_';
+            $prefix = 'delivery_';
             $photoName = $prefix . $shipment->order->order_code . '_' . time() . '.' . $photo->getClientOriginalExtension();
             $photoPath = $photo->storeAs('delivery-proofs', $photoName, 'public');
             $photoTimestamp = now(); // Capture waktu foto diupload
@@ -198,6 +183,9 @@ class KurirQrController extends Controller
                     'status' => Order::STATUS_ONGOING,
                     'paid_at' => $order->paid_at ?? now(),
                 ]);
+
+                // 🔥 Kirim kartu ucapan terima kasih karena sudah ambil barang
+                \App\Helpers\CustomerNotificationHelper::notifyOrderPickedUp($order);
 
                 $successMessage = 'Pesanan berhasil diserahkan! Status kini: Sedang Berlangsung.';
             }
@@ -233,8 +221,6 @@ class KurirQrController extends Controller
                 } else {
                     \App\Helpers\CourierNotificationHelper::notifySellerDeliveryComplete($order);
                 }
-            } else if ($shipment->type === Shipment::TYPE_RETURN) {
-                \App\Helpers\CourierNotificationHelper::notifySellerReturnPickedUp($order);
             }
         } catch (\Exception $e) {
             Log::error('Failed to send handover notifications: ' . $e->getMessage());

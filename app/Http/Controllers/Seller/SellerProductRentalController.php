@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductRental;
+use App\Models\Courier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -83,8 +84,11 @@ class SellerProductRentalController extends Controller
             ->with('category')
             ->orderBy('name')
             ->get();
+        $hasCourier = Courier::where('shop_id', $shop->id)
+    ->where('status', 'active')
+    ->exists();
 
-        return view('seller.rentals.create', compact('products'))->with('title', 'Tambah Paket Sewa');;
+        return view('seller.rentals.create', compact('products', 'hasCourier'))->with('title', 'Tambah Paket Sewa');;
     }
 
     public function store(Request $request)
@@ -127,7 +131,32 @@ class SellerProductRentalController extends Controller
             ->where('shop_id', $shop->id)
             ->firstOrFail();
 
-        ProductRental::create($validated);
+$deliveryTypes = $validated['is_delivery'];
+
+if (count($deliveryTypes) == 2) {
+    $validated['is_delivery'] = 'pickup_delivery';
+} else {
+    $validated['is_delivery'] = $deliveryTypes[0];
+}
+
+ProductRental::create($validated);
+
+// ===== CEK KURIR JIKA PILIH DELIVERY =====
+if (in_array('delivery', $deliveryTypes)) {
+
+    $hasActiveCourier = Courier::where('shop_id', $shop->id)
+        ->where('status', 'active')
+        ->exists();
+
+    if (!$hasActiveCourier) {
+        return back()
+            ->withErrors([
+                'is_delivery' => 'Tidak bisa memilih metode antar karena toko belum memiliki kurir aktif.'
+            ])
+            ->withInput();
+    }
+}
+
 
         return redirect()
             ->route('seller.rentals.index')
@@ -150,7 +179,7 @@ class SellerProductRentalController extends Controller
             })
             ->findOrFail($id);
 
-        return view('seller.rentals.edit', compact('rental'))->with('title', 'Edit Paket Sewa');;
+        return view('seller.rentals.edit', compact('rental'))->with('title', 'Edit Paket Sewa');
     }
 
     public function update(Request $request, $id)

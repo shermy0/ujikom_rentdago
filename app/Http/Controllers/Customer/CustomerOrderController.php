@@ -745,7 +745,7 @@ class CustomerOrderController extends Controller
 
 
 
-    
+
 
     /**
      * ✅ Kirim notifikasi ke Seller bahwa pesanan sudah dibayar
@@ -795,7 +795,6 @@ class CustomerOrderController extends Controller
                 'order_id' => $order->id,
                 'seller_phone' => $phone
             ]);
-
         } catch (\Exception $e) {
             Log::error('Failed to send seller paid notification', [
                 'order_id' => $order->id,
@@ -958,93 +957,5 @@ class CustomerOrderController extends Controller
 
         return response()->json($data);
     }
-    /**
-     * Customer requests return pickup
-     */
-    public function requestReturnPickup(Request $request, $id)
-    {
-        $order = Order::where('user_id', Auth::id())->findOrFail($id);
-
-        // Validate order status
-        if (!in_array($order->status, ['ongoing', 'confirmed', 'completed'])) {
-            return back()->with('error', 'Pesanan belum bisa dikembalikan.');
-        }
-
-        // Validate delivery method (Only for Delivery)
-        if ($order->delivery_method !== 'delivery') {
-            return back()->with('error', 'Fitur penjemputan hanya untuk pesanan delivery.');
-        }
-
-        // Check if return shipment already exists
-        $existingReturn = \App\Models\Shipment::where('order_id', $order->id)
-            ->where('type', \App\Models\Shipment::TYPE_RETURN)
-            ->whereIn('status', ['pending', 'assigned', 'picked_up', 'on_the_way'])
-            ->first();
-
-        if ($existingReturn) {
-            return back()->with('error', 'Permintaan penjemputan sudah dibuat sebelumnya.');
-        }
-
-        // Prepare addresses (Swap: Pickup = Customer, Delivery = Shop)
-        $shop = $order->productRental->product->shop;
-
-        // Customer address snapshot (same logic as store method roughly)
-        // Ideally we should use the same address used for delivery if available, or current default
-        $customerAddressSnapshot = $order->delivery_address_snapshot;
-
-        // Shop address snapshot
-        $shopAddressSnapshot = implode("\n", array_filter([
-            $shop->name_store,
-            $shop->phone,
-            $shop->address,
-            $shop->city,
-        ]));
-
-        // Create Shipment
-        \App\Models\Shipment::create([
-            'order_id' => $order->id,
-            'courier_id' => null, // Pending assignment
-            'type' => \App\Models\Shipment::TYPE_RETURN,
-            'status' => \App\Models\Shipment::STATUS_PENDING,
-            'pickup_address_snapshot' => $customerAddressSnapshot, // Customer location
-            'delivery_address_snapshot' => $shopAddressSnapshot,   // Shop location
-            'assigned_at' => null,
-        ]);
-
-        // Notify Seller (Reuse existing notification logic or create new)
-        // For now we rely on the seller dashboard showing the pending request
-        // Ideally send WA to seller here
-        $this->notifySellerReturnRequest($order);
-
-        return back()->with('success', 'Permintaan penjemputan berhasil dibuat. Mohon tunggu konfirmasi toko.');
-    }
-
-    private function notifySellerReturnRequest($order)
-    {
-        try {
-            $shop = $order->productRental->product->shop;
-            $sellerPhone = $shop->user->phone;
-
-            // ✅ 1. Kirim Notifikasi In-App ke Seller (Lewat Bell)
-            \App\Helpers\CourierNotificationHelper::notifySellerReturnRequest($order);
-
-            // ✅ 2. Kirim WhatsApp ke Seller
-            if ($sellerPhone) {
-                if (substr($sellerPhone, 0, 1) === '0') {
-                    $sellerPhone = '62' . substr($sellerPhone, 1);
-                }
-
-                $message = "🔄 *PERMINTAAN PENJEMPUTAN BARANG*\n\n";
-                $message .= "Halo *{$shop->user->name}*,\n\n";
-                $message .= "Customer meminta penjemputan untuk pengembalian barang.\n\n";
-                $message .= "📋 Order: *{$order->order_code}*\n";
-                $message .= "📦 Produk: *{$order->productRental->product->name}*\n\n";
-                $message .= "Silakan buka aplikasi untuk menugaskan kurir penjemputan.\n\n";
-
-                kirimWa($sellerPhone, $message);
-            }
-        } catch (\Exception $e) {
-            Log::error('Failed to notify seller for return request', ['error' => $e->getMessage()]);
-        }
-    }
+    // Return feature removed as per request.
 }

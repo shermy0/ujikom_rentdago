@@ -202,7 +202,7 @@ window.CourierTracking = {
             badge.style.color = '#065f46';
         }
 
-        const container = document.getElementById('actionButtonContainer');
+        const container = document.getElementById('courierActionsContainer');
         if (container) {
             // Langsung munculkan tombol foto
             const shipmentId = this.config.mapData.shipment ? this.config.mapData.shipment.id : '';
@@ -236,8 +236,46 @@ window.handleStartTrip = function(orderId) {
     })
     .then(res => res.json())
     .then(data => {
-        if (data.status === 'success') {
-            window.location.reload();
+        console.log("Start Trip Response:", data);
+        if (data.status === 'success' || data.success === true) {
+            // Update UI instead of Reload
+            const container = document.getElementById('courierActionsContainer');
+            if (container) {
+                container.innerHTML = `
+                <div id="onTheWayContainer" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div id="distancePlaceholder" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                        <div style="width: 48px; height: 48px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: #3b82f6;">
+                            <i class="fa fa-truck-fast" style="font-size: 20px;"></i>
+                        </div>
+                        <p style="margin: 0; font-size: 14px; color: #1f2937; font-weight: 600;">
+                            Sedang Menuju Lokasi...
+                        </p>
+                        <p id="currentDistanceDisplay" style="margin: 5px 0; font-size: 16px; color: #3b82f6; font-weight: 800; display: none;">
+                            <i class="fa fa-location-arrow"></i> <span id="currentDistanceText">0</span> m lagi
+                        </p>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: #6b7280;">Sistem sedang memantau lokasi Anda</p>
+                    </div>
+                </div>`;
+            }
+
+            // Update Badge
+            const badge = document.getElementById('statusBadge');
+            if (badge) {
+                badge.className = 'badge';
+                badge.style.background = '#fef3c7';
+                badge.style.color = '#92400e';
+                badge.style.padding = '4px 12px';
+                badge.style.borderRadius = '12px';
+                badge.style.fontSize = '11px';
+                badge.style.fontWeight = '600';
+                badge.innerText = 'Sedang Dikirim';
+            }
+
+            // Start Tracking Engine immediately
+            window.CourierTracking.config.shipmentStatus = 'on_the_way';
+            window.CourierTracking.config.isTrackingActive = true;
+            window.CourierTracking.startGpsEngine();
+
         } else {
             alert(data.message || 'Gagal memulai perjalanan');
         }

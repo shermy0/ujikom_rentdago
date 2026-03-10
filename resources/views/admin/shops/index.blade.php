@@ -72,7 +72,7 @@
                             <th>Alamat</th>
                             <th>Status</th>
                             <th>Dibuat</th>
-                            <th style="width: 180px;">Aksi</th>
+                            <th style="width: 210px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,7 +91,7 @@
                                 </td>
                                 <td>
                                     <strong>{{ $shop->name_store }}</strong>
-                                    <br><small class="text-muted">{{ $shop->slug }}</small>
+
                                 </td>
                                 <td>
                                     @if ($shop->user)
@@ -112,22 +112,24 @@
                                 </td>
                                 <td>{{ $shop->created_at->format('d M Y') }}</td>
                                 <td>
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="d-flex align-items-center gap-3">
                                         <a href="{{ route('admin.shops.show', $shop) }}"
-                                           class="btn btn-outline-info"
+                                           class="btn btn-outline-info btn-sm d-flex align-items-center justify-content-center"
+                                           style="width: 40px; height: 38px;"
                                            title="Lihat Detail">
                                             <i class="bi bi-eye"></i>
                                         </a>
 
                                         <form action="{{ route('admin.shops.toggle-status', $shop) }}"
                                               method="POST"
-                                              class="d-inline"
+                                              class="m-0"
                                               onsubmit="return confirmToggle(event, '{{ $shop->name_store }}', {{ $shop->is_active ? 'true' : 'false' }})">
                                             @csrf
                                             <button type="submit"
                                                     class="btn btn-sm {{ $shop->is_active ? 'btn-danger' : 'btn-success' }} text-white"
+                                                    style="height: 38px; padding: 0 15px;"
                                                     title="{{ $shop->is_active ? 'Nonaktifkan Toko' : 'Aktifkan Toko' }}">
-                                                {{ $shop->is_active ? 'Nonactive' : 'Active' }}
+                                                {{ $shop->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                             </button>
                                         </form>
                                     </div>
@@ -183,13 +185,13 @@
             }
 
             .table th {
+                gap: 10px;
                 font-weight: 600;
                 color: #666;
                 font-size: 13px;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
-
             .badge {
                 font-weight: 500;
                 padding: 6px 10px;
@@ -228,7 +230,8 @@
             }
 
             .btn-toggle-status:hover {
-                transform: scale(1.1);
+                transform: scale(1.05);
+                opacity: 0.9;
             }
 
             /* Button Locked Style */
@@ -267,6 +270,48 @@
                 padding: 10px 24px !important;
                 border-radius: 8px !important;
                 font-weight: 500 !important;
+            }
+
+            /* Styling untuk tombol aksi */
+            .btn-outline-info {
+                border-color: #0dcaf0;
+                color: #0dcaf0;
+                transition: all 0.2s ease;
+            }
+
+            .btn-outline-info:hover {
+                background-color: #0dcaf0;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+            .btn-danger {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                transition: all 0.2s ease;
+            }
+
+            .btn-danger:hover {
+                background-color: #bb2d3b;
+                border-color: #b02a37;
+                transform: translateY(-1px);
+            }
+
+            .btn-success {
+                background-color: #198754;
+                border-color: #198754;
+                transition: all 0.2s ease;
+            }
+
+            .btn-success:hover {
+                background-color: #157347;
+                border-color: #146c43;
+                transform: translateY(-1px);
+            }
+
+            /* Custom styling untuk tombol aksi */
+            .action-buttons {
+                gap: 12px;
             }
         </style>
     @endpush

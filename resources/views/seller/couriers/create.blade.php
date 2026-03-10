@@ -229,19 +229,18 @@
 </style>
 
 <div class="form-container">
-    <!-- Header -->
-    <div class="form-header-bar">
-        <div class="form-header-back">
+        <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.couriers.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="form-header-title">
-            Tambah Kurir Baru
+        <div class="create-header-title">
+            Tambah Kurir
         </div>
-        <div class="form-header-spacer"></div>
+        <div class="create-header-spacer"></div>
     </div>
-
     <!-- Alert Messages -->
     @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" style="margin: 1rem; border-radius: 10px;">
@@ -279,6 +278,8 @@
     <!-- Form -->
     <form action="{{ route('seller.couriers.store') }}" method="POST">
         @csrf
+        <input type="hidden" name="from" value="{{ request('from') }}">
+
 
         <div class="form-card">
             <div class="form-section-title">

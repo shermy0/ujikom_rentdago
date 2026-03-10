@@ -1,7 +1,9 @@
 {{-- resources/views/home/partials/product-card.blade.php --}}
 
-<a href="{{ route('customer.product.detail', $product->id) }}"
-   class="text-decoration-none text-dark d-block">
+<a href="{{ route('customer.product.detail', [
+    'slug' => $product->shop->slug,
+    'product' => $product->id
+]) }}" class="text-decoration-none text-dark d-block">
 
     <div class="card border-0 shadow-sm rounded-4 product-card d-flex flex-column">
 

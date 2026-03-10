@@ -16,8 +16,8 @@
             <div class="col-md-4 text-center mb-4">
                 <div class="avatar-wrapper mb-3">
                     @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}" 
-                             alt="{{ $user->name }}" 
+                        <img src="{{ asset('storage/' . $user->avatar) }}"
+                             alt="{{ $user->name }}"
                              class="rounded-circle shadow"
                              style="width: 150px; height: 150px; object-fit: cover;">
                     @else
@@ -48,7 +48,7 @@
             <!-- Info Section -->
             <div class="col-md-8">
                 <h6 class="text-muted mb-3">INFORMASI USER</h6>
-                
+
                 <table class="table table-borderless">
                     <tr>
                         <td style="width: 200px;" class="text-muted">
@@ -70,7 +70,7 @@
                     </tr>
                     <tr>
                         <td class="text-muted">
-                            <i class="bi bi-phone me-2"></i>Verifikasi Telepon
+                            <i class="bi bi-phone me-2"></i>Verifikasi
                         </td>
                         <td>
                             @if($user->phone_verified_at)
@@ -86,21 +86,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-muted">
-                            <i class="bi bi-patch-check me-2"></i>Verifikasi Admin
-                        </td>
-                        <td>
-                            @if($user->user_verified_at)
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>
-                                    Disetujui pada {{ $user->user_verified_at->format('d M Y H:i') }}
-                                </span>
-                            @else
-                                <span class="badge bg-warning text-dark">
-                                    <i class="bi bi-clock me-1"></i>Menunggu Persetujuan
-                                </span>
-                            @endif
-                        </td>
+
                     </tr>
                     <tr>
                         <td class="text-muted">

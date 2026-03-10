@@ -70,7 +70,7 @@
                         <div>
                             <h6 class="fw-bold mb-0 text-dark">#{{ $order->order_code }}</h6>
                             <small class="text-muted" style="font-size: 10px;">
-                                {{ $deliveredAt->format('d M Y, H:i') }}
+                                {{ $deliveredAt->locale('id')->isoFormat('D MMM Y, HH:mm') }}
                             </small>
                         </div>
                         

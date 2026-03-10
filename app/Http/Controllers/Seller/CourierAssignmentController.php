@@ -21,7 +21,7 @@ class CourierAssignmentController extends Controller
         $shop = Auth::user()->shop;
 
         if (!$shop) {
-            return back()->with('error', 'You need to create a shop first');
+            return back()->with('error', 'Anda harus membuat toko terlebih dahulu');
         }
 
         $order = Order::with(['productRental.product', 'user', 'address'])
@@ -32,18 +32,18 @@ class CourierAssignmentController extends Controller
 
         // Validate delivery method
         if ($order->delivery_method !== 'delivery') {
-            return back()->with('error', 'Courier can only be assigned to delivery orders');
+            return back()->with('error', 'Kurir hanya dapat ditugaskan untuk pesanan pengiriman (delivery)');
         }
 
         // Validate payment status (this is the critical check)
         if ($order->payment_status !== 'paid') {
-            return back()->with('error', 'Order must be paid before assigning courier');
+            return back()->with('error', 'Pesanan harus dibayar sebelum menugaskan kurir');
         }
 
         // Validate order status - allow pending, paid, or confirmed
         // (pending is OK if payment_status is paid)
         if (!in_array($order->status, ['pending', 'paid', 'confirmed'])) {
-            return back()->with('error', 'Courier can only be assigned to pending/paid/confirmed orders. Current status: ' . $order->status);
+            return back()->with('error', 'Kurir hanya dapat ditugaskan untuk pesanan pending/paid/confirmed. Status saat ini: ' . $order->status);
         }
 
         // Validate customer has at least one address for delivery
@@ -57,7 +57,7 @@ class CourierAssignmentController extends Controller
             ->first();
 
         if ($existingShipment) {
-            return back()->with('error', 'This order already has an assigned courier');
+            return back()->with('error', 'Pesanan ini sudah memiliki kurir yang ditugaskan');
         }
 
         // Validate courier belongs to this shop
@@ -184,7 +184,7 @@ class CourierAssignmentController extends Controller
             'assigned_by' => Auth::id()
         ]);
 
-        return back()->with('success', 'Courier assigned successfully! Notification sent to ' . $courier->user->name);
+        return back()->with('success', 'Kurir berhasil ditugaskan! Notifikasi telah dikirim ke ' . $courier->user->name);
     }
 
     /**
@@ -237,7 +237,7 @@ class CourierAssignmentController extends Controller
 
             return [
                 'success' => true,
-                'message' => 'Shipment reassigned to ' . $availableCourier->user->name,
+                'message' => 'Pengiriman berhasil ditugaskan ulang ke ' . $availableCourier->user->name,
                 'courier' => $availableCourier,
             ];
         } else {
@@ -258,7 +258,7 @@ class CourierAssignmentController extends Controller
 
             return [
                 'success' => false,
-                'message' => 'No available courier found. Shipment status set to rejected.',
+                'message' => 'Tidak ada kurir yang tersedia. Status pengiriman diubah menjadi ditolak.',
             ];
         }
     }
@@ -407,7 +407,7 @@ class CourierAssignmentController extends Controller
         $shop = Auth::user()->shop;
 
         if (!$shop) {
-            return back()->with('error', 'You need to create a shop first');
+            return back()->with('error', 'Anda harus membuat toko terlebih dahulu');
         }
 
         $order = Order::with(['productRental.product', 'user', 'address', 'deliveryShipment'])
@@ -418,18 +418,18 @@ class CourierAssignmentController extends Controller
 
         // Validate delivery method
         if ($order->delivery_method !== 'delivery') {
-            return back()->with('error', 'Courier can only be assigned to delivery orders');
+            return back()->with('error', 'Kurir hanya dapat ditugaskan untuk pesanan pengiriman (delivery)');
         }
 
         // Check if old shipment exists
         $oldShipment = $order->deliveryShipment;
         if (!$oldShipment) {
-            return back()->with('error', 'No shipment found for this order');
+            return back()->with('error', 'Tidak ada data pengiriman ditemukan untuk pesanan ini');
         }
 
         // Validate shipment status - must be pending or rejected
         if (!in_array($oldShipment->status, [Shipment::STATUS_PENDING, Shipment::STATUS_REJECTED])) {
-            return back()->with('error', 'Can only reassign courier for pending or rejected shipments. Current status: ' . $oldShipment->status);
+            return back()->with('error', 'Hanya dapat menugaskan ulang kurir untuk pengiriman pending atau rejected. Status saat ini: ' . $oldShipment->status);
         }
 
         // Validate courier belongs to this shop
@@ -482,7 +482,7 @@ class CourierAssignmentController extends Controller
             'rejected_by_count' => count($rejectedCourierIds),
         ]);
 
-        return back()->with('success', 'Courier reassigned successfully! Notification sent to ' . $courier->user->name);
+        return back()->with('success', 'Kurir berhasil ditugaskan ulang! Notifikasi telah dikirim ke ' . $courier->user->name);
     }
 
     /**
@@ -547,7 +547,5 @@ class CourierAssignmentController extends Controller
         }
     }
 
-    /**
-     * Assign courier for return shipment (Requested by Customer)
-     */
+    // Return logic has been removed as per request.
 }

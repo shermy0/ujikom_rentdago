@@ -281,17 +281,19 @@
 </style>
 
 <div class="products-container">
-    <!-- Header -->
-    <div class="products-header-bar">
-        <div class="products-header-back">
+            <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.dashboard.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="products-header-title">
+        <div class="create-header-title">
             Daftar Produk
         </div>
-        <div class="products-header-add">
+
+        <div class="create-header-spacer"></div>
+                        <div class="products-header-add">
             <a href="{{ route('seller.products.create') }}">
                 <i class="fa fa-plus"></i>
             </a>

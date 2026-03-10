@@ -226,7 +226,6 @@
 
         /* Action Buttons */
         .action-buttons {
-            position: sticky;
             bottom: 0;
             left: 0;
             right: 0;
@@ -330,17 +329,17 @@
 
     <div class="show-rental-container">
         <!-- Header -->
-        <div class="show-header-bar">
-            <div class="show-header-back">
-                <a href="{{ route('seller.rentals.index') }}">
-                    <i class="fa fa-arrow-left"></i>
-                </a>
-            </div>
-            <div class="show-header-title">
-                Detail Paket Sewa
-            </div>
-            <div class="show-header-spacer"></div>
+    <div class="create-header-bar">
+        <div class="create-header-back">
+            <a href="{{ route('seller.rentals.index') }}">
+                <i class="fa fa-arrow-left"></i>
+            </a>
         </div>
+        <div class="create-header-title">
+            Detail Paket Sewa
+        </div>
+        <div class="create-header-spacer"></div>
+    </div>
 
         <div class="content-section">
             <!-- Product Information -->

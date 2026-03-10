@@ -297,17 +297,17 @@
 </style>
 
 <div class="form-container">
-    <!-- Header -->
-    <div class="form-header-bar">
-        <div class="form-header-back">
+        <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.couriers.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="form-header-title">
+        <div class="create-header-title">
             Edit Data Kurir
         </div>
-        <div class="form-header-spacer"></div>
+        <div class="create-header-spacer"></div>
     </div>
 
     <!-- Alert Messages -->

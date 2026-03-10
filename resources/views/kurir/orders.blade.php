@@ -1,7 +1,7 @@
 @extends('kurir.layouts.master')
 
 @section('navbar')
-    @include('kurir.layouts.navbar')
+@include('kurir.layouts.navbar')
 @endsection
 @section('navbot')
 @include('kurir.layouts.navbot')
@@ -75,7 +75,7 @@
                         <div>
                             <h6 class="fw-bold mb-0 text-dark">#{{ $order->order_code }}</h6>
                             <small class="text-muted" style="font-size: 10px;">
-                                {{ $shipment && $shipment->assigned_at ? \Carbon\Carbon::parse($shipment->assigned_at)->format('d M Y, H:i') : '-' }}
+                                {{ $shipment && $shipment->assigned_at ? \Carbon\Carbon::parse($shipment->assigned_at)->locale('id')->isoFormat('D MMM Y, HH:mm') : '-' }}
                             </small>
                         </div>
                     </div>
@@ -148,8 +148,8 @@
                         </div>
                     </div>
                     @elseif($shipmentStatus === 'arrived')
-                    <a href="{{ route('kurir.handover.options', $shipment->id) }}" class="btn btn-success w-100 py-2 rounded-3 fw-bold shadow-sm text-white">
-                        <i class="fa fa-hand-holding-heart me-2"></i>Berikan Barang
+                    <a href="{{ route('kurir.delivery-photo.show', $shipment->id) }}" class="btn btn-success w-100 py-2 rounded-3 fw-bold shadow-sm text-white">
+                        <i class="fa fa-camera me-2"></i>Ambil Foto Bukti
                     </a>
                     @endif
                 </div>

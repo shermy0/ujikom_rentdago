@@ -3,7 +3,7 @@
 @extends('frontend.masterseller')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('frontend/assets/css/chat-shop.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/chat-shop.css') }}?v={{ time() }}">
 
 <div class="chat-container">
     @livewire('seller-chat-list')

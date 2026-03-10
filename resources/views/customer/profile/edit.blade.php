@@ -1,7 +1,11 @@
 @extends('frontend.master')
+@section('navbar')
+    @include('frontend.navbar')
+@endsection
 @section('navbot')
     @include('frontend.navbot')
 @endsection
+
 @section('navbar')
 <div class="mobile-top-header">
     <div class="header-left" style="flex: none; background: transparent; padding: 0;">

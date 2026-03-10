@@ -234,6 +234,28 @@
         .info-box i {
             margin-right: 0.5rem;
         }
+
+        /* Disabled delivery style */
+.checkbox-option.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.checkbox-option.disabled label {
+    cursor: not-allowed;
+}
+
+.delivery-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
     </style>
 
     <div class="create-rental-container">
@@ -274,7 +296,7 @@
                     </div>
                 </div>
             @else
-                <form action="{{ route('seller.rentals.store') }}" method="POST">
+<form id="rentalForm" action="{{ route('seller.rentals.store') }}" method="POST">
                     @csrf
 
                     <!-- Product Selection -->
@@ -416,21 +438,52 @@
                                         <div class="text">Ambil Sendiri</div>
                                     </label>
                                 </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" name="is_delivery[]" id="delivery" value="delivery"
-                                        {{ is_array(old('is_delivery')) && in_array('delivery', old('is_delivery')) ? 'checked' : '' }}>
-                                    <label for="delivery">
-                                        <div class="icon">
-                                            <i class="fa fa-truck"></i>
-                                        </div>
-                                        <div class="text">Antar</div>
-                                    </label>
-                                </div>
+                                
+<div class="checkbox-option {{ !$hasCourier ? 'disabled' : '' }}">
+
+    <input type="checkbox"
+        name="is_delivery[]"
+        id="delivery"
+        value="delivery"
+        {{ !$hasCourier ? 'disabled' : '' }}
+        {{ is_array(old('is_delivery')) && in_array('delivery', old('is_delivery')) ? 'checked' : '' }}>
+
+    <label for="delivery">
+        <div class="icon">
+            <i class="fa fa-truck"></i>
+        </div>
+        <div class="text">Antar</div>
+    </label>
+
+</div>
+
+
                             </div>
                             @error('is_delivery')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
+                        
+@if(!$hasCourier)
+<div class="delivery-warning">
+    <i class="fa fa-info-circle"></i>
+    Tambahkan kurir terlebih dahulu untuk mengaktifkan metode antar.
+
+    <button type="button"
+        id="btnGoAddCourier"
+        style="margin-left:auto;
+               background:#856404;
+               color:white;
+               border:none;
+               padding:4px 10px;
+               border-radius:6px;
+               font-size:0.75rem;
+               cursor:pointer;">
+        Tambah Kurir
+    </button>
+</div>
+@endif
+
                     </div>
 
                     <!-- Submit -->
@@ -442,4 +495,87 @@
             @endif
         </div>
     </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("rentalForm");
+    if (!form) return;
+
+    const STORAGE_KEY = "rentalFormDraft";
+
+    /* =========================
+       SAVE FORM (MANUAL)
+    ==========================*/
+    function saveForm() {
+        const data = new FormData(form);
+        const obj = {};
+
+        data.forEach((value, key) => {
+            if (obj[key]) {
+                if (!Array.isArray(obj[key])) {
+                    obj[key] = [obj[key]];
+                }
+                obj[key].push(value);
+            } else {
+                obj[key] = value;
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    }
+
+    /* =========================
+       RESTORE FORM
+    ==========================*/
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (saved) {
+        const data = JSON.parse(saved);
+
+        Object.keys(data).forEach(name => {
+
+            const checkboxes = form.querySelectorAll(`[name="${name}[]"]`);
+            if (checkboxes.length) {
+                checkboxes.forEach(cb => {
+                    if (Array.isArray(data[name])) {
+                        cb.checked = data[name].includes(cb.value);
+                    } else {
+                        cb.checked = cb.value === data[name];
+                    }
+                });
+                return;
+            }
+
+            const input = form.querySelector(`[name="${name}"]`);
+            if (input) {
+                input.value = data[name];
+            }
+
+        });
+    }
+
+    /* =========================
+       BUTTON ADD COURIER
+    ==========================*/
+    const btnCourier = document.getElementById("btnGoAddCourier");
+
+    if (btnCourier) {
+        btnCourier.addEventListener("click", function () {
+            saveForm(); // SIMPAN SEKALI SAAT KLIK
+            window.location.href = "{{ route('seller.couriers.create') }}?from=rental";
+        });
+    }
+
+    /* =========================
+       CLEAR STORAGE AFTER SUBMIT
+    ==========================*/
+    form.addEventListener("submit", function () {
+        localStorage.removeItem(STORAGE_KEY);
+    });
+
+});
+</script>
+
+
 @endsection

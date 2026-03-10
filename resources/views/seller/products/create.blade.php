@@ -7,44 +7,7 @@
         min-height: 100vh;
         padding: 0;
     }
-    
-    .create-header-bar {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .create-header-back {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .create-header-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-    }
-    
-    .create-header-title {
-        flex: 1;
-        text-align: center;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
-    }
-    
-    .create-header-spacer {
-        width: 40px;
-    }
-    
+
     .form-section {
         padding: 1rem;
     }
@@ -230,7 +193,7 @@
 </style>
 
 <div class="create-product-container">
-    <!-- Header -->
+        <!-- Header -->
     <div class="create-header-bar">
         <div class="create-header-back">
             <a href="{{ route('seller.products.index') }}">
@@ -242,6 +205,7 @@
         </div>
         <div class="create-header-spacer"></div>
     </div>
+
 
     <div class="form-section">
         @if($errors->any())
