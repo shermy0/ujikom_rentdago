@@ -39,19 +39,16 @@
             max-width: 470px;
             height: 97vh;
             background: #f8f8f8;
-
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: clip; /* clip, bukan hidden, agar sticky tetap bekerja */
         }
 
         .mobile-content {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             background: #f8f8f8;
-            padding-top: 60px;
-            /* Tambahkan ini agar konten tidak ketutup navbar atas */
-            padding-bottom: 80px;
         }
 
         .mobile-content::-webkit-scrollbar {
@@ -65,19 +62,13 @@
 
         /* ========== HEADER MODERN ========== */
         .mobile-top-header {
-            position: fixed;
-            /* Ubah dari sticky ke fixed */
+            position: sticky;
             top: 0;
-            left: 50%;
-            /* Tambahkan ini */
-            transform: translateX(-50%);
-            /* Tambahkan ini untuk center */
             width: 100%;
-            max-width: 470px;
-            /* Sesuaikan dengan max-width mobile-view */
             background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
             padding: 10px 16px 14px;
             z-index: 100;
+            flex-shrink: 0;
         }
 
         .header-top-row {
@@ -146,13 +137,8 @@
         }
 
         /* ========== BOTTOM NAVIGATION ========== */
-        /* ========== BOTTOM NAVIGATION ========== */
         .mobile-bottom-nav {
-            position: fixed;
-            /* Ubah dari absolute ke fixed */
-            bottom: 0;
-            left: 0;
-            right: 0;
+            width: 100%;
             height: 65px;
             background: white;
             border-top: 1px solid #f0f0f0;
@@ -161,10 +147,8 @@
             align-items: center;
             z-index: 999;
             padding: 0 8px;
-            max-width: 470px;
-            /* Tambahkan ini agar sesuai dengan lebar mobile-view */
-            margin: 0 auto;
-            /* Tambahkan ini agar center */
+            flex-shrink: 0;
+            /* Tidak perlu sticky/fixed — flex layout sudah push ke bawah */
         }
 
         .mobile-bottom-nav .nav-item {
@@ -291,10 +275,6 @@
                 border-radius: 0;
                 height: 100vh;
                 max-width: 100%;
-            }
-
-            .mobile-bottom-nav {
-                border-radius: 0;
             }
         }
     </style>
