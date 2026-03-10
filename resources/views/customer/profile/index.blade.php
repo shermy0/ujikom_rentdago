@@ -573,7 +573,7 @@
                 <!-- Info Grid -->
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-item-icon" style="color: #667eea;">
+                        <div class="info-item-icon" style="color: #ee4d2d;">
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="info-item-content">
