@@ -1,0 +1,379 @@
+/* ===========================
+   SHOP PROFILE STYLES
+=========================== */
+
+.shop-profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px 80px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.shop-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 -16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.header-back {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.header-back:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.05);
+}
+
+.header-title {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* SHOP BANNER */
+.shop-banner {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.shop-info-section {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* LOGO */
+.shop-logo-large {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.shop-logo-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.shop-logo-placeholder-large {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+}
+
+/* SHOP DETAILS */
+.shop-details {
+    flex: 1;
+}
+
+.shop-name-large {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.shop-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.shop-status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.shop-status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.shop-status-badge i {
+    font-size: 8px;
+}
+
+/* META INFO */
+.shop-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.meta-item i {
+    color: #667eea;
+    width: 20px;
+}
+
+/* DESCRIPTION */
+.shop-description {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.shop-description p {
+    color: #718096;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* SECTION HEADER */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+}
+
+.product-count {
+    color: #718096;
+    font-size: 14px;
+}
+
+/* PRODUCT GRID */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* PRODUCT IMAGE */
+.product-image {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: #f7fafc;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 48px;
+}
+
+.product-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.95);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* PRODUCT INFO */
+.product-info {
+    padding: 12px;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0 0 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.product-category {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 8px;
+}
+
+.product-category i {
+    font-size: 11px;
+}
+
+.product-price {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 4px;
+}
+
+.product-price strong {
+    color: #667eea;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.maintenance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.maintenance-badge i {
+    font-size: 10px;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: #cbd5e0;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    color: #718096;
+    font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .shop-profile-container {
+        padding: 0 12px 60px;
+    }
+
+    .shop-banner {
+        padding: 16px;
+    }
+
+    .shop-info-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .shop-logo-large {
+        width: 80px;
+        height: 80px;
+    }
+
+    .shop-name-large {
+        font-size: 20px;
+    }
+
+    .shop-meta {
+        align-items: center;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .product-image {
+        height: 140px;
+    }
+}
+
+@media (min-width: 769px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .product-image {
+        height: 200px;
+    }
+}

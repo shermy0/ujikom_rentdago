@@ -1,0 +1,301 @@
+/* =========================
+HEADER TAMBAH ALAMAT
+========================= */
+.address-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+
+    padding: 14px 16px;
+    margin-bottom: 20px;
+
+    background: linear-gradient(135deg, #2563eb, #ff8c42);
+    border-radius: 18px;
+
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+
+    pointer-events: none;
+}
+
+.header-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.25);
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.header-back:hover {
+    background: rgba(255,255,255,0.4);
+    transform: translateX(-2px);
+}
+
+.header-back i {
+    font-size: 14px;
+}
+
+.address-form-card {
+    border-radius: 14px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-control {
+    border-radius: 10px;
+    height: 46px;
+}
+
+textarea.form-control {
+    height: auto;
+}
+
+.btn-save {
+    background: #2563eb;
+    border: none;
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.btn-save:hover {
+    background: #e85b1f;
+}
+
+/* =========================
+ACTION
+========================= */
+
+.address-action {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 90px;
+    align-items: flex-end;
+}
+
+/* base button */
+.btn-action {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+/* EDIT */
+.btn-edit {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.btn-edit:hover {
+    background: #dbeafe;
+}
+
+/* DELETE */
+.btn-delete {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+.btn-delete:hover {
+    background: #fecaca;
+}
+
+/* =========================
+TOP ACTION
+========================= */
+
+.address-top-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.btn-add-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 16px;
+    border-radius: 14px;
+
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    transition: all 0.25s ease;
+}
+
+.btn-add-address:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+    color: #ffffff;
+}
+
+.btn-add-address i {
+    font-size: 13px;
+}
+
+.btn-default {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-default:hover {
+    background: #1e40af;
+}
+
+
+/* =========================
+ADDRESS CARD
+========================= */
+
+.address-card {
+    background: #ffffff;
+    border-radius: 14px;
+    margin-bottom: 16px;
+
+    border-left: 3px solid #93c5fd; /* biru soft */
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.address-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* default address accent */
+.address-card.is-default {
+    border-left: 4px solid #2563eb;
+}
+
+
+.address-card-body {
+    padding: 16px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* =========================
+CONTENT
+========================= */
+
+.address-main {
+    flex: 1;
+}
+
+.address-badges {
+    margin-bottom: 6px;
+}
+
+.badge-label {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 4px 10px;
+}
+
+.badge-default {
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 4px 10px;
+    margin-left: 6px;
+}
+
+/* receiver */
+.address-receiver {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.address-receiver span {
+    font-weight: 400;
+    color: #6b7280;
+}
+
+/* address text */
+.address-text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* notes */
+.address-notes {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 6px;
+}
+
+/* =========================
+ACTION
+========================= */
+
+.address-action {
+    display: flex;
+    align-items: flex-start;
+}
+
+.btn-delete {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 6px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    text-decoration: underline;
+}
+
+.btn-spinner i {
+    margin-right: 6px;
+}

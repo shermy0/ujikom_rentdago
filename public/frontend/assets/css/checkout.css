@@ -1,0 +1,434 @@
+/* ========== CHECKOUT PAGE STYLES ========== */
+
+.checkout-container {
+    background: #f8f8f8;
+    min-height: 100vh;
+    padding-bottom: 120px; /* Tambah padding agar konten tidak tertutup footer */
+}
+
+/* ========== HEADER ========== */
+.checkout-header {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 99;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+}
+
+.header-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.header-back:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.header-back i {
+    font-size: 18px;
+}
+
+.header-title {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+}
+
+/* ========== CHECKOUT CARD ========== */
+.checkout-card {
+    background: white;
+    margin: 12px 16px;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.card-header i {
+    color: #ff6b35;
+    font-size: 16px;
+}
+
+.card-header span {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ========== PRODUCT SUMMARY ========== */
+.product-summary {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8f8f8;
+    flex-shrink: 0;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+}
+
+.product-placeholder i {
+    font-size: 32px;
+    color: #ff6b35;
+    opacity: 0.5;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.product-category {
+    display: inline-block;
+    padding: 3px 10px;
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+    color: #ff6b35;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 12px;
+    margin-bottom: 6px;
+}
+
+.shop-name {
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.shop-name i {
+    color: #ff6b35;
+    font-size: 12px;
+}
+
+/* ========== FORM ELEMENTS ========== */
+.checkout-card select,
+.checkout-card input[type="datetime-local"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+}
+
+.checkout-card select:focus,
+.checkout-card input:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.text-hint {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-left: 3px solid #ff6b35;
+    border-radius: 6px;
+}
+
+/* ========== ADD ADDRESS BUTTON ========== */
+.btn-add-address {
+    width: 100%;
+    padding: 10px;
+    margin-top: 12px;
+    background: white;
+    border: 1.5px dashed #ff6b35;
+    border-radius: 8px;
+    color: #ff6b35;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-add-address:hover {
+    background: #fff5f0;
+    border-color: #ff8c42;
+}
+
+.btn-add-address i {
+    font-size: 14px;
+}
+
+/* ========== VOUCHER STYLES ========== */
+#voucherResult {
+    margin-top: 12px;
+}
+
+.voucher-message {
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.voucher-message i {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.voucher-message.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #d4edda 100%);
+    border-left: 3px solid #28a745;
+    color: #155724;
+}
+
+.voucher-message.error {
+    background: linear-gradient(135deg, #ffebee 0%, #f8d7da 100%);
+    border-left: 3px solid #dc3545;
+    color: #721c24;
+}
+
+.link-vouchers {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    color: #ff6b35;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.link-vouchers:hover {
+    color: #ff8c42;
+}
+
+.link-vouchers i {
+    font-size: 12px;
+}
+
+/* ========== PAYMENT SUMMARY ========== */
+.payment-summary {
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.summary-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.summary-row span {
+    color: #666;
+}
+
+.summary-row strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.summary-row.total {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 107, 53, 0.2);
+    font-size: 16px;
+}
+
+.summary-row.total strong {
+    color: #ff6b35;
+    font-size: 18px;
+}
+
+.summary-penalty {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 107, 53, 0.2);
+    font-size: 12px;
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.summary-penalty i {
+    font-size: 14px;
+}
+
+/* ========== CHECKOUT FOOTER (FIXED) ========== */
+.checkout-footer {
+    position: fixed;
+    bottom: 90px; /* Beri jarak dari navbot */
+    left: 16px; /* Margin kiri */
+    right: 16px; /* Margin kanan */
+    background: white;
+    padding: 16px;
+    border-radius: 16px; /* Beri border radius */
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+    z-index: 97;
+    max-width: 448px; /* 480px - (16px * 2) untuk margin */
+    margin: 0 auto;
+}
+
+.btn-checkout {
+    width: 100%;
+    max-width: 100%; /* Jangan melebihi container */
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-checkout:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+}
+
+.btn-checkout:not(:disabled):active {
+    transform: translateY(0);
+}
+
+.btn-checkout i {
+    font-size: 18px;
+}
+
+.btn-checkout:disabled {
+    background: linear-gradient(135deg, #e0e0e0 0%, #f0f0f0 100%);
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ========== RENTAL PACKAGE ITEM (untuk product detail) ========== */
+.rental-package-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.rental-package-item:last-child {
+    margin-bottom: 0;
+}
+
+.rental-duration {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+}
+
+.rental-duration i {
+    color: #ff6b35;
+    font-size: 12px;
+}
+
+.rental-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ff6b35;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 480px) {
+    .checkout-footer {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    .product-name {
+        font-size: 14px;
+    }
+
+    .btn-checkout {
+        font-size: 15px;
+        padding: 12px 16px;
+    }
+    
+    .checkout-footer {
+        padding: 10px 12px;
+    }
+}
+
+/* ========== PASTIKAN NAVBOT TETAP DI ATAS ========== */
+/* Jika navbot punya class khusus, tambahkan ini */
+.navbot,
+nav[role="navigation"] {
+    z-index: 98 !important;
+}

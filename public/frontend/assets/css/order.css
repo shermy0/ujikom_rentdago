@@ -1,0 +1,522 @@
+/* ORDER CONTAINER */
+.order-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+/* HEADER */
+.order-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.header-back {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f3f5;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.header-back:hover {
+    background: #e9ecef;
+    transform: scale(1.05);
+}
+
+.header-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ORDER CARD */
+.order-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* STATUS BADGE */
+.order-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.order-status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.order-status-badge.confirmed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.order-status-badge.ongoing {
+    background: #d4edda;
+    color: #155724;
+}
+
+.order-status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.order-status-badge.cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* ORDER CODE */
+.order-code {
+    font-size: 0.95rem;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.order-code strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* PRODUCT SECTION */
+.order-product {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.product-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e9ecef;
+    color: #adb5bd;
+    font-size: 2rem;
+}
+
+.product-info h5 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.rental-duration,
+.rental-time,
+.rental-delivery {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 5px 0;
+}
+
+/* DETAIL SECTION */
+.detail-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.detail-section h6 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 15px 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row span {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.detail-row strong {
+    color: #333;
+    font-weight: 600;
+    text-align: right;
+    max-width: 60%;
+}
+
+/* PAYMENT BADGE */
+.payment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.payment-badge.paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.payment-badge.unpaid {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.payment-badge.refunded {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* ORDER SUMMARY */
+.order-summary {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.summary-row.total {
+    border-top: 2px solid #dee2e6;
+    padding-top: 15px;
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.summary-row strong {
+    font-weight: 700;
+    color: #333;
+}
+
+/* BUTTONS */
+.pay-button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.pay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.cancel-button {
+    width: 100%;
+    padding: 12px;
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cancel-button:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* ORDER LIST */
+.order-item {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.order-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.order-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.pending { background: #fff3cd; color: #856404; }
+.status-badge.confirmed { background: #d1ecf1; color: #0c5460; }
+.status-badge.ongoing { background: #d4edda; color: #155724; }
+.status-badge.completed { background: #d4edda; color: #155724; }
+.status-badge.cancelled { background: #f8d7da; color: #721c24; }
+.status-badge.penalty { background: #ff838dff; color: #721c24; }
+
+
+.order-item-body {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.product-image-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.product-image-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image-small {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e9ecef;
+    color: #adb5bd;
+    font-size: 1.5rem;
+}
+
+.order-item-info h6 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.order-date,
+.order-price {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 4px 0;
+}
+
+.order-price {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.order-item-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+}
+
+.btn-small.primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-small.primary:hover {
+    background: #5568d3;
+}
+
+.btn-small.secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.btn-small.secondary:hover {
+    background: #e9ecef;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #adb5bd;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* ALERTS */
+.alert {
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .order-container {
+        padding: 15px;
+    }
+
+    .order-product {
+        flex-direction: column;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .detail-row strong {
+        text-align: left;
+        max-width: 100%;
+    }
+}
+
+
+/* 🔴 Late */
+.order-status-badge.late {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* ✅ PENALTY (merah soft / keputihan) */
+.order-status-badge.penalty {
+    background: #fdeaea;   /* merah pastel */
+    color: #dc3545;        /* merah utama */
+}
+
+.penalty-cta {
+    position: sticky;
+    bottom: 0;
+
+    margin: 16px -16px -16px -16px;
+    padding: 12px;
+
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    z-index: 5;
+}
+
+.penalty-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+
+    background: #dc3545;
+    color: white;
+
+    font-weight: 600;
+    font-size: 1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    text-decoration: none;
+}

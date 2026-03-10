@@ -1,0 +1,467 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* ✅ UBAH dari center ke flex-start */
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    padding: 0; /* ✅ HAPUS padding-top: 60px */
+  }
+
+ .mobile-view {
+    position: relative;
+    width: 100%;
+    max-width: 470px;
+    height: 98vh;
+    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 0; /* ✅ Pastikan tidak ada margin */
+}
+
+  .mobile-content {
+    flex: 1;
+    overflow-y: auto;
+    background: #f8f8f8;
+    padding-bottom: 80px;
+    
+  }
+
+  .mobile-content::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .mobile-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 107, 53, 0.3);
+  
+  }
+
+  /* ========== HEADER MODERN ========== */
+  .mobile-top-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+    padding: 10px 16px 14px;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(255, 107, 53, 0.2);
+    margin: 0; /* ✅ Pastikan tidak ada margin */
+  }
+
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .app-branding {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .app-logo-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .app-logo-box i {
+    font-size: 18px;
+    color: #ff6b35;
+  }
+
+  .app-title {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  .header-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .header-icon-btn i {
+    font-size: 16px;
+  }
+
+  /* Search Bar */
+  .search-box-wrapper {
+    position: relative;
+  }
+
+  .search-box {
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .search-box:focus-within {
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .search-box i {
+    color: #ff6b35;
+    font-size: 15px;
+    margin-right: 10px;
+  }
+
+  .search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .search-box input::placeholder {
+    color: #999;
+  }
+
+  /* ========== MENU GRID ========== */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background: white;
+    margin: 12px 16px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .menu-grid .menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .menu-grid .menu-item:hover {
+    transform: translateY(-4px);
+  }
+
+  .menu-grid .menu-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 8px;
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .menu-grid .menu-item:hover .menu-icon {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+  }
+
+  .menu-grid i {
+    font-size: 24px;
+    color: #ff6b35;
+    transition: all 0.3s ease;
+  }
+
+  .menu-grid .menu-item:hover i {
+    color: white;
+  }
+
+  .menu-grid small {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* ========== BOTTOM NAVIGATION ========== */
+  /* ========================================
+   FIX NAVBAR BOTTOM - OVERRIDE CONTAINER
+   Tambahkan CSS ini SETELAH CSS yang ada
+======================================== */
+
+/* Override mobile-view untuk navbar bottom */
+.mobile-view {
+    position: relative;
+    width: 100%;
+    max-width: 470px;
+    height: 96vh;
+    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: visible !important; /* CRITICAL: Change from hidden to visible */
+    margin: 0; /* ✅ Pastikan tidak ada margin */
+}
+
+/* Atau jika tidak bisa ubah overflow mobile-view, pindahkan navbar keluar */
+.mobile-bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: 470px !important;
+    background: #ffffff;
+    display: flex !important;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+    z-index: 9999 !important; /* Higher than loader */
+    border-top: 1px solid #f0f0f0;
+    
+}
+
+/* Responsive: Full width on mobile */
+@media (max-width: 480px) {
+    body {
+      padding: 0; /* ✅ HAPUS semua padding di mobile */
+    }
+
+    .mobile-view {
+      height: 100vh;
+      max-width: 100%;
+      margin: 0; /* ✅ HAPUS margin */
+    }
+
+    .mobile-bottom-nav {
+        max-width: 100% !important;
+        left: 0 !important;
+        transform: none !important;
+    }
+}
+
+/* Responsive: Hide on desktop */
+@media (min-width: 992px) {
+    body {
+      background-image: url('/frontend/assets/images/fujiyama.jpg');
+    }
+
+    .mobile-bottom-nav {
+        display: flex !important; /* Keep visible on desktop in mobile-view */
+    }
+}
+
+/* Pastikan mobile-content tidak tertutup navbar */
+.mobile-content {
+    flex: 1;
+    overflow-y: auto;
+    background: #f8f8f8;
+    padding-bottom: 90px !important; /* Extra space for navbar */
+}
+
+/* Nav Item Styles - Ensure they're visible */
+.mobile-bottom-nav .nav-item {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #999999;
+    font-size: 11px;
+    padding: 6px 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    flex: 1;
+    max-width: 80px;
+}
+
+.mobile-bottom-nav .nav-item i {
+    font-size: 22px;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.mobile-bottom-nav .nav-item span {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Active State */
+.mobile-bottom-nav .nav-item.active {
+    color: #ee4d2d !important;
+}
+
+.mobile-bottom-nav .nav-item.active i {
+    transform: scale(1.1);
+    color: #ee4d2d !important;
+}
+
+.mobile-bottom-nav .nav-item.active span {
+    font-weight: 600;
+}
+
+/* Active Indicator Bar */
+.mobile-bottom-nav .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: linear-gradient(90deg, #ee4d2d, #ff6b35);
+    animation: slideDownBar 0.3s ease;
+}
+
+@keyframes slideDownBar {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Hover Effects */
+@media (hover: hover) {
+    .mobile-bottom-nav .nav-item:hover {
+        color: #ee4d2d;
+    }
+    
+    .mobile-bottom-nav .nav-item:hover i {
+        transform: scale(1.1);
+    }
+}
+
+/* Ripple Effect */
+.mobile-bottom-nav .nav-item::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(238, 77, 45, 0.2) 0%, transparent 70%);
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mobile-bottom-nav .nav-item:active::after {
+    transform: scale(1.5);
+    opacity: 1;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+/* Animation on Page Load */
+.mobile-bottom-nav {
+    animation: slideUpNav 0.4s ease;
+}
+
+@keyframes slideUpNav {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Debug: Force visibility */
+.mobile-bottom-nav {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Pastikan tidak ada yang menutupi navbar */
+.mobile-bottom-nav * {
+    pointer-events: auto;
+}
+
+/* Badge Notification */
+.nav-item .badge {
+    position: absolute;
+    top: 4px;
+    right: 20px;
+    background: #ff4757;
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 5px;
+    min-width: 16px;
+    text-align: center;
+    border: 2px solid white;
+}
+
+/* Safe Area for Notched Devices */
+@supports (padding: max(0px)) {
+    .mobile-bottom-nav {
+        padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    }
+}
+
+  /* ========== DROPDOWN ========== */
+  .dropdown-toggle::after {
+    display: none !important;
+  }
+
+  /* ========== LOADER ========== */
+  #ftco-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #ftco-loader.fullscreen {
+    display: flex;
+  }
+
+  #ftco-loader.fullscreen.hide {
+    display: none;
+  }
