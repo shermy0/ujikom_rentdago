@@ -6,6 +6,55 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/checkout.css') }}?v={{ time() }}">
+<style>
+.rental-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+.rental-option-card {
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+}
+.rental-radio-input {
+    position: absolute;
+    opacity: 0;
+}
+.rental-option-content {
+    border: 2px solid #eee;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.2s ease;
+    background: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.rental-cycle {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    color: #2b2b2b;
+    margin-bottom: 4px;
+}
+.rental-price {
+    display: block;
+    font-size: 13px;
+    color: #ff6b35;
+    font-weight: 600;
+}
+.rental-radio-input:checked + .rental-option-content {
+    border-color: #ff6b35;
+    background: #fff9f6;
+    box-shadow: 0 4px 10px rgba(255, 107, 53, 0.1);
+}
+.rental-radio-input:hover:not(:checked) + .rental-option-content {
+    border-color: #ffdacc;
+}
+</style>
 
 <div class="checkout-container" data-shop-id="{{ $product->shop_id }}">
     {{-- HEADER --}}
@@ -53,23 +102,26 @@
 
         {{-- PILIH PAKET --}}
         <div class="checkout-card">
-            <div class="card-header">
+            <div class="card-header" style="margin-bottom: 12px;">
                 <i class="fa fa-clock"></i>
                 <span>Pilih Paket Sewa</span>
             </div>
-            <select name="product_rental_id" id="rentalSelect" required>
-                <option value="">Pilih paket sewa</option>
+            <div class="rental-options-grid">
                 @foreach($product->rentals as $rental)
-                    <option value="{{ $rental->id }}" 
-                        data-cycle="{{ $rental->cycle_value }}" 
-                        data-price="{{ $rental->price }}" 
-                        data-delivery="{{ is_array($rental->is_delivery) ? implode(',', $rental->is_delivery) : $rental->is_delivery }}" 
-                        data-pickup-address="{{ $rental->pickup_address ?? '' }}" 
-                        data-penalty="{{ $rental->penalties_price }}">
-                        {{ $rental->cycle_value }} Jam - Rp {{ number_format($rental->price) }}
-                    </option>
+                    <label class="rental-option-card">
+                        <input type="radio" name="product_rental_id" class="rental-radio-input" value="{{ $rental->id }}" required
+                            data-cycle="{{ $rental->cycle_value }}" 
+                            data-price="{{ $rental->price }}" 
+                            data-delivery="{{ is_array($rental->is_delivery) ? implode(',', $rental->is_delivery) : $rental->is_delivery }}" 
+                            data-pickup-address="{{ $rental->pickup_address ?? '' }}" 
+                            data-penalty="{{ $rental->penalties_price }}">
+                        <div class="rental-option-content">
+                            <span class="rental-cycle">{{ $rental->cycle_value }} Jam</span>
+                            <span class="rental-price">Rp {{ number_format($rental->price, 0, ',', '.') }}</span>
+                        </div>
+                    </label>
                 @endforeach
-            </select>
+            </div>
         </div>
 
         {{-- TANGGAL & WAKTU --}}
@@ -209,7 +261,7 @@
 // ========== CHECKOUT PAGE SCRIPT ==========
 
 /* ELEMENTS */
-const rentalSelect = document.getElementById('rentalSelect');
+const rentalRadios = document.querySelectorAll('.rental-radio-input');
 const startTimeInput = document.getElementById('startTime');
 const startTimeCard = document.getElementById('startTimeCard');
 const deliveryCard = document.getElementById('deliveryCard');
@@ -374,7 +426,7 @@ function showVoucherError(message) {
 
 /* CALCULATE RENT */
 function calculateRent() {
-    const selected = rentalSelect.options[rentalSelect.selectedIndex];
+    const selected = document.querySelector('.rental-radio-input:checked');
     if (!selected || !selected.dataset.cycle) return;
 
     const cycle = parseInt(selected.dataset.cycle);
@@ -412,10 +464,11 @@ function calculateRent() {
 }
 
 /* HANDLE RENTAL SELECT */
-rentalSelect.addEventListener('change', function() {
-    const selected = this.options[this.selectedIndex];
+rentalRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        const selected = this;
 
-    startTimeCard.style.display = 'none';
+        startTimeCard.style.display = 'none';
     deliveryCard.style.display = 'none';
     pickupAddressCard.style.display = 'none';
     deliveryAddressCard.style.display = 'none';
@@ -460,6 +513,7 @@ rentalSelect.addEventListener('change', function() {
         deliverySelect.selectedIndex = 1;
         handleDeliveryMethodChange();
     }
+    });
 });
 
 startTimeInput.addEventListener('change', function() {
@@ -504,7 +558,8 @@ deliverySelect.addEventListener('change', handleDeliveryMethodChange);
 
 /* CHECK FORM COMPLETE */
 function checkFormComplete() {
-    const hasRental = rentalSelect.value !== '';
+    const selectedRental = document.querySelector('.rental-radio-input:checked');
+    const hasRental = selectedRental && selectedRental.value !== '';
     const hasStartTime = startTimeInput.value !== '';
     const hasDeliveryMethod = deliverySelect.value !== '';
     
@@ -532,8 +587,9 @@ function formatTanggalJam(date) {
 }
 
 function goToAddAddress() {
+    const selectedRental = document.querySelector('.rental-radio-input:checked');
     const rentState = {
-        product_rental_id: rentalSelect.value,
+        product_rental_id: selectedRental ? selectedRental.value : '',
         start_time: startTimeInput.value,
         delivery_method: deliverySelect.value
     };
@@ -562,8 +618,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const state = JSON.parse(savedState);
 
     if (state.product_rental_id) {
-        rentalSelect.value = state.product_rental_id;
-        rentalSelect.dispatchEvent(new Event('change'));
+        const radioToSelect = document.querySelector(`.rental-radio-input[value="${state.product_rental_id}"]`);
+        if (radioToSelect) {
+            radioToSelect.checked = true;
+            radioToSelect.dispatchEvent(new Event('change'));
+        }
     }
 
     setTimeout(() => {
