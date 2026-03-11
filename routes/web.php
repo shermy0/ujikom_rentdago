@@ -380,7 +380,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/my-seller-request', [SellerRequestController::class, 'myRequest'])->name('seller-request.my');
 
     // Product Detail
-    Route::get('/produk/{product}', [HomeController::class, 'show'])->name('customer.product.detail');
+    Route::get('/produk/{slug}/{product}', [HomeController::class, 'show'])->name('customer.product.detail');
     // Tambahkan route checkout (hanya show saja, store sudah ada)
     Route::get('/checkout/{product}', [HomeController::class, 'checkout'])
         ->name('customer.checkout');
