@@ -133,13 +133,13 @@
     }
 
     .period-btn:hover {
-        border-color: #ff6b6b;
-        color: #ff6b6b;
+        border-color: #A20B0B;
+        color: #A20B0B;
     }
 
     .period-btn.active {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        border-color: #ff6b6b;
+        background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
+        border-color: #A20B0B;
         color: white;
     }
 

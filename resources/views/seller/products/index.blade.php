@@ -181,37 +181,6 @@
         justify-content: center;
     }
     
-    .btn-action {
-        padding: 0.5rem;
-        border: none;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        min-width: 70px;
-    }
-    
-    .btn-show {
-    background: #28a745;
-    color: #fff;
-}
-
-.btn-show:hover {
-    background: #218838;
-}
-
-.btn-edit:hover {
-    background: #0056b3;
-}
-
-.btn-delete:hover {
-    background: #c82333;
-}
-    
     .empty-state {
         text-align: center;
         padding: 3rem 1rem;
@@ -371,12 +340,12 @@
 
                 <div class="product-actions">
                     <a href="{{ route('seller.products.show', $product->id) }}" 
-                    class="btn-action btn-show"
+                    class="btn-icon btn-view"
                     title="Lihat Detail">
                         <i class="fa fa-eye"></i>
                     </a>
                     <a href="{{ route('seller.products.edit', $product->id) }}" 
-                    class="btn-action btn-edit"
+                    class="btn-icon btn-edit"
                     title="Edit">
                         <i class="fa fa-edit"></i>
                     </a>
@@ -385,7 +354,7 @@
                         onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn-action btn-delete" title="Hapus">
+                        <button type="submit" class="btn-icon btn-delete" title="Hapus">
                             <i class="fa fa-trash"></i>
                         </button>
                     </form>

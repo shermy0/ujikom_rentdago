@@ -158,7 +158,7 @@
 }
 
 .voucher-card:hover {
-    border-color: #3b82f6;
+    border-color: #A20B0B;
     box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
     transform: translateY(-4px);
 }
@@ -172,7 +172,7 @@
 }
 
 .voucher-badge {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
     color: white;
     padding: 20px;
     border-radius: 12px;
@@ -307,49 +307,6 @@
     flex-wrap: wrap;
 }
 
-.btn-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 16px;
-}
-
-.btn-view {
-    background: #dbeafe;
-    color: #2563eb;
-}
-
-.btn-edit {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.btn-toggle {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.btn-toggle.inactive {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.btn-delete {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.btn-icon:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
 .empty-state {
     text-align: center;
     padding: 80px 20px;
@@ -451,6 +408,32 @@
     .voucher-details {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+.btn-primary {
+    background-color: #ffffff;
+    color: #A20B0B;
+    border: 2px solid #A20B0B;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s ease;
+}
+
+.btn-primary i {
+    color: #A20B0B;
+}
+
+.btn-primary:hover {
+    background-color: #A20B0B;
+    color: #ffffff;
+}
+
+.btn-primary:hover i {
+    color: #ffffff;
 }
 </style>
 

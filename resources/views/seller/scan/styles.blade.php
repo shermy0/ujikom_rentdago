@@ -6,35 +6,6 @@
     flex-direction: column;
 }
 
-/* --- Header --- */
-.scan-header-bar {
-    background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.scan-header-back a {
-    color: #fff;
-    font-size: 20px;
-    text-decoration: none;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-}
-
-.scan-header-title {
-    color: #fff;
-    font-size: 18px;
-    font-weight: 600;
-}
-
 .scan-content {
     padding: 1rem;
     flex: 1;
@@ -127,8 +98,8 @@
     position: absolute;
     width: 100%;
     height: 2px;
-    background: #ff6b35;
-    box-shadow: 0 0 4px #ff6b35;
+    background: #ff5722;
+    box-shadow: 0 0 4px #770C0C;
     top: 0;
     animation: scanMove 2s infinite linear;
     opacity: 0.7;
@@ -171,7 +142,7 @@
     z-index: 30;
     padding: 12px 24px;
     background: #fff;
-    color: #ff6b35;
+    color: #770C0C;
     border: none;
     border-radius: 30px;
     font-weight: bold;
@@ -202,7 +173,7 @@
     width: 36px;
     height: 36px;
     background: #fff4e6;
-    color: #ff6b35;
+    color: #770C0C;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -232,7 +203,7 @@
 
 .manual-code-input:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: #770C0C;
     box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
@@ -242,7 +213,7 @@
 
 .btn-verify-manual {
     padding: 12px 24px;
-    background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
+    background: linear-gradient(135deg, #770C0C 0%, #A20B0B 100%);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -372,9 +343,9 @@
 }
 
 .tab-button.active {
-    border-bottom: 3px solid #ff5722;
+    border-bottom: 3px solid #A20B0B;
     background: #fff;
-    color: #ff5722;
+    color: #A20B0B;
 }
 
 .tab-content {
