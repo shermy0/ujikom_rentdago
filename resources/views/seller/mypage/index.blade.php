@@ -874,31 +874,12 @@
                         </div>
                     </div>
                     
-                    <div class="info-item">
-                        <div class="info-item-icon" style="color: #4facfe;">
-                            <i class="fa fa-check-circle"></i>
-                        </div>
-                        <div class="info-item-content">
-                            <div class="info-item-label">Verifikasi Admin</div>
-                            <div class="info-item-value">
-                                @if($user->user_verified_at)
-                                    <span style="color: #48bb78;">
-                                        <i class="fa fa-check-circle"></i> Disetujui
-                                    </span>
-                                @else
-                                    <span style="color: #ed8936;">
-                                        <i class="fa fa-clock"></i> Menunggu Persetujuan
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="action-buttons" style="margin-top: 20px;">
                     <a href="{{ route('seller.mypage.edit-account') }}" class="btn-action">
                         <div class="btn-action-left">
-                            <div class="btn-action-icon" style="color: #667eea;">
+                            <div class="btn-action-icon" style="color: #;">
                                 <i class="fa fa-user-edit"></i>
                             </div>
                             <span class="btn-action-text">Edit Akun</span>
