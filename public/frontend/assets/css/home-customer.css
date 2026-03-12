@@ -332,6 +332,31 @@ body {
     border-radius: 50%;
 }
 
+/* Badge jumlah sub-kategori */
+.category-icon-box {
+    position: relative;
+}
+
+.category-children-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background: var(--shopee-primary);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(238, 77, 45, 0.4);
+    line-height: 1;
+}
+
 .category-name {
     font-size: 12px;
     color: var(--shopee-dark);
@@ -343,6 +368,48 @@ body {
 .category-item.active .category-name {
     color: var(--shopee-primary);
     font-weight: 600;
+}
+
+/* ========================================
+   SUB-CATEGORIES CHIPS
+======================================== */
+.shopee-subcategories {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 12px 16px;
+    background: white;
+    border-top: 1px solid var(--shopee-border);
+    margin: 0;
+    scrollbar-width: none; /* Firefox */
+}
+.shopee-subcategories::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.subcat-chip {
+    flex: 0 0 auto;
+    padding: 6px 14px;
+    border-radius: 16px;
+    background: var(--shopee-light);
+    color: var(--shopee-text);
+    font-size: 13px;
+    text-decoration: none;
+    border: 1px solid var(--shopee-border);
+    transition: all 0.3s ease;
+}
+
+.subcat-chip:hover {
+    background: #fff0ec;
+    color: var(--shopee-primary);
+    border-color: var(--shopee-primary);
+}
+
+.subcat-chip.active {
+    background: var(--shopee-primary);
+    color: white;
+    border-color: var(--shopee-primary);
+    font-weight: 500;
 }
 
 /* ========================================

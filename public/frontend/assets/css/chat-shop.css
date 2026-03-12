@@ -1,4 +1,4 @@
-/* frontend/assets/css/chat-shop.css */
+﻿/* frontend/assets/css/chat-shop.css */
 /* WhatsApp Style Chat Interface - Authentic Design */
 
 /* ========================================
@@ -35,7 +35,7 @@ html, body {
    CHAT HEADER - WhatsApp Green (Z-INDEX FIXED)
 ======================================== */
 .chat-header {
-    background: #008069;
+    background: #ee4d2d;
     color: white;
     padding: 10px 16px;
     position: sticky;
@@ -61,7 +61,7 @@ html, body {
 .chat-header .badge {
     font-size: 11px;
     padding: 3px 7px;
-    background: #06cf9c;
+    background: #ff6b35;
     border-radius: 12px;
     font-weight: 500;
 }
@@ -71,7 +71,7 @@ html, body {
 ======================================== */
 .home-section {
     padding: 8px 8px 10px;
-    background: #008069;
+    background: #ee4d2d;
     border-bottom: none;
 }
 
@@ -258,7 +258,7 @@ html, body {
 }
 
 .chat-item.unread .chat-time {
-    color: #00a884;
+    color: #ee4d2d;
     font-weight: 500;
 }
 
@@ -308,7 +308,7 @@ html, body {
 /* Badge unread count (hijau WhatsApp) */
 .chat-item .badge.bg-danger,
 .unread-badge {
-    background: #25d366 !important;
+    background: #ff6b35 !important;
     color: white;
     font-size: 12px;
     min-width: 20px;
@@ -324,7 +324,7 @@ html, body {
 
 /* Badge di header */
 .chat-header .badge.bg-danger {
-    background: #06cf9c !important;
+    background: #ff6b35 !important;
     font-size: 11px;
     padding: 3px 7px;
     border-radius: 12px;
@@ -384,7 +384,7 @@ html, body {
     align-items: center;
     gap: 10px;
     padding: 10px 16px;
-    background: #008069;
+    background: #ee4d2d;
     color: white;
     min-height: 60px;
     z-index: 50;
@@ -532,7 +532,7 @@ html, body {
 
 /* Chat bubble dari customer (hijau, kanan) */
 .chat-bubble.customer {
-    background: #d9fdd3;
+    background: #ffdbb5;
     color: #111b21;
     align-self: flex-end;
     margin-left: auto;
@@ -547,7 +547,7 @@ html, body {
     bottom: 0;
     width: 0;
     height: 0;
-    border-left: 8px solid #d9fdd3;
+    border-left: 8px solid #ffdbb5;
     border-bottom: 13px solid transparent;
 }
 
@@ -769,7 +769,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #008069;
+    background: #ee4d2d;
     border: none;
     border-radius: 50%;
     color: white;
@@ -780,7 +780,7 @@ html, body {
 }
 
 .chat-input button[type="submit"]:hover {
-    background: #06cf9c;
+    background: #ff6b35;
 }
 
 .chat-input button[type="submit"]:active {
@@ -798,7 +798,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #008069;
+    background: #ee4d2d;
     border: none;
     border-radius: 50%;
     color: white;
@@ -809,7 +809,7 @@ html, body {
 }
 
 .voice-btn:hover {
-    background: #06cf9c;
+    background: #ff6b35;
 }
 
 /* ========================================
@@ -915,11 +915,11 @@ html, body {
 }
 
 .text-primary {
-    color: #008069;
+    color: #ee4d2d;
 }
 
 .text-success {
-    color: #00a884;
+    color: #ee4d2d;
 }
 
 .d-flex {
@@ -945,7 +945,7 @@ html, body {
 .online-status {
     width: 10px;
     height: 10px;
-    background: #06cf9c;
+    background: #ff6b35;
     border: 2px solid white;
     border-radius: 50%;
     position: absolute;
@@ -958,7 +958,7 @@ html, body {
     position: absolute;
     bottom: -2px;
     right: -2px;
-    background: #008069;
+    background: #ee4d2d;
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -993,7 +993,7 @@ html, body {
     border-radius: 4px;
     padding: 8px;
     margin-top: 4px;
-    border-left: 3px solid #008069;
+    border-left: 3px solid #ee4d2d;
 }
 
 .link-preview-title {
@@ -1032,6 +1032,6 @@ html, body {
 }
 
 .archived-banner-icon {
-    color: #008069;
+    color: #ee4d2d;
     font-size: 20px;
 }

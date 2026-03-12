@@ -12,7 +12,7 @@ HEADER TAMBAH ALAMAT
     padding: 14px 16px;
     margin-bottom: 20px;
 
-    background: linear-gradient(135deg, #2563eb, #ff8c42);
+    background: linear-gradient(135deg, #ee4d2d, #ff8c42);
     border-radius: 18px;
 
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
@@ -76,7 +76,7 @@ textarea.form-control {
 }
 
 .btn-save {
-    background: #2563eb;
+    background: #ee4d2d;
     border: none;
     height: 48px;
     border-radius: 12px;
@@ -114,12 +114,12 @@ ACTION
 
 /* EDIT */
 .btn-edit {
-    color: #2563eb;
-    background: #eff6ff;
+    color: #ee4d2d;
+    background: #fff5f0;
 }
 
 .btn-edit:hover {
-    background: #dbeafe;
+    background: #ffe8dc;
 }
 
 /* DELETE */
@@ -150,20 +150,20 @@ TOP ACTION
     padding: 10px 16px;
     border-radius: 14px;
 
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    background: linear-gradient(135deg, #ee4d2d, #ff6b35);
     color: #ffffff;
 
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
 
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 6px 16px rgba(238, 77, 45, 0.35);
     transition: all 0.25s ease;
 }
 
 .btn-add-address:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+    box-shadow: 0 10px 24px rgba(238, 77, 45, 0.45);
     color: #ffffff;
 }
 
@@ -172,12 +172,12 @@ TOP ACTION
 }
 
 .btn-default {
-    background: #2563eb;
+    background: #ee4d2d;
     color: #ffffff;
 }
 
 .btn-default:hover {
-    background: #1e40af;
+    background: #d63a1e;
 }
 
 
@@ -190,7 +190,7 @@ ADDRESS CARD
     border-radius: 14px;
     margin-bottom: 16px;
 
-    border-left: 3px solid #93c5fd; /* biru soft */
+    border-left: 3px solid #ffc1a1; /* orange soft */
 
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -204,7 +204,7 @@ ADDRESS CARD
 
 /* default address accent */
 .address-card.is-default {
-    border-left: 4px solid #2563eb;
+    border-left: 4px solid #ee4d2d;
 }
 
 
@@ -229,8 +229,8 @@ CONTENT
 }
 
 .badge-label {
-    background: #eff6ff;
-    color: #2563eb;
+    background: #fff5f0;
+    color: #ee4d2d;
     font-weight: 600;
     font-size: 12px;
     border-radius: 8px;
@@ -238,7 +238,7 @@ CONTENT
 }
 
 .badge-default {
-    background: #2563eb;
+    background: #ee4d2d;
     color: #ffffff;
     font-size: 12px;
     border-radius: 8px;

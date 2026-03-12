@@ -67,12 +67,15 @@
 
             @foreach ($categories as $index => $cat)
             <a href="{{ route('home', ['category' => $cat->slug]) }}" 
-               class="category-item {{ $categorySlug == $cat->slug ? 'active' : '' }}">
+               class="category-item {{ (isset($activeParentSlug) && $activeParentSlug == $cat->slug) ? 'active' : '' }}">
                 <div class="category-icon-box">
                     @if ($cat->icon)
                         <img src="{{ asset('storage/' . $cat->icon) }}" alt="{{ $cat->name }}">
                     @else
                         <i class="bi bi-box-seam"></i>
+                    @endif
+                    @if ($cat->children->count() > 0)
+                        <span class="category-children-badge">{{ $cat->children->count() }}</span>
                     @endif
                 </div>
                 <span class="category-name">{{ $cat->name }}</span>
@@ -80,6 +83,22 @@
             @endforeach
         </div>
     </div>
+
+    {{-- SUB-CATEGORIES CHIPS (Shows if a parent is selected and has children) --}}
+    @if(isset($subCategories) && $subCategories->isNotEmpty())
+    <div class="shopee-subcategories">
+        <a href="{{ route('home', ['category' => $activeParentSlug]) }}"
+           class="subcat-chip {{ $categorySlug === $activeParentSlug ? 'active' : '' }}">
+           Lihat Semua
+        </a>
+        @foreach($subCategories as $sub)
+        <a href="{{ route('home', ['category' => $sub->slug]) }}"
+           class="subcat-chip {{ $categorySlug === $sub->slug ? 'active' : '' }}">
+           {{ $sub->name }}
+        </a>
+        @endforeach
+    </div>
+    @endif
 
     {{-- PRODUCT TABS --}}
     <div class="shopee-tabs">

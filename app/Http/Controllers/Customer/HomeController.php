@@ -24,7 +24,8 @@ class HomeController extends Controller
         // =========================
         // CATEGORIES
         // =========================
-        $categories = Category::orderBy('name')->get();
+        // Hanya tampilkan kategori parent (root) saja, dengan children untuk badge
+        $categories = Category::whereNull('parent_id')->with('children')->orderBy('name')->get();
 
         // =========================
         // BASE QUERY PRODUK
@@ -70,10 +71,37 @@ class HomeController extends Controller
         // =========================
         // CATEGORY FILTER
         // =========================
+        $selectedCategoryObj = null;
+        $subCategories = collect(); // Untuk menampung sub-kategori yang akan ditampilkan
+        $activeParentSlug = null; // Menyimpan slug parent yang sedang aktif
+
         if ($categorySlug) {
-            $query->whereHas('category', function ($q) use ($categorySlug) {
-                $q->where('slug', $categorySlug);
-            });
+            // Cari kategori berdasarkan slug
+            $selectedCategoryObj = Category::with('parent', 'children')->where('slug', $categorySlug)->first();
+
+            if ($selectedCategoryObj) {
+                // Tentukan sub-kategori yang akan ditampilkan di bawah
+                if (is_null($selectedCategoryObj->parent_id)) {
+                    // Ini parent: tampilkan anak-anaknya, slug parent adalah miliknya sendiri
+                    $subCategories = $selectedCategoryObj->children;
+                    $activeParentSlug = $selectedCategoryObj->slug;
+
+                    // Filter produk: ambil dari parent + semua anak-anaknya
+                    $categoryIds = collect([$selectedCategoryObj->id])
+                        ->merge($selectedCategoryObj->children()->pluck('id'));
+                } else {
+                    // Ini child: tampilkan saudara-saudaranya (anak dari parent-nya)
+                    $subCategories = $selectedCategoryObj->parent ? $selectedCategoryObj->parent->children : collect();
+                    $activeParentSlug = $selectedCategoryObj->parent ? $selectedCategoryObj->parent->slug : null;
+
+                    // Filter produk: cukup dari child itu sendiri
+                    $categoryIds = collect([$selectedCategoryObj->id]);
+                }
+
+                $query->whereHas('category', function ($q) use ($categoryIds) {
+                    $q->whereIn('id', $categoryIds);
+                });
+            }
         }
 
         // =========================
@@ -91,7 +119,9 @@ class HomeController extends Controller
             'categories',
             'search',
             'categorySlug',
-            'tab'
+            'tab',
+            'subCategories',
+            'activeParentSlug'
         ))->with('title', 'Beranda');
     }
 

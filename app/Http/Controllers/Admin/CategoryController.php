@@ -16,21 +16,26 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Category::with(['parent', 'children']);
+        // Selalu mulai dari root (parent) kategori saja
+        // Children di-render lewat nested loop di view, bukan query utama
+        $query = Category::with(['parent', 'children'])
+            ->whereNull('parent_id');
 
-        // Search by name
+        // Search by name — cari di parent dan anak-anaknya
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('name', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('children', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
         }
 
-        // Filter by parent
-        if ($request->filled('parent')) {
-            if ($request->parent === 'root') {
-                $query->whereNull('parent_id');
-            } else {
-                $query->where('parent_id', $request->parent);
-            }
+        // Filter by parent: tampilkan children dari parent yg dipilih
+        if ($request->filled('parent') && $request->parent !== 'root') {
+            $query = Category::with(['parent', 'children'])
+                ->where('parent_id', $request->parent);
         }
 
         $categories = $query->orderBy('name', 'asc')->paginate(10);

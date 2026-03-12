@@ -94,9 +94,15 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <span class="badge bg-gradient-primary" style="font-size: 11px; padding: 5px 10px;">
-                                        <i class="bi bi-star-fill"></i> Kategori Utama
-                                    </span>
+                                    @if(is_null($category->parent_id))
+                                        <span class="badge bg-gradient-primary" style="font-size: 11px; padding: 5px 10px;">
+                                            <i class="bi bi-star-fill"></i> Kategori Utama
+                                        </span>
+                                    @else
+                                        <span class="badge bg-info text-white" style="font-size: 11px; padding: 5px 10px;">
+                                            <i class="bi bi-arrow-return-right"></i> Sub: {{ $category->parent->name ?? '-' }}
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </td>

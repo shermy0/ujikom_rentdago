@@ -1,4 +1,4 @@
-@extends('frontend.master')
+﻿@extends('frontend.master')
 
 @section('navbar')
     @include('frontend.navbar')
@@ -25,7 +25,7 @@
 }
 
 .voucher-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
     border-radius: 12px;
     padding: 20px;
     color: white;
@@ -104,7 +104,7 @@
 
 .btn-claim {
     background: white;
-    color: #667eea;
+    color: #ff6b35;
     border: none;
     padding: 8px 20px;
     border-radius: 8px;
@@ -372,20 +372,20 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #25D366; /* WhatsApp green */
+    background: #ee4d2d; /* WhatsApp green */
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 2px 8px rgba(238, 77, 45, 0.3);
 }
 
 .header-chat-btn:hover {
-    background: #128C7E;
+    background: #d63a1e;
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.4);
 }
 
 /* ============================
@@ -400,7 +400,7 @@
 .btn-chat-shop {
     flex: 1;
     padding: 12px 24px;
-    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -411,13 +411,13 @@
     justify-content: center;
     gap: 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
     text-decoration: none;
 }
 
 .btn-chat-shop:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 6px 16px rgba(238, 77, 45, 0.4);
     color: white;
 }
 
@@ -438,14 +438,14 @@
     right: 20px;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-size: 24px;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 4px 20px rgba(238, 77, 45, 0.4);
     z-index: 999;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -453,7 +453,7 @@
 
 .floating-chat-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+    box-shadow: 0 6px 24px rgba(238, 77, 45, 0.5);
     color: white;
 }
 
@@ -463,7 +463,7 @@
     left: 50%;
     transform: translateX(-50%);
     background: #fff;
-    color: #25D366;
+    color: #ee4d2d;
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
@@ -482,13 +482,13 @@
 /* Animasi pulse */
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+        box-shadow: 0 0 0 0 rgba(238, 77, 45, 0.7);
     }
     70% {
-        box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+        box-shadow: 0 0 0 15px rgba(238, 77, 45, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        box-shadow: 0 0 0 0 rgba(238, 77, 45, 0);
     }
 }
 
