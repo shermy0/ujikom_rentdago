@@ -48,14 +48,14 @@
     }
     
     .filter-tab:hover {
-        border-color: #3b82f6;
-        color: #3b82f6;
+        border-color: #A20B0B;
+        color: #A20B0B;
     }
     
     .filter-tab.active {
-        background: #3b82f6;
+        background: #A20B0B;
         color: white;
-        border-color: #3b82f6;
+        border-color: #A20B0B;
     }
     
     .orders-list {
@@ -303,7 +303,7 @@
     .action-btn {
         padding: 8px 16px;
         border-radius: 8px;
-        background: #3b82f6;
+        background: #A20B0B;
         color: white;
         text-decoration: none;
         font-size: 14px;
@@ -316,20 +316,20 @@
     }
     
     .action-btn:hover {
-        background: #2563eb;
+        background: #770C0C;
         color: white;
         text-decoration: none;
     }
     
     .action-btn-outline {
         background: white;
-        color: #3b82f6;
-        border: 1px solid #3b82f6;
+        color: #A20B0B;
+        border: 1px solid #A20B0B;
     }
     
     .action-btn-outline:hover {
         background: #eff6ff;
-        color: #3b82f6;
+        color: #A20B0B;
     }
 
     .pagination-wrapper .pagination {
@@ -364,14 +364,14 @@
 
     .pagination-wrapper .page-link:hover {
         background: #f9fafb;
-        color: #3b82f6;
-        border-color: #3b82f6;
+        color: #A20B0B;
+        border-color: #A20B0B;
     }
 
     .pagination-wrapper .page-item.active .page-link {
-        background: #3b82f6;
+        background: #A20B0B;
         color: white;
-        border-color: #3b82f6;
+        border-color: #A20B0B;
     }
 
     .pagination-wrapper .page-item.disabled .page-link {

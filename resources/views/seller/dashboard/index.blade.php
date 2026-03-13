@@ -122,12 +122,12 @@
         <div class="order-status">
             @if ($order->status == 'confirmed')
             <span
-                style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px;">
+                style="background: #e3f2fd; color: #3b82f6; padding: 4px 12px; border-radius: 12px; font-size: 12px;">
                 Dikonfirmasi
             </span>
             @elseif($order->status == 'ongoing')
             <span
-                style="background: #10b981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px;">
+                style="background: #d4f8e8; color: #10b981; padding: 4px 12px; border-radius: 12px; font-size: 12px;">
                 Berlangsung
             </span>
             @endif

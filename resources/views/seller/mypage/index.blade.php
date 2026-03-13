@@ -20,7 +20,7 @@
        HEADER
        ======================================== */
     .mypage-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
         padding: 20px;
         position: sticky;
         top: 0;
@@ -108,7 +108,7 @@
         width: 70px;
         height: 70px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -154,7 +154,7 @@
     }
     
     .badge-role {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
         color: #fff;
     }
     
@@ -210,7 +210,7 @@
     }
     
     .section-icon.account {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
         color: #fff;
     }
     
@@ -788,17 +788,6 @@
                         <i class="fa fa-crown"></i>
                         {{ ucfirst($user->role) }}
                     </span>
-                    @if($user->phone_verified_at && $user->user_verified_at)
-                        <span class="profile-badge badge-verified">
-                            <i class="fa fa-check-circle"></i>
-                            Terverifikasi
-                        </span>
-                    @else
-                        <span class="profile-badge badge-pending">
-                            <i class="fa fa-clock"></i>
-                            Menunggu Verifikasi
-                        </span>
-                    @endif
                 </div>
             </div>
         </div>

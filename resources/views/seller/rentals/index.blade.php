@@ -207,11 +207,11 @@
             color: #dc3545;
         }
 
-        .rental-actions {
+        /* .rental-actions {
             display: flex;
             gap: 0.5rem;
-        }
-
+        } */
+/* 
         .btn-action {
             flex: 1;
             padding: 0.5rem;
@@ -235,7 +235,7 @@
         .btn-delete {
             background: #dc3545;
             color: #fff;
-        }
+        } */
 
         .empty-state {
             text-align: center;
@@ -310,25 +310,11 @@
             border-color: #007bff;
         }
 
-        .btn-view {
-            background: #17a2b8;
-            color: #fff;
-        }
-
-        .btn-view:hover {
-            background: #138496;
-            transform: translateY(-1px);
-        }
-
         /* Perbaiki layout rental-actions untuk 3 tombol */
         .rental-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            display: flex;
+            justify-content: flex-end;
             gap: 0.5rem;
-        }
-
-        .rental-actions .btn-action {
-            width: 100%;
         }
 
         .package-badge {
@@ -491,21 +477,20 @@
 
                     <div class="rental-actions">
                         <!-- Tombol Detail/Lihat -->
-                        <a href="{{ route('seller.rentals.show', $rental->id) }}" class="btn-action btn-view"
-                            style="background: #17a2b8; color: #fff;">
-                            <i class="fa fa-eye"></i> Lihat
+                        <a href="{{ route('seller.rentals.show', $rental->id) }}" class="btn-icon btn-view">
+                            <i class="fa fa-eye"></i> 
                         </a>
                         <!--tombol edit-->
-                        <a href="{{ route('seller.rentals.edit', $rental->id) }}" class="btn-action btn-edit">
-                            <i class="fa fa-edit"></i> Edit
+                        <a href="{{ route('seller.rentals.edit', $rental->id) }}" class="btn-icon btn-edit">
+                            <i class="fa fa-edit"></i> 
                         </a>
-                        <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST" style="flex: 1;"
+                        <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST"
                             onsubmit="return confirm('Yakin ingin menghapus paket rental ini?')">
                             <!--tombol hapus-->
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn-action btn-delete" style="width: 100%;">
-                                <i class="fa fa-trash"></i> Hapus
+                            <button type="submit" class="btn-icon btn-delete">
+                                <i class="fa fa-trash"></i> 
                             </button>
                         </form>
                     </div>
