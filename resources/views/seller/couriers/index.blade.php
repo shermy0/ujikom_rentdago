@@ -67,7 +67,7 @@
     .stat-value {
         font-size: 2rem;
         font-weight: 700;
-        color: #ff5722;
+        color: #a80b0b;
         margin-bottom: 0.25rem;
     }
     
@@ -84,7 +84,7 @@
     .btn-add-courier {
         width: 100%;
         height: 48px;
-        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        background: linear-gradient(135deg, #a80b0b 0%, #760404 100%);
         color: #fff;
         border: none;
         border-radius: 10px;
@@ -100,7 +100,7 @@
     }
     
     .btn-add-courier:hover {
-        background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        background: linear-gradient(135deg, #760404 0%, #a80b0b 100%);
         box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
         transform: translateY(-2px);
     }

@@ -7,45 +7,7 @@
         min-height: 100vh;
         padding-bottom: 80px;
     }
-    
-    .form-header-bar {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .form-header-back {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .form-header-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-    }
-    
-    .form-header-title {
-        flex: 1;
-        text-align: center;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
-    }
-    
-    .form-header-spacer {
-        width: 40px;
-    }
-    
+
     .form-card {
         background: #fff;
         margin: 1rem;
@@ -216,13 +178,13 @@
     }
     
     .btn-submit {
-        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        background: linear-gradient(135deg, #a80b0b 0%, #760404 100%);
         color: #fff;
         box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
     
     .btn-submit:hover {
-        background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        background: linear-gradient(135deg, #760404 0%, #a80b0b 100%);
         box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
         transform: translateY(-2px);
     }
