@@ -7,7 +7,7 @@
     @include('frontend.navbot')
 @endsection
 @section('content')
-<link rel="stylesheet" href="{{ asset('frontend/assets/css/address-customer.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/address-customer.css') }}?v={{ time() }}">
 
 <div class="container py-4" style="max-width: 720px;">
 

@@ -487,11 +487,11 @@ $setting = \App\Models\Setting::first();
 
     /* CUSTOMER Dropdown Specific */
     .customer-notification-dropdown {
-        border-top: 3px solid #2196f3;
+        border-top: 3px solid #ff6b35;
     }
 
     .customer-notification-dropdown .notif-dropdown-header {
-        background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        background: linear-gradient(135deg, #ee4d2d 0%, #ff8c42 100%);
         color: white;
     }
 
@@ -500,12 +500,12 @@ $setting = \App\Models\Setting::first();
     }
 
     .customer-notification-dropdown .view-all-notif-btn {
-        color: #2196f3;
+        color: #ee4d2d;
     }
 
     .customer-notification-dropdown .view-all-notif-btn:hover {
-        background: #e3f2fd;
-        color: #1976d2;
+        background: #fff5f0;
+        color: #d63a1e;
     }
 
     /* Common Dropdown Styles */
@@ -602,11 +602,11 @@ $setting = \App\Models\Setting::first();
     }
 
     .notif-item.unread {
-        background: #e3f2fd;
+        background: #fff5f0;
     }
 
     .notif-item.unread::before {
-        background: #2196f3;
+        background: #ff6b35;
     }
 
     .seller-notification-dropdown .notif-item.unread {
@@ -671,8 +671,8 @@ $setting = \App\Models\Setting::first();
     }
 
     .notif-icon.order {
-        background: #e3f2fd;
-        color: #1976d2;
+        background: #fff5f0;
+        color: #ee4d2d;
     }
 
     /* Seller Notification Icons */

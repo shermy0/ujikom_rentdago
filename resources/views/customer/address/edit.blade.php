@@ -7,7 +7,7 @@
     @include('frontend.navbot')
 @endsection
 @section('content')
-<link rel="stylesheet" href="{{ asset('frontend/assets/css/address-customer.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/address-customer.css') }}?v={{ time() }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <style>
     .address-container {
@@ -17,7 +17,7 @@
     }
 
     .address-header-bar {
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
         padding: 15px 20px;
         display: flex;
         align-items: center;
@@ -81,8 +81,8 @@
 
     .form-control:focus {
         outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        border-color: #ee4d2d;
+        box-shadow: 0 0 0 3px rgba(238, 77, 45, 0.1);
     }
 
     textarea.form-control {
@@ -105,9 +105,9 @@
     .btn-location {
         flex: 1;
         padding: 0.75rem;
-        border: 2px solid #007bff;
+        border: 2px solid #ee4d2d;
         background: #fff;
-        color: #007bff;
+        color: #ee4d2d;
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
@@ -116,12 +116,12 @@
     }
 
     .btn-location:hover {
-        background: #007bff;
+        background: #ee4d2d;
         color: #fff;
     }
 
     .btn-location.active {
-        background: #007bff;
+        background: #ee4d2d;
         color: #fff;
     }
 
@@ -193,7 +193,7 @@
 
     .btn-save {
         width: 100%;
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
         color: #fff;
         padding: 1rem;
         border: none;
@@ -202,12 +202,12 @@
         font-size: 1rem;
         cursor: pointer;
         transition: all 0.3s;
-        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
     }
 
     .btn-save:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+        box-shadow: 0 6px 16px rgba(238, 77, 45, 0.4);
     }
 
     .btn-save:disabled {
@@ -217,7 +217,7 @@
     }
 
     .btn-current-location {
-        background-color: #007bff;
+        background-color: #ee4d2d;
         color: white;
         border: none;
     }
