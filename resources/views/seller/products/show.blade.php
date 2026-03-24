@@ -8,36 +8,6 @@
         padding-bottom: 2rem;
     }
     
-    .detail-header-bar {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .detail-header-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-    }
-    
-    .detail-header-title {
-        flex: 1;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
-    }
-    
     .image-gallery {
         background: #fff;
         padding: 1rem;
@@ -159,7 +129,7 @@
         color: #856404;
     }
     
-    .action-buttons {
+    /* .action-buttons {
         background: #fff;
         padding: 1rem;
         display: flex;
@@ -201,7 +171,7 @@
     
     .btn-delete-large:hover {
         background: #c82333;
-    }
+    } */
 
     .btn-qr-large {
         background: #28a745;
@@ -290,15 +260,16 @@
 
 <div class="product-detail-container">
     <!-- Header -->
-    <div class="detail-header-bar">
-        <div class="detail-header-back">
+        <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.products.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="detail-header-title">
-            Detail Produk
+        <div class="create-header-title">
+            Detail Paket Sewa
         </div>
+        <div class="create-header-spacer"></div>
     </div>
 
     <!-- Image Gallery -->
@@ -431,7 +402,7 @@
     <!-- Action Buttons -->
     <div class="action-buttons">
         <a href="{{ route('seller.products.edit', $product->id) }}" 
-           class="btn-action-large btn-edit-large">
+           class="btn-large-action btn-large-edit">
             <i class="fa fa-edit"></i>
             Edit
         </a>
@@ -442,7 +413,7 @@
               style="flex: 1;">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-action-large btn-delete-large" style="width: 100%;">
+            <button type="submit" class="btn-large-action btn-large-delete" style="width: 100%;">
                 <i class="fa fa-trash"></i>
                 Hapus
             </button>
