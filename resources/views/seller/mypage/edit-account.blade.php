@@ -8,59 +8,6 @@
         padding: 0;
     }
     
-    /* Header dengan Back Button - sama seperti Settings */
-    .edit-account-header-bar {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        min-height: 60px;
-    }
-    
-    .edit-account-header-back {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-    
-    .edit-account-header-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .edit-account-header-back a:hover {
-        opacity: 0.8;
-    }
-    
-    .edit-account-header-title {
-        flex: 1;
-        text-align: center;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
-        margin: 0;
-        padding: 0 10px;
-    }
-    
-    .edit-account-header-spacer {
-        width: 40px;
-        flex-shrink: 0;
-    }
-    
     /* Content Wrapper */
     .edit-account-content {
         padding: 1rem;
@@ -103,14 +50,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 3px solid #ff5722;
+        border: 3px solid #a80b0b;
         margin-bottom: 1rem;
     }
     
     .upload-btn {
         background: #fff;
-        border: 2px solid #007bff;
-        color: #007bff;
+        border: 2px solid #a80b0b;
+        color: #a80b0b;
         padding: 0.5rem 1rem;
         border-radius: 6px;
         cursor: pointer;
@@ -121,7 +68,7 @@
     }
     
     .upload-btn:hover {
-        background: #007bff;
+        background: #a80b0b;
         color: #fff;
     }
     
@@ -162,7 +109,7 @@
     
     .form-input:focus {
         outline: none;
-        border-color: #ff5722;
+        border-color: #a80b0b;
         box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
     }
     
@@ -176,7 +123,7 @@
     .submit-btn {
         width: 100%;
         padding: 0.875rem;
-        background: #007bff;
+        background: #a80b0b;
         border: none;
         color: #fff;
         border-radius: 8px;
@@ -221,17 +168,17 @@
 
 <div class="edit-account-container">
     
-    <!-- Header dengan Back Button -->
-    <div class="edit-account-header-bar">
-        <div class="edit-account-header-back">
+        <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.mypage.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="edit-account-header-title">
+        <div class="create-header-title">
             Edit Akun
         </div>
-        <div class="edit-account-header-spacer"></div>
+        <div class="create-header-spacer"></div>
     </div>
 
     <!-- Content Wrapper -->

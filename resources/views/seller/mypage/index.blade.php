@@ -649,6 +649,7 @@
     .btn-logout {
         background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
         color: #fff;
+        max-width: 100px;
         box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
     }
     
@@ -857,26 +858,6 @@
                                 @else
                                     <span style="color: #ed8936;">
                                         <i class="fa fa-clock"></i> Belum Verifikasi
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-item-icon" style="color: #4facfe;">
-                            <i class="fa fa-check-circle"></i>
-                        </div>
-                        <div class="info-item-content">
-                            <div class="info-item-label">Verifikasi Admin</div>
-                            <div class="info-item-value">
-                                @if($user->user_verified_at)
-                                    <span style="color: #48bb78;">
-                                        <i class="fa fa-check-circle"></i> Disetujui
-                                    </span>
-                                @else
-                                    <span style="color: #ed8936;">
-                                        <i class="fa fa-clock"></i> Menunggu Persetujuan
                                     </span>
                                 @endif
                             </div>

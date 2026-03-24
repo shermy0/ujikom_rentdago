@@ -7,60 +7,7 @@
         min-height: 100vh;
         padding: 0;
     }
-    
-    /* Header dengan Back Button - sama seperti Settings */
-    .edit-shop-header-bar {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        min-height: 60px;
-    }
-    
-    .edit-shop-header-back {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-    
-    .edit-shop-header-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .edit-shop-header-back a:hover {
-        opacity: 0.8;
-    }
-    
-    .edit-shop-header-title {
-        flex: 1;
-        text-align: center;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
-        margin: 0;
-        padding: 0 10px;
-    }
-    
-    .edit-shop-header-spacer {
-        width: 40px;
-        flex-shrink: 0;
-    }
-    
+
     /* Content Wrapper */
     .edit-shop-content {
         padding: 1rem;
@@ -90,7 +37,7 @@
         height: 120px;
         border-radius: 8px;
         object-fit: cover;
-        border: 3px solid #28a745;
+        border: 3px solid #a80b0b;
         margin: 0 auto 1rem;
         display: block;
     }
@@ -103,14 +50,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 3px solid #28a745;
+        border: 3px solid #a80b0b;
         margin-bottom: 1rem;
     }
     
     .shop-upload-btn {
         background: #fff;
-        border: 2px solid #28a745;
-        color: #28a745;
+        border: 2px solid #a80b0b;
+        color: #a80b0b;
         padding: 0.5rem 1rem;
         border-radius: 6px;
         cursor: pointer;
@@ -121,7 +68,7 @@
     }
     
     .shop-upload-btn:hover {
-        background: #28a745;
+        background: #a80b0b;
         color: #fff;
     }
     
@@ -165,7 +112,7 @@
     .shop-form-input:focus,
     .shop-form-textarea:focus {
         outline: none;
-        border-color: #28a745;
+        border-color: #a80b0b;
         box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
     }
     
@@ -213,7 +160,7 @@
     }
     
     .status-badge.active {
-        background: #28a745;
+        background: #a80b0b;
         color: #fff;
     }
     
@@ -247,7 +194,7 @@
     .shop-submit-btn {
         width: 100%;
         padding: 0.875rem;
-        background: #28a745;
+        background: #a80b0b;
         border: none;
         color: #fff;
         border-radius: 8px;
@@ -334,20 +281,19 @@
 </style>
 
 <div class="edit-shop-container">
-    
-    <!-- Header dengan Back Button -->
-    <div class="edit-shop-header-bar">
-        <div class="edit-shop-header-back">
+            <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.mypage.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="edit-shop-header-title">
-            Edit Data Toko
+        <div class="create-header-title">
+            Edit Toko
         </div>
-        <div class="edit-shop-header-spacer"></div>
+        <div class="create-header-spacer"></div>
     </div>
-
+    
     <!-- Content Wrapper -->
     <div class="edit-shop-content">
         @if($errors->any())
@@ -422,11 +368,11 @@
                     <!-- Tombol untuk "Lokasi Saat Ini" dan "Cari di Peta" -->
                     <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
                         <button type="button" class="shop-form-input" id="btnCurrentLocation" 
-                                style="flex: 1; background: #fff; border: 2px solid #28a745; color: #28a745; font-weight: 600; cursor: pointer; padding: 0.75rem;">
+                                style="flex: 1; background: #fff; border: 2px solid #a80b0b; color: #a80b0b; font-weight: 600; cursor: pointer; padding: 0.75rem;">
                             <i class="fa fa-location-arrow"></i> Lokasi Saat Ini
                         </button>
                         <button type="button" class="shop-form-input active" id="btnSearchLocation" 
-                                style="flex: 1; background: #28a745; border: 2px solid #28a745; color: #fff; font-weight: 600; cursor: pointer; padding: 0.75rem;">
+                                style="flex: 1; background: #a80b0b; border: 2px solid #a80b0b; color: #fff; font-weight: 600; cursor: pointer; padding: 0.75rem;">
                             <i class="fa fa-search"></i> Cari Lokasi
                         </button>
                     </div>
