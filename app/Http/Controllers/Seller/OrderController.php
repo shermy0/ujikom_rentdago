@@ -28,7 +28,8 @@ class OrderController extends Controller
         $orders = Order::with([
             'user',
             'productRental.product',
-            'deliveryShipment.courier.user'
+            'deliveryShipment.courier.user',
+            'payment',
         ])
             ->whereHas('productRental.product', function ($query) use ($shop) {
                 $query->where('shop_id', $shop->id);
@@ -58,7 +59,8 @@ class OrderController extends Controller
             'deliveryShipment.courier.user',
             'returnShipment.courier.user',
             'address',
-            'orderReturn'
+            'orderReturn',
+            'payment',
         ])
             ->whereHas('productRental.product', function ($query) use ($shop) {
                 $query->where('shop_id', $shop->id);
@@ -90,7 +92,7 @@ class OrderController extends Controller
             return back()->with('error', 'You need to create a shop first');
         }
 
-        $order = Order::with(['productRental.product', 'user', 'address'])
+        $order = Order::with(['productRental.product', 'user', 'address', 'payment'])
             ->whereHas('productRental.product', function ($query) use ($shop) {
                 $query->where('shop_id', $shop->id);
             })
@@ -102,7 +104,7 @@ class OrderController extends Controller
         }
 
         // Validate payment status (this is the critical check)
-        if ($order->payment_status !== 'paid') {
+        if ($order->payment?->payment_status !== 'paid') {
             return back()->with('error', 'Order must be paid before assigning courier');
         }
 

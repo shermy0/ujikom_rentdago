@@ -1,7 +1,7 @@
 {{-- resources/views/home/partials/product-card.blade.php --}}
 
 <a href="{{ route('customer.product.detail', [
-    'slug' => $product->shop->slug,
+    'slug' => !empty($product->shop?->slug) ? $product->shop->slug : 'no-shop',
     'product' => $product->id
 ]) }}" class="text-decoration-none text-dark d-block">
 

@@ -678,7 +678,7 @@
                     @endif
                 </span>
 
-                @if($order->payment_status == 'paid')
+                @if($order->payment?->payment_status == 'paid')
                 <div class="payment-badge payment-paid">
                     <i class="fas fa-check-circle"></i> Sudah Dibayar
                 </div>
@@ -1082,7 +1082,7 @@
 
             <div class="payment-row total">
                 <span>Total Jumlah</span>
-                <span>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}</span>
             </div>
         </div>
     </div>
@@ -1214,7 +1214,7 @@
         </div>
     </div>
     @endif
-    @if(in_array($order->status, ['confirmed', 'ongoing']) && $order->payment_status === 'paid')
+    @if(in_array($order->status, ['confirmed', 'ongoing']) && $order->payment?->payment_status === 'paid')
     <!-- QR Code Section -->
     <div class="detail-card">
         <h3 class="card-title">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderReturn;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductRental;
 use App\Models\UserAddress;
@@ -37,7 +38,7 @@ class CustomerOrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['productRental.product', 'productRental.product.images'])
+        $orders = Order::with(['productRental.product', 'productRental.product.images', 'payment'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -137,28 +138,30 @@ class CustomerOrderController extends Controller
 
         // 🔵 CREATE ORDER
         $order = Order::create([
-            'user_id'                  => Auth::id(),
-            'product_rental_id'        => $rental->id,
-            'user_address_id'          => $address?->id,
+            'user_id'                   => Auth::id(),
+            'product_rental_id'         => $rental->id,
+            'user_address_id'           => $address?->id,
             'delivery_address_snapshot' => $addressSnapshot,
-            'order_code'               => 'ORD-' . strtoupper(Str::random(10)),
-            'start_time'               => $startTime,
-            'end_time'                 => $endTime,
-            'original_amount'          => $originalAmount,
-            'discount_amount'          => $discountAmount,
-            'total_amount'             => $finalAmount,
-            'voucher_id'               => $voucher?->id,
-            'status'                   => 'pending',
-            'payment_status'           => 'unpaid',
-            'delivery_method'          => $deliveryMethod,
+            'order_code'                => 'ORD-' . strtoupper(Str::random(10)),
+            'start_time'                => $startTime,
+            'end_time'                  => $endTime,
+            'status'                    => 'pending',
+            'delivery_method'           => $deliveryMethod,
+        ]);
+
+        // 🔵 CREATE PAYMENT
+        Payment::create([
+            'order_id'       => $order->id,
+            'total_amount'   => $finalAmount,
+            'payment_status' => 'unpaid',
         ]);
 
         // 🔵 CATAT PENGGUNAAN VOUCHER
         if ($voucher) {
             VoucherUsage::create([
-                'voucher_id' => $voucher->id,
-                'user_id' => Auth::id(),
-                'order_id' => $order->id,
+                'voucher_id'      => $voucher->id,
+                'user_id'         => Auth::id(),
+                'order_id'        => $order->id,
                 'discount_amount' => $discountAmount,
             ]);
         }
@@ -175,7 +178,8 @@ class CustomerOrderController extends Controller
             'productRental.product.images',
             'productRental.product.shop',
             'deliveryShipment.courier.user',
-            'address'
+            'address',
+            'payment',
         ])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
@@ -258,18 +262,17 @@ class CustomerOrderController extends Controller
         // ========================================
 
         // ✅ PRIORITAS 1: CEK CANCELLED DULU (apapun payment_status-nya)
-        // Ini HARUS di paling atas agar tidak tertangkap kondisi lain
         if ($order->status === 'cancelled') {
             return view('frontend.order.detail', compact('order', 'mapData'));
         }
 
         // ✅ PRIORITAS 2: Jika sudah dibayar (paid), tampilkan detail
-        if ($order->payment_status === 'paid') {
+        if ($order->payment?->payment_status === 'paid') {
             return view('frontend.order.detail', compact('order', 'mapData'));
         }
 
         // ✅ PRIORITAS 3: Jika belum bayar DAN masih pending, tampilkan payment
-        if ($order->payment_status === 'unpaid' && $order->status === 'pending') {
+        if ($order->payment?->payment_status === 'unpaid' && $order->status === 'pending') {
             $snapToken = $this->generateSnapToken($order);
             return view('frontend.order.payment', compact('order', 'snapToken'));
         }
@@ -301,8 +304,8 @@ class CustomerOrderController extends Controller
 
         $params = [
             'transaction_details' => [
-                'order_id' => $uniqueOrderId,
-                'gross_amount' => $order->total_amount,
+                'order_id'     => $uniqueOrderId,
+                'gross_amount' => $order->payment?->total_amount ?? 0,
             ],
             'customer_details' => [
                 'first_name' => Auth::user()->name,
@@ -311,10 +314,10 @@ class CustomerOrderController extends Controller
             ],
             'item_details' => [
                 [
-                    'id' => $order->productRental->id,
-                    'price' => $order->total_amount,
-                    'quantity' => 1,
-                    'name' => $order->productRental->product->name . ' (' . $order->productRental->cycle_value . ' Jam)',
+                    'id'            => $order->productRental->id,
+                    'price'         => $order->payment?->total_amount ?? 0,
+                    'quantity'      => 1,
+                    'name'          => $order->productRental->product->name . ' (' . $order->productRental->cycle_value . ' Jam)',
                     'merchant_name' => $order->productRental->product->shop->name_store ?? 'RentDago',
                 ]
             ],
@@ -323,7 +326,7 @@ class CustomerOrderController extends Controller
         try {
             Log::info('Midtrans request params prepared', [
                 'order_code' => $order->order_code,
-                'amount' => $order->total_amount,
+                'amount' => $order->payment?->total_amount ?? 0,
             ]);
 
             $snapToken = Snap::getSnapToken($params);
@@ -351,18 +354,18 @@ class CustomerOrderController extends Controller
 
     public function regenerateToken($id)
     {
-        $order = Order::with(['productRental.product'])
+        $order = Order::with(['productRental.product', 'payment'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
         Log::info('Token regeneration requested', [
-            'order_id' => $order->id,
-            'order_code' => $order->order_code,
-            'user_id' => Auth::id(),
+            'order_id'  => $order->id,
+            'order_code'=> $order->order_code,
+            'user_id'   => Auth::id(),
         ]);
 
         // Cek apakah order masih bisa dibayar
-        if ($order->payment_status === 'paid') {
+        if ($order->payment?->payment_status === 'paid') {
             Log::warning('Token regeneration rejected - order already paid', [
                 'order_id' => $order->id,
             ]);
@@ -509,7 +512,7 @@ class CustomerOrderController extends Controller
         }
 
         // Guard double callback
-        if ($order->payment_status === 'paid') {
+        if ($order->payment?->payment_status === 'paid') {
             return response()->json(['message' => 'Already processed']);
         }
 
@@ -539,12 +542,19 @@ class CustomerOrderController extends Controller
             }
 
             $order->update([
-                'payment_status' => 'paid',
-                'status' => $newStatus,
-                'paid_at' => $now,
+                'status'     => $newStatus,
                 'start_time' => $startTime,
-                'end_time' => $endTime,
+                'end_time'   => $endTime,
             ]);
+
+            // Update payment record
+            $order->payment()->updateOrCreate(
+                ['order_id' => $order->id],
+                [
+                    'payment_status' => 'paid',
+                    'paid_at'        => $now,
+                ]
+            );
 
             // Generate QR Code
             if ($newStatus === 'confirmed' && !$order->qr_code) {
@@ -580,21 +590,20 @@ class CustomerOrderController extends Controller
                 Log::error('OTP generation failed after payment success: ' . $e->getMessage());
             }
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
-
-            // ✅ Set is_read_by_seller = false agar seller tahu ada pembayaran yang gagal/dibatalkan
             $order->update([
-                'payment_status' => 'unpaid',
-                'status' => 'cancelled',
-                'is_read_by_seller' => false
+                'status'             => 'cancelled',
+                'is_read_by_seller'  => false
             ]);
+            $order->payment()->updateOrCreate(
+                ['order_id' => $order->id],
+                ['payment_status' => 'unpaid']
+            );
         } elseif ($transactionStatus === 'pending') {
-
-            // ✅ Juga set false untuk pending agar seller aware ada order baru
             $order->update([
-                'payment_status' => 'unpaid',
-                'status' => Order::STATUS_PENDING,
+                'status'            => Order::STATUS_PENDING,
                 'is_read_by_seller' => false
             ]);
+            // payment_status stays unpaid, no change needed
         }
 
         return response()->json(['message' => 'Callback processed']);
@@ -637,11 +646,16 @@ class CustomerOrderController extends Controller
         // ==========================
         // PASTIKAN STATUS PEMBAYARAN
         // ==========================
-        if ($order->payment_status !== 'paid') {
+        if ($order->payment?->payment_status !== 'paid') {
+            $order->payment()->updateOrCreate(
+                ['order_id' => $order->id],
+                [
+                    'payment_status' => 'paid',
+                    'paid_at'        => now(),
+                ]
+            );
             $order->update([
-                'payment_status' => 'paid',
                 'status' => $order->status === 'pending' ? 'confirmed' : $order->status,
-                'paid_at' => now(),
             ]);
         }
 
@@ -685,15 +699,16 @@ class CustomerOrderController extends Controller
      */
     public function cancel($id)
     {
-        $order = Order::where('user_id', Auth::id())
+        $order = Order::with('payment')
+            ->where('user_id', Auth::id())
             ->where('id', $id)
-            ->where('payment_status', 'unpaid')
+            ->whereHas('payment', fn($q) => $q->where('payment_status', 'unpaid'))
             ->firstOrFail();
 
         // ✅ Set is_read_by_seller = false agar muncul di notifikasi seller
         $order->update([
-            'status' => 'cancelled',
-            'is_read_by_seller' => false // Seller perlu tahu ada order yang dibatalkan
+            'status'            => 'cancelled',
+            'is_read_by_seller' => false
         ]);
 
         // Stop tracking if active
@@ -713,7 +728,7 @@ class CustomerOrderController extends Controller
 
     public function startRental($id)
     {
-        $order = Order::with('productRental')->findOrFail($id);
+        $order = Order::with(['productRental', 'payment'])->findOrFail($id);
 
         // Stop kalau sudah dimulai
         if ($order->start_time) {
@@ -723,7 +738,7 @@ class CustomerOrderController extends Controller
 
         if (
             $order->status !== 'confirmed' ||
-            $order->payment_status !== 'paid'
+            $order->payment?->payment_status !== 'paid'
         ) {
             return redirect()->back()
                 ->with('error', 'Order belum siap untuk dimulai.');
@@ -813,7 +828,7 @@ class CustomerOrderController extends Controller
     {
         logger($order);
         try {
-            $order->load(['user', 'productRental.product.shop']);
+            $order->load(['user', 'productRental.product.shop', 'payment']);
 
             $phone = $order->user->phone;
 
@@ -833,7 +848,7 @@ class CustomerOrderController extends Controller
             $message .= "🏪 Toko: *{$order->productRental->product->shop->name_store}*\n";
             $message .= "📦 Produk: *{$order->productRental->product->name}*\n";
             $message .= " Durasi: *{$order->productRental->cycle_value} Jam*\n";
-            $message .= "💰 Total: *Rp " . number_format($order->total_amount, 0, ',', '.') . "*\n";
+            $message .= "💰 Total: *Rp " . number_format($order->payment?->total_amount ?? 0, 0, ',', '.') . "*\n";
             $message .= "🚚 Metode: *" . ucfirst($order->delivery_method) . "*\n";
             $message .= "📅 Waktu Mulai: *" . Carbon::parse($order->start_time)->format('d/m/Y H:i') . "*\n";
 

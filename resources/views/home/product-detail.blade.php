@@ -114,7 +114,7 @@
 
     {{-- Shop Info Card --}}
     @if($product->shop)
-    <a href="{{ route('customer.shop.profile', $product->shop->slug) }}" class="shop-info-card clickable {{ !$product->shop->is_active ? 'shop-inactive' : '' }}">
+    <a href="{{ route('customer.shop.profile', !empty($product->shop->slug) ? $product->shop->slug : 'no-shop') }}" class="shop-info-card clickable {{ !$product->shop->is_active ? 'shop-inactive' : '' }}">
         <div class="shop-main">
             <div class="shop-left">
                 <div class="shop-logo-wrapper">

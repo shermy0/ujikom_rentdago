@@ -63,9 +63,9 @@
                             <tr>
                                 <td class="label">Status Pembayaran</td>
                                 <td class="value">
-                                    <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
-                                        <i class="bi bi-{{ $order->payment_status == 'paid' ? 'credit-card-fill' : 'clock' }}"></i>
-                                        {{ $order->payment_status == 'paid' ? 'Lunas' : 'Belum Lunas' }}
+                                    <span class="badge bg-{{ $order->payment?->payment_status == 'paid' ? 'success' : 'warning' }}">
+                                        <i class="bi bi-{{ $order->payment?->payment_status == 'paid' ? 'credit-card-fill' : 'clock' }}"></i>
+                                        {{ $order->payment?->payment_status == 'paid' ? 'Lunas' : 'Belum Lunas' }}
                                     </span>
                                 </td>
                             </tr>
@@ -129,7 +129,7 @@
                             </tr>
                             <tr>
                                 <td class="label">Harga Sewa</td>
-                                <td class="value"><strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
+                                <td class="value"><strong>Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}</strong></td>
                             </tr>
                         </table>
                     </div>
@@ -167,7 +167,7 @@
             </div>
 
             <!-- QR Code -->
-            @if($order->qr_code && $order->payment_status == 'paid')
+            @if($order->qr_code && $order->payment?->payment_status == 'paid')
             <div class="info-card">
                 <h6 class="info-title">QR Code</h6>
                 <div class="text-center">

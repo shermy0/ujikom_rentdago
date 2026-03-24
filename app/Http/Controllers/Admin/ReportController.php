@@ -24,12 +24,15 @@ class ReportController extends Controller
             : Carbon::now()->endOfDay();
 
         // Query dasar
-        $baseQuery = Order::whereBetween('created_at', [$startDate, $endDate]);
+        $baseQuery = Order::whereBetween('orders.created_at', [$startDate, $endDate]);
 
         // Statistik utama
         $stats = [
             'total'       => (clone $baseQuery)->count(),
-            'pendapatan'  => (clone $baseQuery)->whereIn('status', ['completed', 'returned'])->sum('total_amount'),
+            'pendapatan'  => (clone $baseQuery)
+                ->whereIn('status', ['completed', 'returned'])
+                ->join('payments', 'payments.order_id', '=', 'orders.id')
+                ->sum('payments.total_amount'),
             'selesai'     => (clone $baseQuery)->whereIn('status', ['completed', 'returned'])->count(),
             'dibatalkan'  => (clone $baseQuery)->where('status', 'cancelled')->count(),
             'pending'     => (clone $baseQuery)->where('status', 'pending')->count(),
@@ -45,12 +48,13 @@ class ReportController extends Controller
 
         // Pesanan per bulan (12 bulan terakhir, untuk chart bar)
         $perBulan = Order::select(
-                DB::raw('YEAR(created_at) as tahun'),
-                DB::raw('MONTH(created_at) as bulan'),
+                DB::raw('YEAR(orders.created_at) as tahun'),
+                DB::raw('MONTH(orders.created_at) as bulan'),
                 DB::raw('count(*) as total'),
-                DB::raw('sum(total_amount) as pendapatan')
+                DB::raw('sum(payments.total_amount) as pendapatan')
             )
-            ->where('created_at', '>=', Carbon::now()->subMonths(11)->startOfMonth())
+            ->leftJoin('payments', 'payments.order_id', '=', 'orders.id')
+            ->where('orders.created_at', '>=', Carbon::now()->subMonths(11)->startOfMonth())
             ->groupBy('tahun', 'bulan')
             ->orderBy('tahun')
             ->orderBy('bulan')
@@ -107,7 +111,10 @@ class ReportController extends Controller
 
         $stats = [
             'total'       => (clone $baseQuery)->count(),
-            'pendapatan'  => (clone $baseQuery)->whereIn('status', ['completed', 'returned'])->sum('total_amount'),
+            'pendapatan'  => (clone $baseQuery)
+                ->whereIn('status', ['completed', 'returned'])
+                ->join('payments', 'payments.order_id', '=', 'orders.id')
+                ->sum('payments.total_amount'),
             'selesai'     => (clone $baseQuery)->whereIn('status', ['completed', 'returned'])->count(),
             'dibatalkan'  => (clone $baseQuery)->where('status', 'cancelled')->count(),
         ];

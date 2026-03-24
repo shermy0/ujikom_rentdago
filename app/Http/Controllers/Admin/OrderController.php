@@ -13,7 +13,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'productRental.product.shop']);
+        $query = Order::with(['user', 'productRental.product.shop', 'payment']);
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
@@ -22,7 +22,7 @@ class OrderController extends Controller
 
         // Filter berdasarkan payment status
         if ($request->filled('payment_status')) {
-            $query->where('payment_status', $request->payment_status);
+            $query->whereHas('payment', fn($q) => $q->where('payment_status', $request->payment_status));
         }
 
         // Search berdasarkan order code atau nama user
@@ -46,8 +46,8 @@ class OrderController extends Controller
             'ongoing' => Order::where('status', 'ongoing')->count(),
             'completed' => Order::where('status', 'completed')->count(),
             'cancelled' => Order::where('status', 'cancelled')->count(),
-            'paid' => Order::where('payment_status', 'paid')->count(),
-            'unpaid' => Order::where('payment_status', 'unpaid')->count(),
+            'paid'   => \App\Models\Payment::where('payment_status', 'paid')->count(),
+            'unpaid' => \App\Models\Payment::where('payment_status', 'unpaid')->count(),
         ];
 
         return view('admin.orders.index', compact('orders', 'stats'))->with('title', 'Data Pemesanan');
@@ -59,9 +59,10 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::with([
-            'user', 
+            'user',
             'productRental.product.shop',
-            'productRental.product.images'
+            'productRental.product.images',
+            'payment',
         ])->findOrFail($id);
 
         return view('admin.orders.show', compact('order'));

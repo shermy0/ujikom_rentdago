@@ -80,13 +80,13 @@
                         {{ \Carbon\Carbon::parse($order->start_time)->format('d M Y, H:i') }}
                     </p>
                     <p class="order-price">
-                        Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                        Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}
                     </p>
                 </div>
             </div>
 
             <div class="order-item-footer">
-                @if($order->payment_status === 'unpaid' && $order->status !== 'cancelled')
+                @if(($order->payment?->payment_status === 'unpaid') && $order->status !== 'cancelled')
                     <a href="{{ route('customer.order.payment', $order->id) }}" class="btn-small primary">
                         <i class="fa fa-credit-card"></i> Bayar
                     </a>

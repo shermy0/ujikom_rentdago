@@ -24,7 +24,7 @@ class CourierAssignmentController extends Controller
             return back()->with('error', 'Anda harus membuat toko terlebih dahulu');
         }
 
-        $order = Order::with(['productRental.product', 'user', 'address'])
+        $order = Order::with(['productRental.product', 'user', 'address', 'payment'])
             ->whereHas('productRental.product', function ($query) use ($shop) {
                 $query->where('shop_id', $shop->id);
             })
@@ -36,7 +36,7 @@ class CourierAssignmentController extends Controller
         }
 
         // Validate payment status (this is the critical check)
-        if ($order->payment_status !== 'paid') {
+        if ($order->payment?->payment_status !== 'paid') {
             return back()->with('error', 'Pesanan harus dibayar sebelum menugaskan kurir');
         }
 
@@ -291,7 +291,7 @@ class CourierAssignmentController extends Controller
             $message .= "📦 Produk: *{$order->productRental->product->name}*\n";
             $message .= "👤 Customer: *{$order->user->name}*\n";
             $message .= "📞 Telepon Customer: *{$order->user->phone}*\n";
-            $message .= "💰 Total: *Rp " . number_format($order->total_amount, 0, ',', '.') . "*\n";
+            $message .= "💰 Total: *Rp " . number_format($order->payment?->total_amount ?? 0, 0, ',', '.') . "*\n";
             $message .= "━━━━━━━━━━━━━━━━━━━\n\n";
 
             $message .= "*INFORMASI KURIR*\n";
@@ -514,7 +514,7 @@ class CourierAssignmentController extends Controller
             $message .= "📋 Kode Order: *{$order->order_code}*\n";
             $message .= "📦 Produk: *{$order->productRental->product->name}*\n";
             $message .= "👤 Customer: *{$order->user->name}*\n";
-            $message .= "💰 Total: *Rp " . number_format($order->total_amount, 0, ',', '.') . "*\n";
+            $message .= "💰 Total: *Rp " . number_format($order->payment?->total_amount ?? 0, 0, ',', '.') . "*\n";
             $message .= "━━━━━━━━━━━━━━━━━━━\n\n";
 
             $message .= "*INFORMASI KURIR BARU*\n";

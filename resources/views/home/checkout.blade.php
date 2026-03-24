@@ -60,7 +60,7 @@
     {{-- HEADER --}}
     <div class="checkout-header">
        <a href="{{ route('customer.product.detail', [
-    'slug' => $product->shop->slug,
+    'slug' => !empty($product->shop?->slug) ? $product->shop->slug : 'no-shop',
     'product' => $product->id
 ]) }}" class="header-back">
     <i class="fa fa-arrow-left"></i>

@@ -533,7 +533,7 @@
                     </div>
                     <div class="order-right">
                         <div class="order-amount">
-                            Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                            Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}
                         </div>
                         <a href="{{ route('seller.orders.show', $order->id) }}" class="action-btn">
                             <i class="fas fa-eye"></i> Lihat Detail

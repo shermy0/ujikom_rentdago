@@ -181,7 +181,6 @@ class KurirQrController extends Controller
                 // Update order to ONGOING
                 $order->update([
                     'status' => Order::STATUS_ONGOING,
-                    'paid_at' => $order->paid_at ?? now(),
                 ]);
 
                 // 🔥 Kirim kartu ucapan terima kasih karena sudah ambil barang

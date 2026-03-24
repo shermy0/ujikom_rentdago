@@ -128,7 +128,8 @@ class HomeController extends Controller
 public function show(string $slug, Product $product)
 {
     // validasi biar gak asal
-    if ($product->shop->slug !== $slug) {
+    $expectedSlug = !empty($product->shop?->slug) ? $product->shop->slug : 'no-shop';
+    if ($expectedSlug !== $slug) {
         abort(404);
     }
 

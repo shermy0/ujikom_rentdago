@@ -32,10 +32,7 @@ class Order extends Model
         'start_time',
         'end_time',
         'returned_at',
-        'total_amount',
         'status',
-        'payment_status',
-        'paid_at',
         'delivery_method',
         'user_address_id',
         'qr_code',
@@ -45,7 +42,6 @@ class Order extends Model
         'start_time' => 'datetime',
         'end_time' => 'datetime',
         'returned_at' => 'datetime',
-        'paid_at' => 'datetime',
     ];
 
 
@@ -81,6 +77,11 @@ class Order extends Model
     public function address()
     {
         return $this->belongsTo(UserAddress::class, 'user_address_id');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
     }
 
     public function orderReturn()

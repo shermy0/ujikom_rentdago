@@ -168,7 +168,7 @@
                                     <span class="badge bg-info">{{ $order->productRental->product->shop->name_store }}</span>
                                 </td>
                                 <td>
-                                    <strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong>
+                                    <strong>Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}</strong>
                                 </td>
                                 <td>
                                     @php
@@ -200,9 +200,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
-                                        <i class="bi bi-{{ $order->payment_status == 'paid' ? 'credit-card-fill' : 'clock' }}"></i>
-                                        {{ $order->payment_status == 'paid' ? 'Lunas' : 'Belum Lunas' }}
+                                    <span class="badge bg-{{ $order->payment?->payment_status == 'paid' ? 'success' : 'warning' }}">
+                                        <i class="bi bi-{{ $order->payment?->payment_status == 'paid' ? 'credit-card-fill' : 'clock' }}"></i>
+                                        {{ $order->payment?->payment_status == 'paid' ? 'Lunas' : 'Belum Lunas' }}
                                     </span>
                                 </td>
                                 <td>

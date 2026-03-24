@@ -365,10 +365,10 @@
         <h6><i class="fa fa-money-bill"></i> Informasi Pembayaran</h6>
         <div class="detail-row">
             <span>Status Pembayaran</span>
-            <span class="payment-badge {{ $order->payment_status }}">
-                @if($order->payment_status === 'paid')
+            <span class="payment-badge {{ $order->payment?->payment_status ?? 'unpaid' }}">
+                @if($order->payment?->payment_status === 'paid')
                 <i class="fa fa-check-circle"></i> Lunas
-                @elseif($order->payment_status === 'refunded')
+                @elseif($order->payment?->payment_status === 'refunded')
                 <i class="fa fa-undo"></i> Dikembalikan
                 @else
                 <i class="fa fa-clock"></i> Belum Dibayar
@@ -376,10 +376,10 @@
             </span>
         </div>
 
-        @if($order->paid_at)
+        @if($order->payment?->paid_at)
         <div class="detail-row">
             <span>Dibayar pada</span>
-            <strong>{{ \Carbon\Carbon::parse($order->paid_at)->format('d M Y, H:i') }}</strong>
+            <strong>{{ \Carbon\Carbon::parse($order->payment->paid_at)->format('d M Y, H:i') }}</strong>
         </div>
         @endif
     </div>
@@ -388,11 +388,11 @@
     <div class="order-summary">
         <div class="summary-row">
             <span>Harga Sewa</span>
-            <strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong>
+            <strong>Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}</strong>
         </div>
         <div class="summary-row total">
             <span>Total</span>
-            <strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong>
+            <strong>Rp {{ number_format($order->payment?->total_amount ?? 0, 0, ',', '.') }}</strong>
         </div>
     </div>
 
@@ -433,7 +433,7 @@
     @endif
 
     {{-- Action Buttons --}}
-    @if($order->status === 'pending' && $order->payment_status === 'unpaid')
+    @if($order->status === 'pending' && $order->payment?->payment_status === 'unpaid')
     <a href="{{ route('customer.order.payment', $order->id) }}" class="pay-button">
         <i class="fa fa-credit-card"></i>
         Bayar Sekarang

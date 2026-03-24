@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\ProductRental;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -20,29 +21,29 @@ class SellerController extends Controller
         $shopId = optional($user->shop)->id;
 
         if ($shopId) {
-            // Hitung total active rentals (status: confirmed, ongoing, atau arrived)
+            // Hitung total active rentals
             $totalActiveRentals = Order::whereHas('productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->whereIn('status', ['confirmed', 'ongoing', 'arrived'])
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->count();
 
             // Hitung total revenue hari ini
-            $totalRevenue = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $totalRevenue = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')
                 ->whereDate('paid_at', Carbon::today())
                 ->sum('total_amount') ?? 0;
 
-            // Ambil data recent orders (termasuk yang status penalty)
-            $recentOrders = Order::with(['user', 'productRental.product'])
+            // Ambil data recent orders
+            $recentOrders = Order::with(['user', 'productRental.product', 'payment'])
                 ->whereHas('productRental.product', function ($query) use ($shopId) {
                     $query->where('shop_id', $shopId);
                 })
                 ->whereIn('status', ['confirmed', 'ongoing', 'arrived', 'penalty'])
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->orderBy('created_at', 'desc')
                 ->limit(5)
                 ->get();
@@ -50,15 +51,15 @@ class SellerController extends Controller
             // Total produk dari shop ini
             $totalProduk = $user->shop->products()->count();
 
-            // Total pesanan (semua status yang sudah paid, termasuk penalty)
+            // Total pesanan (semua status yang sudah paid)
             $totalPesanan = Order::whereHas('productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->count();
 
             // Total pendapatan keseluruhan
-            $totalPendapatan = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $totalPendapatan = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')
@@ -108,7 +109,8 @@ class SellerController extends Controller
             'shipments.courier.user',
             'deliveryShipment.courier.user',
             'returnShipment.courier.user',
-            'orderReturn' // Tambahkan relasi order return untuk data penalty
+            'orderReturn',
+            'payment',
         ])
             ->whereHas('productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
@@ -135,7 +137,7 @@ class SellerController extends Controller
         // Auto-generate QR Code jika belum ada (support lokal & hosting)
         if (
             in_array($order->status, ['confirmed', 'ongoing']) &&
-            $order->payment_status === 'paid' &&
+            $order->payment?->payment_status === 'paid' &&
             !$order->qr_code
         ) {
             try {
@@ -313,7 +315,7 @@ class SellerController extends Controller
                 ->whereHas('productRental.product', function ($query) use ($shopId) {
                     $query->where('shop_id', $shopId);
                 })
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 // Tampilkan semua status termasuk penalty dari table orders
                 ->whereIn('status', ['confirmed', 'ongoing', 'completed', 'arrived', 'penalty'])
                 ->orderByRaw("
@@ -372,7 +374,7 @@ class SellerController extends Controller
 
         if ($shopId) {
             // Total Pendapatan Keseluruhan
-            $totalRevenue = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $totalRevenue = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')
@@ -383,7 +385,7 @@ class SellerController extends Controller
                 $query->where('shop_id', $shopId);
             })
                 ->where('status', 'completed')
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->count();
 
             // Total Pesanan Ongoing (termasuk arrived)
@@ -391,7 +393,7 @@ class SellerController extends Controller
                 $query->where('shop_id', $shopId);
             })
                 ->whereIn('status', ['ongoing', 'arrived'])
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->count();
 
             // Total Pesanan Penalty
@@ -399,18 +401,18 @@ class SellerController extends Controller
                 $query->where('shop_id', $shopId);
             })
                 ->where('status', 'penalty')
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->count();
 
             // Total Semua Pesanan (termasuk penalty)
             $totalOrders = Order::whereHas('productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->count();
 
             // Pendapatan Hari Ini
-            $revenueToday = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $revenueToday = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')
@@ -418,7 +420,7 @@ class SellerController extends Controller
                 ->sum('total_amount') ?? 0;
 
             // Pendapatan Minggu Ini
-            $revenueWeek = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $revenueWeek = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')
@@ -426,7 +428,7 @@ class SellerController extends Controller
                 ->sum('total_amount') ?? 0;
 
             // Pendapatan Bulan Ini
-            $revenueMonth = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $revenueMonth = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')
@@ -435,7 +437,7 @@ class SellerController extends Controller
                 ->sum('total_amount') ?? 0;
 
             // Pendapatan Tahun Ini
-            $revenueYear = Order::whereHas('productRental.product', function ($query) use ($shopId) {
+            $revenueYear = Payment::whereHas('order.productRental.product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
                 ->where('payment_status', 'paid')

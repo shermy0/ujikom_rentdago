@@ -102,7 +102,7 @@ class SellerNotificationController extends Controller
                 ->whereHas('productRental.product', function ($query) use ($shop) {
                     $query->where('shop_id', $shop->id);
                 })
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->where(function ($query) {
                     $query->where(function ($q) {
                         $q->where('status', 'cancelled')
@@ -381,7 +381,7 @@ class SellerNotificationController extends Controller
             $confirmedCount = Order::whereHas('productRental.product', function ($query) use ($shop) {
                 $query->where('shop_id', $shop->id);
             })
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->where('status', Order::STATUS_CONFIRMED) // ✅ ONLY show badge for confirmed orders
                 ->count();
 
@@ -420,7 +420,7 @@ class SellerNotificationController extends Controller
                 $query->where('shop_id', $shop->id);
             })
                 ->where('is_read_by_seller', false)
-                ->where('payment_status', 'paid')
+                ->whereHas('payment', fn($q) => $q->where('payment_status', 'paid'))
                 ->update(['is_read_by_seller' => true]);
 
             return response()->json([

@@ -373,7 +373,8 @@ if (!$hasStartPhoto) {
     {
         return Order::with([
             'productRental.product.images',
-            'user'
+            'user',
+            'payment',
         ])
         ->where('order_code', $orderCode)
         ->first();
@@ -395,7 +396,7 @@ if (!$hasStartPhoto) {
             );
         }
 
-        if ($order->payment_status !== 'paid') {
+        if ($order->payment?->payment_status !== 'paid') {
             return $this->errorResponse('Order belum dibayar', 400);
         }
 
