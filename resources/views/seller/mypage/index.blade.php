@@ -1047,23 +1047,40 @@
 
     </div>
 
-    <!-- Account Actions -->
-    <div class="account-actions">
-        <form action="{{ route('auth.logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-account-action btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-                <i class="fa fa-sign-out-alt"></i>
-                <span>Keluar</span>
-            </button>
-        </form>
-
-       
-    </div>
+<!-- Account Actions -->
+<div class="account-actions">
+    <form id="logoutForm" action="{{ route('auth.logout') }}" method="POST">
+        @csrf
+        <button type="button" class="btn-account-action btn-logout" onclick="confirmLogout()">
+            <i class="fa fa-sign-out-alt"></i>
+            <span>Keluar</span>
+        </button>
+    </form>
+</div>
 
 </div>
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Yakin ingin keluar?',
+        text: "Anda akan logout dari akun ini.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f5576c',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logoutForm').submit();
+        }
+    });
+}
+</script>
 
 <script>
 // Smooth scroll animation

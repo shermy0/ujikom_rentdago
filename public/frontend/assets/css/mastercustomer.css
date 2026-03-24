@@ -465,3 +465,40 @@
   #ftco-loader.fullscreen.hide {
     display: none;
   }
+
+  .create-header-bar {
+    background: linear-gradient(135deg, #ff6b35  0%, #ff5722  100%);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 700;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.create-header-back {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-header-back a {
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.create-header-title {
+    flex: 1;
+    text-align: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.create-header-spacer {
+    width: 40px;
+}

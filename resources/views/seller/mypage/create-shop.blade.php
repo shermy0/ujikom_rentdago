@@ -8,59 +8,6 @@
         padding: 0;
     }
     
-    /* Header dengan Back Button - sama seperti Settings */
-    .create-shop-header {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        min-height: 60px;
-    }
-    
-    .create-shop-back {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-    
-    .create-shop-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .create-shop-back a:hover {
-        opacity: 0.8;
-    }
-    
-    .create-shop-title {
-        flex: 1;
-        text-align: center;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
-        margin: 0;
-        padding: 0 10px;
-    }
-    
-    .create-shop-spacer {
-        width: 40px;
-        flex-shrink: 0;
-    }
-    
     /* Content Wrapper */
     .create-shop-form {
         max-width: 600px;
@@ -103,7 +50,7 @@
     
     .form-control:focus {
         outline: none;
-        border-color: #ff5722;
+        border-color: #A20B0B;
         box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
     }
     
@@ -127,7 +74,7 @@
     
     .btn-submit {
         width: 100%;
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
+        background: linear-gradient(135deg, #770C0C 0%, #A20B0B 100%);
         color: #fff;
         padding: 1rem;
         border: none;
@@ -172,9 +119,9 @@
     .btn-location {
         flex: 1;
         padding: 0.75rem;
-        border: 2px solid #ff5722;
+        border: 2px solid #A20B0B;
         background: #fff;
-        color: #ff5722;
+        color: #A20B0B;
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
@@ -183,12 +130,12 @@
     }
 
     .btn-location:hover {
-        background: #ff5722;
+        background: #A20B0B;
         color: #fff;
     }
 
     .btn-location.active {
-        background: #ff5722;
+        background: #A20B0B;
         color: #fff;
     }
 
@@ -261,24 +208,24 @@
     .loading-spinner {
         display: inline-block;
         margin-left: 0.5rem;
-        color: #ff5722;
+        color: #A20B0B;
     }
 </style>
 
 <div class="create-shop-container">
 
-    <!-- Header dengan Back Button -->
-    <div class="create-shop-header">
-        <div class="create-shop-back">
-            <a href="{{ route('seller.mypage.settings') }}">
+        <div class="create-header-bar">
+        <div class="create-header-back">
+            <a href="{{ route('seller.mypage.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="create-shop-title">
-            Buka Toko Baru
+        <div class="create-header-title">
+            Buka Toko
         </div>
-        <div class="create-shop-spacer"></div>
+        <div class="create-header-spacer"></div>
     </div>
+    
 
     <!-- Content Wrapper -->
     <div class="create-shop-form">

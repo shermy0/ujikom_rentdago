@@ -4,12 +4,6 @@
 @endsection
 @section('content')
     <style>
-        .seller-request-container {
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            padding: 2rem 0;
-        }
-
         .request-card {
             max-width: 600px;
             margin: 0 auto;
@@ -17,25 +11,6 @@
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-        }
-
-        .request-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-            padding: 2rem;
-            text-align: center;
-            color: #fff;
-        }
-
-        .request-header h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .request-header p {
-            font-size: 0.95rem;
-            opacity: 0.95;
-            margin: 0;
         }
 
         .request-body {
@@ -215,27 +190,26 @@
             font-weight: bold;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
 
-        .btn {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
+.btn {
+    padding: 0.5rem 1rem; /* lebih kecil */
+    border: none;
+    border-radius: 8px; /* lebih subtle */
+    font-weight: 500; /* ga terlalu tebal */
+    font-size: 13px; /* normal */
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; /* jangan flex full */
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
 
         .btn-back {
             background: #6c757d;
@@ -308,15 +282,21 @@
             margin-top: 0.5rem;
         }
     </style>
+        <!-- Header -->
+    <div class="create-header-bar">
+        <div class="create-header-back">
+            <a href="{{ route('profile.index') }}">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+        </div>
+        <div class="create-header-title">
+            Pengajuan Menjadi Seller
+        </div>
+        <div class="create-header-spacer"></div>
+    </div>
 
     <div class="seller-request-container">
         <div class="request-card">
-            <!-- Header -->
-            <div class="request-header">
-                <h2><i class="fas fa-user-tie"></i> Pengajuan Menjadi Seller</h2>
-                <p>Upload KTP Anda untuk verifikasi identitas</p>
-            </div>
-
             <div class="request-body">
                 @if (session('error'))
                     <div class="alert alert-danger">
@@ -393,12 +373,10 @@
 
                     <!-- Buttons -->
                     <div class="btn-group">
-                        <a href="{{ route('home') }}" class="btn btn-back">
-                            <i class="fas fa-arrow-left"></i>
+                        <a href="{{ route('profile.index') }}" class="btn btn-back">
                             <span>Kembali</span>
                         </a>
                         <button type="submit" class="btn btn-submit" id="submit-btn">
-                            <i class="fas fa-paper-plane"></i>
                             <span>Kirim Pengajuan</span>
                         </button>
                     </div>

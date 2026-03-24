@@ -466,6 +466,7 @@
     .btn-logout {
         background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
         color: #fff;
+        max-width: 100px;
         box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
     }
     
@@ -640,101 +641,91 @@
             </div>
         </div>
 
-        <!-- SELLER REQUEST SECTION -->
-        @auth
-        <div class="seller-request-card">
-            <div class="seller-request-title">
-                <i class="fa fa-store" style="color: #f5576c;"></i>
-                Jadi Seller
-            </div>
-            
-            @if(Auth::user()->role === 'seller')
-                <!-- Sudah Seller -->
-                <div class="seller-request-desc">
-                    Anda sudah terdaftar sebagai seller. Beralih ke akun seller untuk mengelola toko Anda.
-                </div>
-               
-                
-            @elseif($sellerRequest && $sellerRequest->status === 'pending')
-                <!-- Pengajuan Pending -->
-                <div class="seller-request-desc">
-                    Pengajuan Anda untuk menjadi seller sedang ditinjau oleh admin.
-                </div>
-                <span class="seller-status-badge pending">
-                    <i class="fa fa-clock"></i>
-                    Sedang Ditinjau
-                </span>
-                
-            @elseif($sellerRequest && $sellerRequest->status === 'rejected')
-                <!-- Pengajuan Ditolak -->
-                <div class="seller-request-desc">
-                    Pengajuan Anda ditolak. Anda dapat mengajukan ulang untuk menjadi seller.
-                </div>
-                <span class="seller-status-badge rejected">
-                    <i class="fa fa-times-circle"></i>
-                    Ditolak
-                </span>
-                
-                @if($sellerRequest->admin_notes)
-                <div class="rejection-note">
-                    <strong>Alasan Penolakan:</strong>
-                    {{ $sellerRequest->admin_notes }}
-                </div>
-                @endif
-                
-                <a href="{{ route('seller-request.create') }}" class="btn-action seller-action" style="margin-top: 15px;">
-                    <div class="btn-action-left">
-                        <div class="btn-action-icon">
-                            <i class="fa fa-redo"></i>
-                        </div>
-                        <span class="btn-action-text">Ajukan Ulang Jadi Seller</span>
-                    </div>
-                    <i class="fa fa-chevron-right btn-action-arrow"></i>
-                </a>
-                
-            @elseif(Auth::user()->user_verified_at)
-                <!-- Belum Ajukan & Sudah Verifikasi -->
-                <div class="seller-request-desc">
-                    Mulai berjualan dan raih pelanggan lebih banyak dengan menjadi seller.
-                </div>
-                <a href="{{ route('seller-request.create') }}" class="btn-action seller-action" style="margin-top: 10px;">
-                    <div class="btn-action-left">
-                        <div class="btn-action-icon">
-                            <i class="fa fa-store"></i>
-                        </div>
-                        <span class="btn-action-text">Ajukan Jadi Seller</span>
-                    </div>
-                    <i class="fa fa-chevron-right btn-action-arrow"></i>
-                </a>
-                
-            @else
-                <!-- Belum Verifikasi -->
-                <div class="seller-request-desc">
-                    Verifikasi akun Anda terlebih dahulu untuk dapat mengajukan menjadi seller.
-                </div>
-                <div class="verification-notice">
-                    <i class="fa fa-info-circle"></i>
-                    <span>Akun harus diverifikasi oleh admin sebelum dapat mengajukan sebagai seller.</span>
-                </div>
-            @endif
+<!-- SELLER REQUEST SECTION -->
+@auth
+<div class="seller-request-card">
+    <div class="seller-request-title">
+        <i class="fa fa-store" style="color: #f5576c;"></i>
+        Jadi Seller
+    </div>
+    
+    @if(Auth::user()->role === 'seller')
+        <!-- Sudah Seller -->
+        <div class="seller-request-desc">
+            Anda sudah terdaftar sebagai seller. Beralih ke akun seller untuk mengelola toko Anda.
         </div>
-        @endauth
 
-    </div>
+    @elseif($sellerRequest && $sellerRequest->status === 'pending')
+        <!-- Pengajuan Pending -->
+        <div class="seller-request-desc">
+            Pengajuan Anda untuk menjadi seller sedang ditinjau oleh admin.
+        </div>
+        <span class="seller-status-badge pending">
+            <i class="fa fa-clock"></i>
+            Sedang Ditinjau
+        </span>
+        
+    @elseif($sellerRequest && $sellerRequest->status === 'rejected')
+        <!-- Pengajuan Ditolak -->
+        <div class="seller-request-desc">
+            Pengajuan Anda ditolak. Anda dapat mengajukan ulang untuk menjadi seller.
+        </div>
+        <span class="seller-status-badge rejected">
+            <i class="fa fa-times-circle"></i>
+            Ditolak
+        </span>
+        
+        @if($sellerRequest->admin_notes)
+        <div class="rejection-note">
+            <strong>Alasan Penolakan:</strong>
+            {{ $sellerRequest->admin_notes }}
+        </div>
+        @endif
+        
+        <a href="{{ route('seller-request.create') }}" class="btn-action seller-action" style="margin-top: 15px;">
+            <div class="btn-action-left">
+                <div class="btn-action-icon">
+                    <i class="fa fa-redo"></i>
+                </div>
+                <span class="btn-action-text">Ajukan Ulang Jadi Seller</span>
+            </div>
+            <i class="fa fa-chevron-right btn-action-arrow"></i>
+        </a>
 
-    <!-- Account Actions -->
-    <div class="account-actions">
-        <form action="{{ route('auth.logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-account-action btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-                <i class="fa fa-sign-out-alt"></i>
-                <span>Keluar</span>
-            </button>
-        </form>
-    </div>
+    @else
+        <!-- Belum Ajukan (boleh walau belum verifikasi) -->
+        <div class="seller-request-desc">
+            Mulai berjualan dan raih pelanggan lebih banyak dengan menjadi seller.
+        </div>
+
+        <a href="{{ route('seller-request.create') }}" class="btn-action seller-action" style="margin-top: 10px;">
+            <div class="btn-action-left">
+                <div class="btn-action-icon">
+                    <i class="fa fa-store"></i>
+                </div>
+                <span class="btn-action-text">Ajukan Jadi Seller</span>
+            </div>
+            <i class="fa fa-chevron-right btn-action-arrow"></i>
+        </a>
+    @endif
+</div>
+@endauth
+
+<!-- Account Actions -->
+<div class="account-actions">
+    <form id="logoutForm" action="{{ route('auth.logout') }}" method="POST">
+        @csrf
+        <button type="button" class="btn-account-action btn-logout" onclick="confirmLogout()">
+            <i class="fa fa-sign-out-alt"></i>
+            <span>Keluar</span>
+        </button>
+    </form>
+</div>
 
 </div>
 
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Smooth scroll to top when page loads
@@ -743,6 +734,25 @@ document.addEventListener('DOMContentLoaded', function() {
         behavior: 'smooth'
     });
 });
+</script>
+
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Yakin ingin keluar?',
+        text: "Anda akan logout dari akun ini.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f5576c',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logoutForm').submit();
+        }
+    });
+}
 </script>
 
 @endsection
