@@ -162,7 +162,7 @@
     .submit-btn {
         width: 100%;
         padding: 0.875rem;
-        background: #28a745;
+        background: #A20B0B;
         border: none;
         color: #fff;
         border-radius: 8px;
@@ -178,7 +178,7 @@
     }
     
     .submit-btn:hover {
-        background: #218838;
+        background: #770C0C;
         transform: translateY(-1px);
     }
     
@@ -290,31 +290,6 @@
                     @enderror
                 </div>
             </div>
-
-            {{-- <!-- Images -->
-            <div class="form-card">
-                <div class="form-card-title">Foto Barang</div>
-
-                <input type="file" 
-                       name="images[]" 
-                       id="images" 
-                       multiple 
-                       accept="image/*" 
-                       style="display: none;"
-                       class="@error('images.*') is-invalid @enderror">
-                
-                <label for="images" class="image-upload-section">
-                    <i class="fa fa-camera"></i>
-                    <p>Klik untuk upload foto</p>
-                    <small class="form-hint">Format: JPG, PNG. Max: 2MB per foto</small>
-                </label>
-
-                @error('images.*')
-                <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-
-                <div id="image-preview" class="image-preview-container"></div>
-            </div> --}}
 
             <!-- Status -->
             <div class="form-card">

@@ -241,7 +241,7 @@
     <form action="{{ route('seller.couriers.store') }}" method="POST">
         @csrf
         <input type="hidden" name="from" value="{{ request('from') }}">
-
+        <input type="hidden" name="id" value="{{ request('id') }}">
 
         <div class="form-card">
             <div class="form-section-title">

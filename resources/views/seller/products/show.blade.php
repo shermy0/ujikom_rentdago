@@ -1,41 +1,12 @@
+
 @extends('frontend.masterseller')
 
 @section('content')
 <style>
     .product-detail-container {
-        background: #f5f5f5;
-        min-height: 100vh;
-        padding-bottom: 2rem;
-    }
-    
-    .detail-header-bar {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .detail-header-back a {
-        color: #fff;
-        font-size: 20px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-    }
-    
-    .detail-header-title {
-        flex: 1;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 600;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 0;
     }
     
     .image-gallery {
@@ -90,7 +61,7 @@
     
     .thumbnail.active,
     .thumbnail:hover {
-        border-color: #ff5722;
+        border-color: #770C0C;
     }
     
     .detail-section {
@@ -132,7 +103,7 @@
     }
     
     .product-code-badge {
-        background: #007bff;
+        background: #770C0C;
         color: #fff;
         padding: 0.5rem 1rem;
         border-radius: 8px;
@@ -158,51 +129,7 @@
         background: #fff3cd;
         color: #856404;
     }
-    
-    .action-buttons {
-        background: #fff;
-        padding: 1rem;
-        display: flex;
-        gap: 0.75rem;
-        position: sticky;
-        bottom: 0;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .btn-action-large {
-        flex: 1;
-        padding: 0.875rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        font-weight: 500;
-        cursor: pointer;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        transition: all 0.2s;
-    }
-    
-    .btn-edit-large {
-        background: #007bff;
-        color: #fff;
-    }
-    
-    .btn-edit-large:hover {
-        background: #0056b3;
-    }
-    
-    .btn-delete-large {
-        background: #dc3545;
-        color: #fff;
-    }
-    
-    .btn-delete-large:hover {
-        background: #c82333;
-    }
-
+/* 
     .btn-qr-large {
         background: #28a745;
         color: #fff;
@@ -211,7 +138,7 @@
     .btn-qr-large:hover {
         background: #218838;
     }
-    
+     */
     .description-text {
         line-height: 1.6;
         color: #555;
@@ -224,8 +151,8 @@
     }
     
     .category-badge {
-        background: #e7f3ff;
-        color: #007bff;
+        background: #ffe7e7;
+        color: #770C0C;
         padding: 0.5rem 1rem;
         border-radius: 8px;
         display: inline-flex;
@@ -286,22 +213,36 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
+            .detail-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+                .content-section {
+            padding: 1rem;
+        }
+
 </style>
 
 <div class="product-detail-container">
     <!-- Header -->
-    <div class="detail-header-bar">
-        <div class="detail-header-back">
+        <div class="create-header-bar">
+        <div class="create-header-back">
             <a href="{{ route('seller.products.index') }}">
                 <i class="fa fa-arrow-left"></i>
             </a>
         </div>
-        <div class="detail-header-title">
+        <div class="create-header-title">
             Detail Produk
         </div>
+        <div class="create-header-spacer"></div>
     </div>
+        <div class="content-section">
 
     <!-- Image Gallery -->
+    <div class="detail-card">
     <div class="image-gallery">
         @if($product->images->count() > 0)
             <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
@@ -325,33 +266,10 @@
             </div>
         @endif
     </div>
-
-    <!-- QR Code Section -->
-    <div class="qr-code-section">
-        <div class="detail-section-title">
-            <i class="fa fa-qrcode"></i> QR Code Barang
-        </div>
-        <div class="qr-code-container">
-            <img src="{{ route('seller.products.qr.generate', $product->id) }}" 
-                 alt="QR Code {{ $product->code }}"
-                 class="qr-code-image">
-            
-            <p class="qr-info-text">
-                <i class="fa fa-info-circle"></i>
-                QR Code ini berisi kode barang: <strong>{{ $product->code }}</strong><br>
-                Scan untuk melihat kode produk secara instan
-            </p>
-            
-            <a href="{{ route('seller.products.qr.download', $product->id) }}" 
-               class="qr-download-btn"
-               download>
-                <i class="fa fa-download"></i>
-                Download QR Code
-            </a>
-        </div>
     </div>
 
     <!-- Basic Info -->
+        <div class="detail-card">
     <div class="detail-section">
         <div class="detail-section-title">Informasi Dasar</div>
         
@@ -387,8 +305,10 @@
             </div>
         </div>
     </div>
+        </div>
 
     <!-- Description -->
+        <div class="detail-card">
     <div class="detail-section">
         <div class="detail-section-title">Deskripsi</div>
         @if($product->description)
@@ -427,11 +347,13 @@
             <div class="detail-value">{{ $product->updated_at->format('d M Y, H:i') }}</div>
         </div>
     </div>
+        </div>
+        </div>
 
     <!-- Action Buttons -->
     <div class="action-buttons">
         <a href="{{ route('seller.products.edit', $product->id) }}" 
-           class="btn-action-large btn-edit-large">
+           class="btn-large-action btn-large-edit">
             <i class="fa fa-edit"></i>
             Edit
         </a>
@@ -442,7 +364,7 @@
               style="flex: 1;">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-action-large btn-delete-large" style="width: 100%;">
+            <button type="submit" class="btn-large-action btn-large-delete" style="width: 100%;">
                 <i class="fa fa-trash"></i>
                 Hapus
             </button>

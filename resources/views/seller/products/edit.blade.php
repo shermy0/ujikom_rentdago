@@ -8,43 +8,6 @@
             padding: 0;
         }
 
-        .edit-header-bar {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .edit-header-back {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .edit-header-back a {
-            color: #fff;
-            font-size: 20px;
-            text-decoration: none;
-        }
-
-        .edit-header-title {
-            flex: 1;
-            text-align: center;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .edit-header-spacer {
-            width: 40px;
-        }
-
         .form-section {
             padding: 1rem;
         }
@@ -100,7 +63,7 @@
         .form-select:focus,
         .form-textarea:focus {
             outline: none;
-            border-color: #ff5722;
+            border-color: #721c24;
             box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
         }
 
@@ -155,7 +118,7 @@
         }
 
         .badge-count {
-            background: #ff5722;
+            background: #770C0C;
             color: white;
             padding: 0.125rem 0.5rem;
             border-radius: 12px;
@@ -223,7 +186,7 @@
         }
 
         .image-upload-section:hover {
-            border-color: #ff5722;
+            border-color: #770C0C;
             background: #fff5f2;
         }
 
@@ -307,7 +270,7 @@
         .submit-btn {
             width: 100%;
             padding: 0.875rem;
-            background: #007bff;
+            background: #A20B0B;
             border: none;
             color: #fff;
             border-radius: 8px;
@@ -323,7 +286,7 @@
         }
 
         .submit-btn:hover {
-            background: #0056b3;
+            background: #770C0C;
             transform: translateY(-1px);
         }
 
@@ -349,7 +312,7 @@
             background: #f8f9fa;
             padding: 0.75rem 1rem;
             border-radius: 8px;
-            color: #007bff;
+            color: #A20B0B;
             font-weight: 500;
             font-family: monospace;
         }
@@ -362,7 +325,7 @@
 
         .info-box {
             background: #e7f3ff;
-            border-left: 4px solid #007bff;
+            border-left: 4px solid #004085;
             padding: 1rem;
             border-radius: 4px;
             margin-top: 1rem;
@@ -434,7 +397,7 @@
                     <div class="form-group">
                         <label class="form-label">Kode Barang</label>
                         <div class="code-display">{{ $product->code }}</div>
-                        <small class="form-hint">⚡ Kode akan berubah otomatis jika kategori diubah</small>
+                        <small class="form-hint">Kode akan berubah otomatis jika kategori diubah</small>
                     </div>
 
                     <div class="form-group">
@@ -495,7 +458,7 @@
 
                 <!-- Images -->
                 <div class="form-card">
-                    <div class="form-card-title">📸 Foto Barang</div>
+                    <div class="form-card-title">Foto Barang</div>
 
                     @if ($product->images->count() > 0)
                         <div class="images-section-title">
@@ -515,7 +478,7 @@
                         </div>
 
                         <div class="info-box">
-                            <p><strong>ℹ️ Catatan:</strong> Foto lama akan tetap ada. Anda bisa hapus foto yang tidak
+                            <p><strong>ℹCatatan:</strong> Foto lama akan tetap ada. Anda bisa hapus foto yang tidak
                                 diinginkan atau tambah foto baru.</p>
                         </div>
 
@@ -556,7 +519,7 @@
                             <input type="checkbox" name="is_maintenance" id="is_maintenance" value="1"
                                 {{ old('is_maintenance', $product->is_maintenance) ? 'checked' : '' }}>
                             <label for="is_maintenance" class="form-label">
-                                🔧 Barang sedang maintenance
+                                Barang sedang maintenance
                             </label>
                         </div>
                         <small class="form-hint">Centang jika barang sedang dalam perbaikan/maintenance dan tidak bisa

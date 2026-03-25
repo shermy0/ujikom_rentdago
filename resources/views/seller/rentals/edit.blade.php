@@ -68,7 +68,7 @@
         }
 
         .form-card-title i {
-            color: #ff5722;
+            color: #A20B0B;
         }
 
         .form-group {
@@ -105,7 +105,7 @@
         .form-input:focus,
         .form-select:focus {
             outline: none;
-            border-color: #ff5722;
+            border-color: #A20B0B;
             box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
         }
 
@@ -181,14 +181,14 @@
         }
 
         .checkbox-option label:hover {
-            border-color: #ff8a65;
+            border-color: #A20B0B;
             background: #fff5f2;
         }
 
         .checkbox-option input[type="checkbox"]:checked+label {
-            border-color: #ff5722;
+            border-color: #770C0C;
             background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            color: #ff5722;
+            color: #770C0C;
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(255, 87, 34, 0.2);
         }
@@ -203,7 +203,7 @@
             right: 8px;
             width: 24px;
             height: 24px;
-            background: #ff5722;
+            background: #770C0C;
             color: #fff;
             border-radius: 50%;
             display: flex;
@@ -230,7 +230,7 @@
         .submit-btn {
             width: 100%;
             padding: 0.875rem;
-            background: #007bff;
+            background: #A20B0B;
             border: none;
             color: #fff;
             border-radius: 8px;
@@ -246,7 +246,7 @@
         }
 
         .submit-btn:hover {
-            background: #0056b3;
+            background: #770C0C;
             transform: translateY(-1px);
         }
 
@@ -299,6 +299,28 @@
             font-size: 0.85rem;
             color: #6c757d;
         }
+
+                /* Disabled delivery style */
+.checkbox-option.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.checkbox-option.disabled label {
+    cursor: not-allowed;
+}
+
+.delivery-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
     </style>
 
     <div class="edit-rental-container">
@@ -326,8 +348,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('seller.rentals.update', $rental->id) }}" method="POST">
-                @csrf
+<form id="rentalForm" action="{{ route('seller.rentals.update', $rental->id) }}" method="POST">                @csrf
                 @method('PUT')
 
                 <!-- Product Info -->
@@ -452,34 +473,60 @@
                         <small class="form-hint" style="margin-bottom: 1rem; display: block;">
                             <i class="fa fa-info-circle"></i> Anda bisa memilih salah satu atau keduanya
                         </small>
-                        <div class="checkbox-group">
-                            <div class="checkbox-option">
-                                <input type="checkbox" name="is_delivery[]" id="pickup" value="pickup"
-                                    {{ (is_array(old('is_delivery')) && in_array('pickup', old('is_delivery'))) ||
-                                    (!old('is_delivery') && ($rental->is_delivery === 'pickup' || $rental->is_delivery === 'both'))
-                                        ? 'checked'
-                                        : '' }}>
-                                <label for="pickup">
-                                    <div class="icon">
-                                        <i class="fa fa-walking"></i>
-                                    </div>
-                                    <div class="text">Ambil Sendiri</div>
-                                </label>
-                            </div>
-                            <div class="checkbox-option">
-                                <input type="checkbox" name="is_delivery[]" id="delivery" value="delivery"
-                                    {{ (is_array(old('is_delivery')) && in_array('delivery', old('is_delivery'))) ||
-                                    (!old('is_delivery') && ($rental->is_delivery === 'delivery' || $rental->is_delivery === 'both'))
-                                        ? 'checked'
-                                        : '' }}>
-                                <label for="delivery">
-                                    <div class="icon">
-                                        <i class="fa fa-truck"></i>
-                                    </div>
-                                    <div class="text">Antar</div>
-                                </label>
-                            </div>
-                        </div>
+                       <div class="checkbox-group">
+    {{-- PICKUP --}}
+    <div class="checkbox-option">
+        <input type="checkbox" name="is_delivery[]" id="pickup" value="pickup"
+            {{ (is_array(old('is_delivery')) && in_array('pickup', old('is_delivery'))) ||
+            (!old('is_delivery') && ($rental->is_delivery === 'pickup' || $rental->is_delivery === 'both'))
+                ? 'checked'
+                : '' }}>
+        <label for="pickup">
+            <div class="icon">
+                <i class="fa fa-walking"></i>
+            </div>
+            <div class="text">Ambil Sendiri</div>
+        </label>
+    </div>
+
+    {{-- DELIVERY --}}
+    <div class="checkbox-option {{ !$hasCourier ? 'disabled' : '' }}">
+        <input type="checkbox"
+            name="is_delivery[]"
+            id="delivery"
+            value="delivery"
+            {{ !$hasCourier ? 'disabled' : '' }}
+            {{ (is_array(old('is_delivery')) && in_array('delivery', old('is_delivery'))) ||
+            (!old('is_delivery') && ($rental->is_delivery === 'delivery' || $rental->is_delivery === 'both'))
+                ? 'checked'
+                : '' }}>
+        <label for="delivery">
+            <div class="icon">
+                <i class="fa fa-truck"></i>
+            </div>
+            <div class="text">Antar</div>
+        </label>
+    </div>
+</div>
+@if(!$hasCourier)
+<div class="delivery-warning">
+    <i class="fa fa-info-circle"></i>
+    Tambahkan kurir terlebih dahulu untuk mengaktifkan metode antar.
+
+    <button type="button"
+        id="btnGoAddCourier"
+        style="margin-left:auto;
+               background:#856404;
+               color:white;
+               border:none;
+               padding:4px 10px;
+               border-radius:6px;
+               font-size:0.75rem;
+               cursor:pointer;">
+        Tambah Kurir
+    </button>
+</div>
+@endif
                         @error('is_delivery')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -494,4 +541,74 @@
             </form>
         </div>
     </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("rentalForm");
+    if (!form) return;
+
+    const STORAGE_KEY = "rentalEditDraft";
+
+    function saveForm() {
+        const data = new FormData(form);
+        const obj = {};
+
+        data.forEach((value, key) => {
+            if (obj[key]) {
+                if (!Array.isArray(obj[key])) {
+                    obj[key] = [obj[key]];
+                }
+                obj[key].push(value);
+            } else {
+                obj[key] = value;
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    }
+
+    // RESTORE
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        const data = JSON.parse(saved);
+
+        Object.keys(data).forEach(name => {
+
+            const checkboxes = form.querySelectorAll(`[name="${name}[]"]`);
+            if (checkboxes.length) {
+                checkboxes.forEach(cb => {
+                    if (Array.isArray(data[name])) {
+                        cb.checked = data[name].includes(cb.value);
+                    } else {
+                        cb.checked = cb.value === data[name];
+                    }
+                });
+                return;
+            }
+
+            const input = form.querySelector(`[name="${name}"]`);
+            if (input) {
+                input.value = data[name];
+            }
+        });
+    }
+
+    // BUTTON TAMBAH KURIR
+    const btnCourier = document.getElementById("btnGoAddCourier");
+
+    if (btnCourier) {
+        btnCourier.addEventListener("click", function () {
+            saveForm();
+            window.location.href = "{{ route('seller.couriers.create') }}?from=edit_rental&id={{ $rental->id }}";
+        });
+    }
+
+    // CLEAR STORAGE
+    form.addEventListener("submit", function () {
+        localStorage.removeItem(STORAGE_KEY);
+    });
+
+});
+</script>
 @endsection

@@ -163,24 +163,30 @@ if (in_array('delivery', $deliveryTypes)) {
             ->with('success', 'Paket rental berhasil ditambahkan!');
     }
 
-    public function edit($id)
-    {
-        $shop = Auth::user()->shop;
+public function edit($id)
+{
+    $shop = Auth::user()->shop;
 
-        if (!$shop) {
-            return redirect()
-                ->route('seller.dashboard.index')
-                ->with('error', 'Buka toko terlebih dahulu.');
-        }
-
-        $rental = ProductRental::with('product.category', 'product.images')
-            ->whereHas('product', function ($q) use ($shop) {
-                $q->where('shop_id', $shop->id);
-            })
-            ->findOrFail($id);
-
-        return view('seller.rentals.edit', compact('rental'))->with('title', 'Edit Paket Sewa');
+    if (!$shop) {
+        return redirect()
+            ->route('seller.dashboard.index')
+            ->with('error', 'Buka toko terlebih dahulu.');
     }
+
+    $rental = ProductRental::with('product.category', 'product.images')
+        ->whereHas('product', function ($q) use ($shop) {
+            $q->where('shop_id', $shop->id);
+        })
+        ->findOrFail($id);
+
+    // ✅ TAMBAH INI
+    $hasCourier = Courier::where('shop_id', $shop->id)
+        ->where('status', 'active')
+        ->exists();
+
+    return view('seller.rentals.edit', compact('rental', 'hasCourier'))
+        ->with('title', 'Edit Paket Sewa');
+}
 
     public function update(Request $request, $id)
     {

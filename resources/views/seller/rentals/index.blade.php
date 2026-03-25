@@ -207,36 +207,6 @@
             color: #dc3545;
         }
 
-        /* .rental-actions {
-            display: flex;
-            gap: 0.5rem;
-        } */
-/* 
-        .btn-action {
-            flex: 1;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.25rem;
-            transition: all 0.2s;
-        }
-
-        .btn-edit {
-            background: #007bff;
-            color: #fff;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: #fff;
-        } */
-
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;

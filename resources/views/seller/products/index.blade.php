@@ -100,16 +100,18 @@
     .products-list {
         padding: 0 1rem 5rem 1rem;
     }
+
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     
-    .product-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        display: flex;
-        gap: 1rem;
-    }
+    display: flex;
+    gap: 1rem;
+    position: relative; /* penting buat positioning */
+}
     
     .product-image {
         width: 80px;
@@ -125,10 +127,12 @@
         font-size: 2rem;
     }
     
-    .product-details {
-        flex: 1;
-        min-width: 0;
-    }
+.product-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
     
     .product-code {
         font-size: 0.75rem;
@@ -174,13 +178,14 @@
         color: #856404;
     }
     
-    .product-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        justify-content: center;
-    }
-    
+.product-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+
+    display: flex;
+    gap: 0.4rem;
+}  
     .empty-state {
         text-align: center;
         padding: 3rem 1rem;
@@ -326,8 +331,8 @@
                 @endif
 
                 <div class="product-details">
-                    <div class="product-code">{{ $product->code }}</div>
                     <div class="product-name">{{ $product->name }}</div>
+                    <div class="product-code">{{ $product->code }}</div>
                     <div class="product-category">
                         <i class="fa fa-tag"></i> {{ $product->category->name }}
                     </div>

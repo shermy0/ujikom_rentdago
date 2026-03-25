@@ -1,3 +1,4 @@
+
 @extends('frontend.masterseller')
 
 @section('content')
@@ -8,46 +9,8 @@
             padding: 0;
         }
 
-        .show-header-bar {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .show-header-back {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .show-header-back a {
-            color: #fff;
-            font-size: 20px;
-            text-decoration: none;
-        }
-
-        .show-header-title {
-            flex: 1;
-            text-align: center;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .show-header-spacer {
-            width: 40px;
-        }
-
         .content-section {
             padding: 1rem;
-            padding-bottom: 5rem;
         }
 
         .detail-card {
@@ -69,7 +32,7 @@
         }
 
         .detail-card-title i {
-            color: #ff5722;
+            color: #A20B0B;
         }
 
         .form-label {
@@ -155,9 +118,9 @@
 
         .info-item {
             padding: 1rem;
-            background: #f8f9fa;
+            background: #faf8f8;
             border-radius: 8px;
-            border-left: 4px solid #ff5722;
+            border-left: 4px solid #A20B0B;
         }
 
         .info-label {
@@ -204,7 +167,7 @@
         }
 
         .delivery-method-display.active {
-            border-color: #ff5722;
+            border-color: #A20B0B;
             background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
         }
 
@@ -215,72 +178,13 @@
         }
 
         .delivery-method-display.active .icon {
-            color: #ff5722;
+            color: #A20B0B;
         }
 
         .delivery-method-display .text {
             font-size: 0.9rem;
             font-weight: 500;
             color: #333;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #fff;
-            padding: 1rem;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            gap: 0.75rem;
-            z-index: 999;
-        }
-
-        .btn-action {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-        }
-
-        .btn-back {
-            background: #6c757d;
-            color: #fff;
-        }
-
-        .btn-back:hover {
-            background: #545b62;
-            transform: translateY(-1px);
-        }
-
-        .btn-edit {
-            background: #007bff;
-            color: #fff;
-        }
-
-        .btn-edit:hover {
-            background: #0056b3;
-            transform: translateY(-1px);
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: #fff;
-        }
-
-        .btn-delete:hover {
-            background: #c82333;
-            transform: translateY(-1px);
         }
 
         /* Additional Info */
@@ -443,19 +347,19 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <a href="{{ route('seller.rentals.index') }}" class="btn-action btn-back">
+            <a href="{{ route('seller.rentals.index') }}" class="btn-large-action btn-large-back">
                 <i class="fa fa-arrow-left"></i>
                 <span>Kembali</span>
             </a>
-            <a href="{{ route('seller.rentals.edit', $rental->id) }}" class="btn-action btn-edit">
+            <a href="{{ route('seller.rentals.edit', $rental->id) }}" class="btn-large-action btn-large-edit">
                 <i class="fa fa-edit"></i>
                 <span>Edit</span>
             </a>
-            <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST" style="flex: 1;"
+            <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST"
                 onsubmit="return confirm('Yakin ingin menghapus paket rental ini?')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn-action btn-delete">
+                <button type="submit" class="btn-large-action btn-large-delete">
                     <i class="fa fa-trash"></i>
                     <span>Hapus</span>
                 </button>

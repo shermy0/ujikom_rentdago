@@ -174,12 +174,20 @@ class CourierController extends Controller
             } else {
                 $successMessage .= ' Namun gagal mengirim password ke WhatsApp. Silakan reset password manual.';
             }
+// PRIORITAS REDIRECT BERDASARKAN ASAL HALAMAN
 if ($request->from === 'rental') {
     return redirect()
         ->route('seller.rentals.create')
         ->with('success', 'Kurir berhasil ditambahkan. Silakan lanjutkan pembuatan paket rental.');
 }
 
+if ($request->from === 'edit_rental' && $request->id) {
+    return redirect()
+        ->route('seller.rentals.edit', $request->id)
+        ->with('success', 'Kurir berhasil ditambahkan. Silakan lanjutkan edit paket rental.');
+}
+
+// DEFAULT
 return redirect()
     ->route('seller.couriers.index')
     ->with('success', $successMessage);
