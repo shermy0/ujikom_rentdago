@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class SellerProductController extends Controller
 {
@@ -74,41 +74,7 @@ class SellerProductController extends Controller
         return view('seller.products.show', compact('product'))->with('title', 'Detail Produk');;
     }
 
-    // Method baru untuk download QR Code
-    public function downloadQrCode($id)
-    {
-        $shop = Auth::user()->shop;
-        $product = Product::where('shop_id', $shop->id)->findOrFail($id);
 
-        // Generate QR Code dengan HANYA kode produk
-        $qrCode = QrCode::format('png')
-            ->size(400)
-            ->margin(2)
-            ->errorCorrection('H')
-            ->generate($product->code);
-
-        $filename = 'qrcode-' . $product->code . '.png';
-
-        return response($qrCode)
-            ->header('Content-Type', 'image/png')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-    }
-
-    // Method untuk generate QR Code inline (untuk ditampilkan di view)
-    public function generateQrCode($id)
-    {
-        $shop = Auth::user()->shop;
-        $product = Product::where('shop_id', $shop->id)->findOrFail($id);
-
-        // Generate QR Code dengan HANYA kode produk
-        $qrCode = QrCode::format('svg')
-            ->size(300)
-            ->margin(1)
-            ->errorCorrection('H')
-            ->generate($product->code);
-
-        return response($qrCode)->header('Content-Type', 'image/svg+xml');
-    }
 
     public function create()
     {

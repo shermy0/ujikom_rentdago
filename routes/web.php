@@ -308,11 +308,7 @@ Route::middleware(['auth', 'role:seller'])
             Route::put('/{id}', [SellerProductController::class, 'update'])->name('update');
             Route::delete('/{id}', [SellerProductController::class, 'destroy'])->name('destroy');
             Route::delete('/images/{id}', [SellerProductController::class, 'deleteImage'])->name('images.destroy');
-            Route::get('products/{id}/qr/generate', [SellerProductController::class, 'generateQrCode'])
-                ->name('qr.generate');
 
-            Route::get('products/{id}/qr/download', [SellerProductController::class, 'downloadQrCode'])
-                ->name('qr.download');
         });
 
         // Chat Routes
