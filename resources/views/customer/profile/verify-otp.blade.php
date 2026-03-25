@@ -2,148 +2,259 @@
 @section('navbot')
     @include('frontend.navbot')
 @endsection
-@section('navbar')
-    <div class="mobile-top-header">
-        <a href="{{ $isPasswordReset ?? false ? route('profile.reset.password') : route('profile.edit') }}" style="color: #fff; font-size: 20px; margin-right: 15px;">
-            <i class="fa fa-arrow-left"></i>
-        </a>
-        <span style="color: #fff; font-size: 16px; font-weight: 500;">
-            {{ $isPasswordReset ?? false ? 'Verifikasi Reset Password' : 'Verifikasi Perubahan Nomor' }}
-        </span>
-    </div>
-@endsection
 
 @section('content')
-<div class="container py-4" style="background: #fff; min-height: calc(100vh - 115px);">
+<style>
+    .edit-profile-container {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding-bottom: 80px;
+    }
+    .edit-header {
+        background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+        padding: 20px;
+        position: relative;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding-bottom: 70px;
+    }
+    .edit-header-top {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .header-back-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-decoration: none;
+        backdrop-filter: blur(10px);
+    }
+    .header-back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+    .header-title-text {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        margin-left: 15px;
+        letter-spacing: 0.5px;
+    }
+    .form-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        margin: -50px 15px 20px 15px;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -60px auto 20px auto;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .icon-wrapper.mode-reset,
+    .icon-wrapper.mode-phone {
+        background: #fff3f0;
+        color: #ff5722;
+    }
+    .icon-wrapper i {
+        font-size: 35px;
+    }
+    .otp-input {
+        width: 45px;
+        height: 55px;
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        border: 2px solid #edf2f7;
+        border-radius: 12px;
+        background: #f8f9fa;
+        color: #2d3748;
+        transition: all 0.3s;
+        padding: 0;
+    }
+    .otp-input:focus {
+        background: #fff;
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        outline: none;
+    }
+    .save-wrapper {
+        padding: 0 15px;
+    }
+    .btn-verify {
+        background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+        color: #fff;
+        border: none;
+        width: 100%;
+        padding: 16px;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .btn-verify:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+    }
+    .btn-verify:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .resend-link {
+        font-weight: 700;
+        color: #ff5722;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+    .resend-link:hover {
+        opacity: 0.8;
+    }
+    .step-indicator {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        transition: all 0.3s;
+        z-index: 2;
+    }
+    .step-line {
+        flex: 1;
+        height: 3px;
+        background: #edf2f7;
+        margin: 0 -5px;
+        z-index: 1;
+        transition: all 0.3s;
+    }
+</style>
 
-    <!-- ICON -->
-    <div class="text-center mb-4">
-        <div style="width: 80px; height: 80px; background: {{ $isPasswordReset ?? false ? '#fff3cd' : '#fff3f0' }}; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-            <i class="fa {{ $isPasswordReset ?? false ? 'fa-lock' : 'fa-shield-alt' }}" style="font-size: 35px; color: {{ $isPasswordReset ?? false ? '#ffc107' : '#ff5722' }};"></i>
+<div class="edit-profile-container">
+    <div class="edit-header">
+        <div class="edit-header-top">
+            <a href="{{ $isPasswordReset ?? false ? route('profile.reset.password') : route('profile.edit') }}" class="header-back-btn">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <div class="header-title-text text-truncate">
+                {{ $isPasswordReset ?? false ? 'Verifikasi Reset Password' : 'Verifikasi Perubahan Nomor' }}
+            </div>
         </div>
-        <h4 class="font-weight-bold" style="color: #333;">
-            {{ $isPasswordReset ?? false ? 'Verifikasi untuk Reset Password' : 'Verifikasi Perubahan Nomor' }}
-        </h4>
+    </div>
+
+    <div class="form-card text-center">
+        <!-- ICON -->
+        <div class="icon-wrapper {{ $isPasswordReset ?? false ? 'mode-reset' : 'mode-phone' }}">
+            <i class="fa {{ $isPasswordReset ?? false ? 'fa-lock' : 'fa-shield-alt' }}"></i>
+        </div>
         
+        <h5 class="fw-bold mb-3" style="color: #2d3748;">
+            {{ $isPasswordReset ?? false ? 'Verifikasi Keamanan' : 'Verifikasi Nomor OTP' }}
+        </h5>
+
         @if($isPasswordReset ?? false)
-            <!-- PASSWORD RESET MODE -->
-            <p class="text-muted small">
+            <p class="text-muted small mb-4" style="font-size: 13px;">
                 Kode OTP telah dikirim ke nomor WhatsApp Anda<br>
-                <strong id="phone-display">{{ $phone }}</strong>
+                <strong id="phone-display" style="color: #2d3748; font-size: 14px;">{{ $phone }}</strong>
             </p>
         @else
             <!-- STEP INDICATOR -->
-            <div class="d-flex justify-content-center align-items-center mt-3 mb-3">
-                <div class="step-indicator" id="step-1" style="width: 40px; height: 40px; border-radius: 50%; background: #ff5722; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                    1
-                </div>
-                <div style="width: 50px; height: 2px; background: #ddd;" id="line-1"></div>
-                <div class="step-indicator" id="step-2" style="width: 40px; height: 40px; border-radius: 50%; background: #ddd; color: #999; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                    2
-                </div>
+            <div class="d-flex justify-content-center align-items-center mb-3 px-4">
+                <div class="step-indicator" id="step-1" style="background: #ff5722; color: #fff; box-shadow: 0 2px 8px rgba(255,87,34,0.3);">1</div>
+                <div class="step-line" id="line-1"></div>
+                <div class="step-indicator" id="step-2" style="background: #edf2f7; color: #a0aec0;">2</div>
             </div>
 
-            <p class="text-muted small" id="step-description">
+            <p class="text-muted small mb-3" id="step-description" style="font-size: 13px;">
                 @if(isset($step) && $step == 2)
-                    <strong>Tahap 2:</strong> Kode OTP telah dikirim ke nomor baru Anda<br>
-                    <strong id="phone-display">{{ $phone }}</strong>
+                    <strong style="color: #2d3748;">Tahap 2:</strong> Kode OTP telah dikirim ke nomor baru Anda<br>
+                    <strong id="phone-display" style="color: #2d3748; font-size: 14px;">{{ $phone }}</strong>
                 @else
-                    <strong>Tahap 1:</strong> Kode OTP telah dikirim ke nomor lama Anda<br>
-                    <strong id="phone-display">{{ $phone }}</strong>
+                    <strong style="color: #2d3748;">Tahap 1:</strong> Kode OTP telah dikirim ke nomor lama Anda<br>
+                    <strong id="phone-display" style="color: #2d3748; font-size: 14px;">{{ $phone }}</strong>
                 @endif
             </p>
             
             @if(isset($newPhone))
-            <div class="alert alert-info mt-3" style="border-radius: 10px; font-size: 13px;">
-                <i class="fa fa-info-circle"></i> Nomor akan diubah menjadi: <strong>{{ $newPhone }}</strong>
+            <div class="alert alert-info py-2 px-3 mb-4" style="border-radius: 10px; font-size: 12px; background: #ebf8ff; border: 1px solid #bee3f8; color: #2b6cb0;">
+                <i class="fa fa-info-circle me-1"></i> Nomor akan diubah ke: <strong class="ms-1">{{ $newPhone }}</strong>
             </div>
             @endif
         @endif
-    </div>
 
-    <!-- ALERT ERROR -->
-    <div id="error-alert" class="alert alert-danger" style="display: none; border-radius: 10px;">
-        <small id="error-message"></small>
-    </div>
-
-    <!-- ALERT SUCCESS -->
-    <div id="success-alert" class="alert alert-success" style="display: none; border-radius: 10px;">
-        <small id="success-message"></small>
-    </div>
-
-    <!-- OTP FORM -->
-    <form id="otp-form" action="{{ route('profile.verify.otp.post') }}" method="POST">
-        @csrf
-        <input type="hidden" name="phone" id="phone-input" value="{{ $phone }}">
-        <input type="hidden" name="step" id="step-input" value="{{ $step ?? 1 }}">
-
-        <!-- OTP INPUT -->
-        <div class="form-group">
-            <label class="small font-weight-bold text-center d-block" style="color: #333;">Kode OTP</label>
-            <div class="d-flex justify-content-center gap-2" style="gap: 10px;">
-                <input type="text" 
-                       class="otp-input form-control text-center" 
-                       maxlength="1" 
-                       style="width: 50px; height: 50px; font-size: 24px; font-weight: bold; border: 2px solid #ddd; border-radius: 10px;"
-                       data-index="0"
-                       autofocus>
-                <input type="text" 
-                       class="otp-input form-control text-center" 
-                       maxlength="1" 
-                       style="width: 50px; height: 50px; font-size: 24px; font-weight: bold; border: 2px solid #ddd; border-radius: 10px;"
-                       data-index="1">
-                <input type="text" 
-                       class="otp-input form-control text-center" 
-                       maxlength="1" 
-                       style="width: 50px; height: 50px; font-size: 24px; font-weight: bold; border: 2px solid #ddd; border-radius: 10px;"
-                       data-index="2">
-                <input type="text" 
-                       class="otp-input form-control text-center" 
-                       maxlength="1" 
-                       style="width: 50px; height: 50px; font-size: 24px; font-weight: bold; border: 2px solid #ddd; border-radius: 10px;"
-                       data-index="3">
-                <input type="text" 
-                       class="otp-input form-control text-center" 
-                       maxlength="1" 
-                       style="width: 50px; height: 50px; font-size: 24px; font-weight: bold; border: 2px solid #ddd; border-radius: 10px;"
-                       data-index="4">
-                <input type="text" 
-                       class="otp-input form-control text-center" 
-                       maxlength="1" 
-                       style="width: 50px; height: 50px; font-size: 24px; font-weight: bold; border: 2px solid #ddd; border-radius: 10px;"
-                       data-index="5">
-            </div>
-            <input type="hidden" name="code" id="otp-code">
+        <!-- ALERTS -->
+        <div id="error-alert" class="alert alert-danger py-2" style="display: none; border-radius: 10px; border: none; background: #fff5f5; color: #c53030;">
+            <small id="error-message" class="fw-bold"><i class="fa fa-exclamation-circle me-1"></i>Error</small>
         </div>
 
-        <!-- TIMER -->
-        <div class="text-center mt-3 mb-3">
-            <small class="text-muted">
-                Kode akan kedaluwarsa dalam <span id="timer" style="color: {{ $isPasswordReset ?? false ? '#ffc107' : '#ff5722' }}; font-weight: bold;">01:00</span>
+        <div id="success-alert" class="alert alert-success py-2" style="display: none; border-radius: 10px; border: none; background: #f0fff4; color: #2f855a;">
+            <small id="success-message" class="fw-bold"><i class="fa fa-check-circle me-1"></i>Success</small>
+        </div>
+
+        <!-- OTP FORM -->
+        <form id="otp-form" action="{{ route('profile.verify.otp.post') }}" method="POST">
+            @csrf
+            <input type="hidden" name="phone" id="phone-input" value="{{ $phone }}">
+            <input type="hidden" name="step" id="step-input" value="{{ $step ?? 1 }}">
+
+            <div class="mb-4">
+                <label class="form-label text-uppercase fw-bold text-muted mb-3" style="font-size: 11px; letter-spacing: 1px;">Masukkan Kode 6 Digit</label>
+                <div class="d-flex justify-content-center gap-2">
+                    <input type="text" class="otp-input form-control {{ $isPasswordReset ?? false ? 'mode-reset' : '' }}" maxlength="1" data-index="0" autofocus>
+                    <input type="text" class="otp-input form-control {{ $isPasswordReset ?? false ? 'mode-reset' : '' }}" maxlength="1" data-index="1">
+                    <input type="text" class="otp-input form-control {{ $isPasswordReset ?? false ? 'mode-reset' : '' }}" maxlength="1" data-index="2">
+                    <input type="text" class="otp-input form-control {{ $isPasswordReset ?? false ? 'mode-reset' : '' }}" maxlength="1" data-index="3">
+                    <input type="text" class="otp-input form-control {{ $isPasswordReset ?? false ? 'mode-reset' : '' }}" maxlength="1" data-index="4">
+                    <input type="text" class="otp-input form-control {{ $isPasswordReset ?? false ? 'mode-reset' : '' }}" maxlength="1" data-index="5">
+                </div>
+                <input type="hidden" name="code" id="otp-code">
+            </div>
+
+            <!-- TIMER -->
+            <div class="mb-4">
+                <small class="text-muted" style="font-size: 13px;">
+                    Kode akan kedaluwarsa dalam <span id="timer" style="color: #ff5722; font-weight: 700; font-size: 14px;">01:00</span>
+                </small>
+            </div>
+
+            <!-- BUTTON -->
+            <button type="submit" id="verify-btn" class="btn-verify" disabled>
+                <i class="fa fa-check-circle me-1"></i>
+                <span id="btn-text">{{ $isPasswordReset ?? false ? 'Verifikasi OTP' : 'Verifikasi Nomor Lama' }}</span>
+            </button>
+        </form>
+
+        <!-- RESEND OTP -->
+        <div class="mt-4">
+            <small class="text-muted" style="font-size: 13px;">
+                Belum menerima kode?
+                <a href="#" id="resend-otp" class="resend-link ms-1" style="pointer-events: none; opacity: 0.5;">
+                    Kirim Ulang
+                </a>
             </small>
         </div>
-
-        <!-- BUTTON -->
-        <button type="submit"
-                id="verify-btn"
-                class="btn btn-block text-white rounded-pill mt-4"
-                style="background:{{ $isPasswordReset ?? false ? '#ffc107' : '#ff5722' }}; height: 45px; font-weight: 500;"
-                disabled>
-            <span id="btn-text">{{ $isPasswordReset ?? false ? 'Verifikasi OTP' : 'Verifikasi Nomor Lama' }}</span>
-        </button>
-    </form>
-
-    <!-- RESEND OTP -->
-    <div class="text-center mt-4">
-        <small class="text-muted">
-            Tidak menerima kode?
-            <a href="#" 
-               id="resend-otp"
-               class="font-weight-bold"
-               style="color:{{ $isPasswordReset ?? false ? '#ffc107' : '#ff5722' }}; pointer-events: none; opacity: 0.5;">
-                Kirim Ulang
-            </a>
-        </small>
     </div>
 </div>
 
@@ -308,7 +419,7 @@ if (resendBtn) {
             title: 'Kirim Ulang OTP?',
             text: 'Kode OTP baru akan dikirim ke nomor ini',
             showCancelButton: true,
-            confirmButtonColor: isPasswordReset ? '#ffc107' : '#ff5722',
+            confirmButtonColor: '#ff5722',
             cancelButtonColor: '#999',
             confirmButtonText: 'Ya, Kirim',
             cancelButtonText: 'Batal'
@@ -360,7 +471,7 @@ if (resendBtn) {
                             resendBtn.style.opacity = '0.5';
                         }
                         if (timerDisplay) {
-                            timerDisplay.style.color = isPasswordReset ? '#ffc107' : '#ff5722';
+                            timerDisplay.style.color = '#ff5722';
                         }
                         
                         // Restart countdown

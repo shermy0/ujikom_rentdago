@@ -2,165 +2,313 @@
 @section('navbot')
     @include('frontend.navbot')
 @endsection
-@section('navbar')
-<div class="mobile-top-header">
-    <div class="header-left" style="flex: none; background: transparent; padding: 0;">
-        <a href="{{ route('profile.edit') }}" style="color: #fff; font-size: 20px;">
-            <i class="fa fa-arrow-left"></i>
-        </a>
-    </div>
-    <div style="flex: 1; text-align: center;">
-        <span style="color: #fff; font-size: 18px; font-weight: 500;">Reset Password</span>
-    </div>
-    <div class="header-right"></div>
-</div>
-@endsection
 
 @section('content')
-<div class="container-fluid p-0">
+<style>
+    .edit-profile-container {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding-bottom: 80px;
+    }
+    .edit-header {
+        background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+        padding: 20px;
+        position: relative;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        box-shadow: 0 4px 20px rgba(238, 77, 45, 0.2);
+        padding-bottom: 60px;
+    }
+    .edit-header-top {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .header-back-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-decoration: none;
+        backdrop-filter: blur(10px);
+    }
+    .header-back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+    .header-title-text {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        margin-left: 15px;
+        letter-spacing: 0.5px;
+    }
+    .form-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        margin: -40px 15px 20px 15px;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .form-label-custom {
+        font-size: 13px;
+        font-weight: 700;
+        color: #4a5568;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .form-control-custom {
+        background: #f8f9fa;
+        border: 2px solid #edf2f7;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 15px;
+        color: #2d3748;
+        transition: all 0.3s;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .form-control-custom:focus {
+        background: #fff;
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        outline: none;
+    }
+    .input-group-custom {
+        display: flex;
+        align-items: stretch;
+        position: relative;
+    }
+    .input-group-custom .form-control-custom {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-right: none;
+    }
+    .input-group-custom .btn-toggle-pw {
+        background: #f8f9fa;
+        border: 2px solid #edf2f7;
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+        padding: 0 16px;
+        color: #a0aec0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .input-group-custom .form-control-custom:focus + .btn-toggle-pw {
+        background: #fff;
+        border-color: #ff6b35;
+        border-left: none;
+        box-shadow: 3px 0 0 3px rgba(255,107,53,0.1) inset;
+    }
+    .info-box {
+        background: #ebf8ff;
+        border-left: 4px solid #3182ce;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+    .info-box ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #2b6cb0;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+    .forgot-pw-link {
+        font-size: 13px;
+        color: #3182ce;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        transition: color 0.2s;
+    }
+    .forgot-pw-link:hover {
+        color: #2b6cb0;
+        text-decoration: underline;
+    }
+    .save-wrapper {
+        padding: 0 15px;
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+        color: #fff;
+        border: none;
+        width: 100%;
+        padding: 15px;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+    }
+    .btn-cancel {
+        background: transparent;
+        color: #718096;
+        border: 2px solid #e2e8f0;
+        width: 100%;
+        padding: 15px;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        margin-top: 12px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+    .btn-cancel:hover {
+        background: #f7fafc;
+        color: #4a5568;
+        border-color: #cbd5e0;
+    }
+</style>
+
+<div class="edit-profile-container">
+    <div class="edit-header">
+        <div class="edit-header-top">
+            <a href="{{ route('profile.edit') }}" class="header-back-btn">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <div class="header-title-text">Reset Password</div>
+        </div>
+    </div>
+
     <!-- Alert Messages -->
     @if(session('sukses'))
-    <div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+    <div class="alert alert-success alert-dismissible fade show mx-3 mt-3 shadow-sm" role="alert" style="border-radius: 12px; border: none; z-index: 10; position: relative;">
         <i class="fa fa-check-circle me-2"></i>{{ session('sukses') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
 
     @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3 shadow-sm" role="alert" style="border-radius: 12px; border: none; z-index: 10; position: relative;">
         <i class="fa fa-exclamation-circle me-2"></i>{{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
 
-    <!-- Info Section -->
-    <div class="bg-light p-3 mx-3 mt-3 rounded">
-        <div class="d-flex align-items-start">
-            <i class="fa fa-info-circle text-primary me-2 mt-1"></i>
-            <div>
-                <small class="text-muted">
-                    Untuk keamanan akun Anda, pastikan password baru:
-                </small>
-                <ul class="mb-0 mt-2" style="font-size: 13px;">
+    <form action="{{ route('profile.reset.password') }}" method="POST" id="resetPasswordForm">
+        @csrf
+        @method('PUT')
+        
+        <div class="form-card">
+            <!-- Info Section -->
+            <div class="info-box">
+                <div class="d-flex align-items-start">
+                    <i class="fa fa-info-circle me-2 mt-1" style="color: #3182ce;"></i>
+                    <div style="color: #2b6cb0; font-size: 13px; font-weight: 600;">
+                        Keamanan Akun
+                    </div>
+                </div>
+                <ul>
                     <li>Minimal 8 karakter</li>
                     <li>Berbeda dari password lama</li>
                     <li>Kombinasi huruf dan angka lebih aman</li>
                 </ul>
             </div>
-        </div>
-    </div>
 
-    <!-- Form Section -->
-    <div class="p-3">
-        <form action="{{ route('profile.reset.password') }}" method="POST" id="resetPasswordForm">
-            @csrf
-            @method('PUT')
-            
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <!-- Password Lama -->
-                    <div class="mb-3">
-                        <label for="current_password" class="form-label fw-bold">
-                            Password Lama <span class="text-danger">*</span>
-                        </label>
-                        <div class="input-group">
-                            <input type="password" 
-                                   class="form-control @error('current_password') is-invalid @enderror" 
-                                   id="current_password" 
-                                   name="current_password"
-                                   placeholder="Masukkan password lama"
-                                   required>
-                            <button class="btn btn-outline-secondary" 
-                                    type="button" 
-                                    onclick="togglePassword('current_password')">
-                                <i class="fa fa-eye" id="current_password-icon"></i>
-                            </button>
-                        </div>
-                        @error('current_password')
-                            <div class="text-danger small mt-1">
-                                <i class="fa fa-exclamation-circle me-1"></i>{{ $message }}
-                            </div>
-                        @enderror
-                        
-                        <!-- Link Lupa Password -->
-                        <div class="mt-2">
-                            <a href="#" id="forgot-password-link" class="small text-primary">
-                                <i class="fa fa-question-circle me-1"></i>Lupa password lama? Verifikasi dengan OTP
-                            </a>
-                        </div>
+            <!-- Password Lama -->
+            <div class="mb-4">
+                <label for="current_password" class="form-label-custom">Password Lama <span class="text-danger">*</span></label>
+                <div class="input-group-custom">
+                    <input type="password" 
+                           class="form-control-custom @error('current_password') is-invalid @enderror" 
+                           id="current_password" 
+                           name="current_password"
+                           placeholder="Masukkan password lama"
+                           required>
+                    <button class="btn-toggle-pw" type="button" onclick="togglePassword('current_password')">
+                        <i class="fa fa-eye" id="current_password-icon"></i>
+                    </button>
+                </div>
+                @error('current_password')
+                    <div class="text-danger small mt-1"><i class="fa fa-exclamation-circle me-1"></i>{{ $message }}</div>
+                @enderror
+                <a href="#" id="forgot-password-link" class="forgot-pw-link">
+                    <i class="fa fa-question-circle"></i> Lupa password lama? Verifikasi OTP
+                </a>
+            </div>
+
+            <hr style="border-color: #e2e8f0; margin: 24px 0;">
+
+            <!-- Password Baru -->
+            <div class="mb-4">
+                <label for="new_password" class="form-label-custom">Password Baru <span class="text-danger">*</span></label>
+                <div class="input-group-custom">
+                    <input type="password" 
+                           class="form-control-custom @error('new_password') is-invalid @enderror" 
+                           id="new_password" 
+                           name="new_password"
+                           placeholder="Min. 8 karakter"
+                           required
+                           minlength="8">
+                    <button class="btn-toggle-pw" type="button" onclick="togglePassword('new_password')">
+                        <i class="fa fa-eye" id="new_password-icon"></i>
+                    </button>
+                </div>
+                @error('new_password')
+                    <div class="text-danger small mt-1"><i class="fa fa-exclamation-circle me-1"></i>{{ $message }}</div>
+                @enderror
+                
+                <div class="mt-2">
+                    <div class="progress" style="height: 6px; border-radius: 3px; background-color: #edf2f7;">
+                        <div class="progress-bar" id="password-strength-bar" role="progressbar" style="width: 0%; border-radius: 3px;"></div>
                     </div>
-
-                    <hr class="my-4">
-
-                    <!-- Password Baru -->
-                    <div class="mb-3">
-                        <label for="new_password" class="form-label fw-bold">
-                            Password Baru <span class="text-danger">*</span>
-                        </label>
-                        <div class="input-group">
-                            <input type="password" 
-                                   class="form-control @error('new_password') is-invalid @enderror" 
-                                   id="new_password" 
-                                   name="new_password"
-                                   placeholder="Masukkan password baru (min. 8 karakter)"
-                                   required
-                                   minlength="8">
-                            <button class="btn btn-outline-secondary" 
-                                    type="button" 
-                                    onclick="togglePassword('new_password')">
-                                <i class="fa fa-eye" id="new_password-icon"></i>
-                            </button>
-                        </div>
-                        @error('new_password')
-                            <div class="text-danger small mt-1">
-                                <i class="fa fa-exclamation-circle me-1"></i>{{ $message }}
-                            </div>
-                        @enderror
-                        
-                        <!-- Password Strength Indicator -->
-                        <div class="mt-2">
-                            <div class="progress" style="height: 5px;">
-                                <div class="progress-bar" id="password-strength-bar" role="progressbar" style="width: 0%"></div>
-                            </div>
-                            <small id="password-strength-text" class="text-muted"></small>
-                        </div>
-                    </div>
-
-                    <!-- Konfirmasi Password Baru -->
-                    <div class="mb-0">
-                        <label for="new_password_confirmation" class="form-label fw-bold">
-                            Konfirmasi Password Baru <span class="text-danger">*</span>
-                        </label>
-                        <div class="input-group">
-                            <input type="password" 
-                                   class="form-control" 
-                                   id="new_password_confirmation" 
-                                   name="new_password_confirmation"
-                                   placeholder="Masukkan ulang password baru"
-                                   required
-                                   minlength="8">
-                            <button class="btn btn-outline-secondary" 
-                                    type="button" 
-                                    onclick="togglePassword('new_password_confirmation')">
-                                <i class="fa fa-eye" id="new_password_confirmation-icon"></i>
-                            </button>
-                        </div>
-                        <small class="text-muted">Masukkan password yang sama dengan di atas</small>
-                    </div>
+                    <small id="password-strength-text" class="text-muted d-block mt-1" style="font-size: 11px;"></small>
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="mt-3">
-                <button type="submit" class="btn btn-primary w-100 mb-2">
-                    <i class="fa fa-key me-2"></i>Ubah Password
-                </button>
-                <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary w-100 mb-5">
-                    <i class="fa fa-times me-2"></i>Batal
-                </a>
+            <!-- Konfirmasi Password Baru -->
+            <div class="mb-2">
+                <label for="new_password_confirmation" class="form-label-custom">Konfirmasi Password Baru <span class="text-danger">*</span></label>
+                <div class="input-group-custom">
+                    <input type="password" 
+                           class="form-control-custom" 
+                           id="new_password_confirmation" 
+                           name="new_password_confirmation"
+                           placeholder="Masukkan ulang password baru"
+                           required
+                           minlength="8">
+                    <button class="btn-toggle-pw" type="button" onclick="togglePassword('new_password_confirmation')">
+                        <i class="fa fa-eye" id="new_password_confirmation-icon"></i>
+                    </button>
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="save-wrapper mb-5">
+            <button type="submit" class="btn-save">
+                <i class="fa fa-key"></i> Ubah Password
+            </button>
+            <a href="{{ route('profile.edit') }}" class="btn-cancel">
+                <i class="fa fa-times"></i> Batal
+            </a>
+        </div>
+    </form>
 </div>
 
 @push('scripts')
