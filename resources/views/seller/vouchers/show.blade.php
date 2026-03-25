@@ -25,7 +25,7 @@
 }
 
 .back-button:hover {
-    color: #3b82f6;
+    color: #770C0C;
 }
 
 .detail-card {
@@ -36,7 +36,7 @@
 }
 
 .card-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
     color: white;
     padding: 32px;
 }
@@ -78,7 +78,7 @@
 
 .btn-white {
     background: white;
-    color: #667eea;
+    color: #A20B0B;
     padding: 12px 24px;
     border-radius: 10px;
     text-decoration: none;
@@ -136,7 +136,7 @@
 }
 
 .section-title i {
-    color: #3b82f6;
+    color: #770C0C;
 }
 
 .info-grid {
@@ -149,7 +149,7 @@
     background: #f9fafb;
     padding: 20px;
     border-radius: 12px;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid #770C0C;
 }
 
 .info-label {
@@ -170,7 +170,7 @@
     background: #f9fafb;
     padding: 20px;
     border-radius: 12px;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid #770C0C;
 }
 
 .description-text {
@@ -227,7 +227,7 @@
 .stat-value {
     font-size: 32px;
     font-weight: 700;
-    color: #3b82f6;
+    color: #770C0C;
     margin-bottom: 4px;
 }
 

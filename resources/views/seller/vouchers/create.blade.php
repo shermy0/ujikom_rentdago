@@ -86,7 +86,7 @@
 }
 
 .discount-preview {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
     color: white;
     padding: 24px;
     border-radius: 12px;
@@ -138,13 +138,13 @@
 }
 
 .btn-primary {
-    background: #3b82f6;
+    background: #A20B0B;
     color: white;
     flex: 1;
 }
 
 .btn-primary:hover {
-    background: #2563eb;
+    background: #770C0C;
 }
 
 .btn-secondary {
@@ -219,6 +219,7 @@
         font-size: 36px;
     }
 }
+
 </style>
 
     <!-- Header -->
@@ -278,6 +279,7 @@
                     placeholder="Kosongkan untuk generate otomatis"
                     class="{{ $errors->has('code') ? 'input-error' : '' }}"
                     maxlength="50"
+                    disabled
                 >
                 <div class="form-help">Biarkan kosong untuk membuat kode otomatis</div>
                 @error('code')

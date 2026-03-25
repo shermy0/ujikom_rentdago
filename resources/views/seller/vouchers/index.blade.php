@@ -305,6 +305,17 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    align-items: center; /* Tambahkan ini */
+}
+
+/* Cari bagian ini di CSS kamu dan ganti menjadi: */
+.action-buttons form {
+    display: inline-block; /* Ubah dari flex: 1 ke inline-block */
+    margin: 0;
+}
+
+.action-buttons form button.btn-icon {
+    width: 40px; /* Pastikan width tetap 40px */
 }
 
 .empty-state {
@@ -435,6 +446,13 @@
 .btn-primary:hover i {
     color: #ffffff;
 }
+
+.btn-delete {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
 </style>
 
     <!-- Header -->
@@ -585,7 +603,7 @@
                             </button>
 
                             @if($voucher->usages_count === 0)
-                                <form action="{{ route('seller.vouchers.destroy', $voucher->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus voucher ini?')" style="display: inline;">
+                                <form action="{{ route('seller.vouchers.destroy', $voucher->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus voucher ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-icon btn-delete" title="Hapus">
@@ -604,9 +622,6 @@
         </div>
     @else
         <div class="empty-state">
-            <div class="empty-icon">
-                <i class="fa fa-ticket"></i>
-            </div>
             <h3>Belum Ada Voucher</h3>
             <p>Buat voucher pertama Anda untuk menarik lebih banyak pelanggan!</p>
             <a href="{{ route('seller.vouchers.create') }}" class="btn-primary">

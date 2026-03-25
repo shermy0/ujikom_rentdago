@@ -25,7 +25,7 @@
 }
 
 .back-button:hover {
-    color: #3b82f6;
+    color: #A20B0B;
 }
 
 .edit-card {
@@ -36,7 +36,7 @@
 }
 
 .card-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
     color: white;
     padding: 32px;
 }
@@ -75,7 +75,7 @@
 }
 
 .section-title i {
-    color: #3b82f6;
+    color: #A20B0B;
 }
 
 .form-group {
@@ -110,7 +110,7 @@
 .form-select:focus,
 .form-textarea:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #A20B0B;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -162,7 +162,7 @@
 }
 
 .discount-preview {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #A20B0B 0%, #770C0C 100%);
     color: white;
     padding: 24px;
     border-radius: 12px;
@@ -205,13 +205,13 @@
 }
 
 .btn-primary {
-    background: #3b82f6;
+    background: #A20B0B;
     color: white;
     flex: 1;
 }
 
 .btn-primary:hover {
-    background: #2563eb;
+    background: #770C0C;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
         icon: 'error',
         title: 'Gagal!',
         text: '{{ session("error") }}',
-        confirmButtonColor: '#3b82f6'
+        confirmButtonColor: '#A20B0B'
     });
 </script>
 @endif
