@@ -24,9 +24,7 @@ use App\Http\Controllers\Admin\ReportController;
 
 use App\Http\Controllers\Seller\ScanQRController;
 use App\Http\Controllers\CustomerShopController;
-use App\Http\Controllers\Customer\ChatController;
 use App\Http\Controllers\Seller\SellerNotificationController;
-use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\CourierController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 
@@ -224,10 +222,7 @@ Route::middleware(['auth', 'role:seller'])
             Route::delete('/{id}', [CourierController::class, 'destroy'])->name('destroy');
         });
 
-        Route::get(
-            '/chat/unread-count',
-            [SellerChatController::class, 'getUnreadCount']
-        )->name('chat.unread-count');
+
 
         Route::post(
             '/courier-assignments/{order}/assign-courier',
@@ -311,13 +306,7 @@ Route::middleware(['auth', 'role:seller'])
 
         });
 
-        // Chat Routes
-        // Route untuk Seller Chat
-        Route::prefix('chat')->name('chat.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Seller\SellerChatController::class, 'index'])->name('index');
-            Route::get('/{customerId}', [App\Http\Controllers\Seller\SellerChatController::class, 'show'])->name('show'); // ← customerId, bukan shopId!
-            Route::post('/{customerId}/send', [App\Http\Controllers\Seller\SellerChatController::class, 'send'])->name('send');
-        });
+
 
         // Rentals Routes
         Route::prefix('rentals')->name('rentals.')->group(function () {
@@ -419,12 +408,7 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
     // Shop Profile (bisa diakses semua authenticated user)
     Route::get('/shop/{slug}', [CustomerShopController::class, 'show'])->name('shop.profile');
 
-    // ===============================
-    // 💬 CHAT
-    // ===============================
-    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
-    Route::get('/chat/{shopId}', [ChatController::class, 'show'])->name('chat.show');
-    Route::post('/chat/{shopId}/send', [ChatController::class, 'send'])->name('chat.send');
+
 
     //Vouchers customer route
     Route::prefix('vouchers')->name('vouchers.')->group(function () {

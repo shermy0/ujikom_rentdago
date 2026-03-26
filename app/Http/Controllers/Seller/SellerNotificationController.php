@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\Conversation;
-use App\Models\ChatMessage;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -31,20 +30,18 @@ class SellerNotificationController extends Controller
 
             Log::info('🔍 Fetching all notifications', ['shop_id' => $shop->id]);
 
-            // Get all 3 types
+            // Get all types
             $orderNotifications = $this->getOrderNotifications($shop);
-            $chatNotifications = $this->getChatNotifications($shop);
             $courierNotifications = $this->getCourierNotifications($shop);
 
             Log::info('📊 Notifications breakdown', [
                 'shop_id' => $shop->id,
                 'orders' => count($orderNotifications),
-                'chats' => count($chatNotifications),
                 'courier' => count($courierNotifications)
             ]);
 
             // Merge all
-            $allNotifications = array_merge($orderNotifications, $chatNotifications, $courierNotifications);
+            $allNotifications = array_merge($orderNotifications, $courierNotifications);
 
             // Sort by timestamp (newest first)
             usort($allNotifications, function ($a, $b) {
@@ -148,52 +145,6 @@ class SellerNotificationController extends Controller
     }
 
     /**
-     * Get Chat Notifications
-     */
-    private function getChatNotifications($shop)
-    {
-        try {
-            $conversations = Conversation::where('shop_id', $shop->id)
-                ->with(['customer', 'lastMessage.sender'])
-                ->has('messages')
-                ->orderBy('last_message_at', 'desc')
-                ->limit(10)
-                ->get();
-
-            return $conversations->map(function ($conv) {
-                $unreadCount = ChatMessage::where('conversation_id', $conv->id)
-                    ->where('sender_id', '!=', Auth::id())
-                    ->where('is_read', false)
-                    ->count();
-
-                $customerName = $conv->customer->name ?? 'Customer';
-                $lastMsg = $conv->lastMessage->message ?? 'Pesan baru';
-
-                if (strlen($lastMsg) > 50) {
-                    $lastMsg = substr($lastMsg, 0, 50) . '...';
-                }
-
-                return [
-                    'id' => 'chat-' . $conv->id,
-                    'type' => 'chat',
-                    'subtype' => null,
-                    'title' => "Pesan dari {$customerName}",
-                    'description' => $lastMsg,
-                    'time' => $this->formatTimeAgo($conv->last_message_at),
-                    'timestamp' => $conv->last_message_at
-                        ? Carbon::parse($conv->last_message_at)->toIso8601String()
-                        : now()->toIso8601String(),
-                    'is_read' => $unreadCount === 0,
-                    'url' => '/seller/chat/' . $conv->customer_id
-                ];
-            })->toArray();
-        } catch (\Exception $e) {
-            Log::error('❌ Error getting chat notifications', ['error' => $e->getMessage()]);
-            return [];
-        }
-    }
-
-    /**
      * ✅ Get Courier Notifications (FIXED)
      */
     private function getCourierNotifications($shop)
@@ -266,14 +217,11 @@ class SellerNotificationController extends Controller
             }
 
             $orderIds = [];
-            $conversationIds = [];
             $courierIds = [];
 
             foreach ($notificationIds as $id) {
                 if (strpos($id, 'order-') === 0) {
                     $orderIds[] = str_replace('order-', '', $id);
-                } elseif (strpos($id, 'chat-') === 0) {
-                    $conversationIds[] = str_replace('chat-', '', $id);
                 } elseif (strpos($id, 'courier-') === 0) {
                     $courierIds[] = $id;
                 }
@@ -290,16 +238,6 @@ class SellerNotificationController extends Controller
                     ->update(['is_read_by_seller' => true]);
 
                 $markedCount += $markedOrders;
-            }
-
-            // Mark chats
-            if (!empty($conversationIds)) {
-                $markedMessages = ChatMessage::whereIn('conversation_id', $conversationIds)
-                    ->where('sender_id', '!=', Auth::id())
-                    ->where('is_read', false)
-                    ->update(['is_read' => true]);
-
-                $markedCount += $markedMessages;
             }
 
             // Mark courier notifications
@@ -332,12 +270,7 @@ class SellerNotificationController extends Controller
             $type = $request->input('type');
             $notificationId = $request->input('notification_id');
 
-            if ($type === 'chat') {
-                ChatMessage::where('conversation_id', $notificationId)
-                    ->where('sender_id', '!=', Auth::id())
-                    ->where('is_read', false)
-                    ->update(['is_read' => true]);
-            } elseif ($type === 'order') {
+            if ($type === 'order') {
                 $shop = Auth::user()->shop;
                 Order::where('id', $notificationId)
                     ->whereHas('productRental.product', function ($query) use ($shop) {
