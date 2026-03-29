@@ -28,10 +28,7 @@
                 <i class="fa fa-shopping-bag"></i>
                 <span>Pesanan</span>
             </a>
-            <a href="{{ route('customer.chat.index') }}" class="nav-item {{ Request::routeIs('customer.chat.*') ? 'active' : '' }}">
-                <i class="fa fa-comments"></i>
-                <span>Chat</span>
-            </a>
+
             <a href="{{ route('profile.index') }}" class="nav-item {{ Request::routeIs('profile.*') ? 'active' : '' }}">
                 <i class="fa fa-user"></i>
                 <span>Saya</span>
@@ -47,10 +44,7 @@
             <i class="fas fa-store"></i>
             <span>Pengajuan</span>
         </a>
-        <a href="{{ route('customer.chat.index') }}" class="nav-item {{ Request::routeIs('customer.chat.*') ? 'active' : '' }}">
-            <i class="fa fa-comments"></i>
-            <span>Chat</span>
-        </a>
+
         <a href="{{ route('customer.order.index') }}" class="nav-item {{ Request::routeIs('customer.order.index') ? 'active' : '' }}">
             <i class="fa fa-shopping-bag"></i>
             <span>Pesanan</span>

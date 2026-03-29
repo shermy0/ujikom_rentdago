@@ -676,10 +676,6 @@ $setting = \App\Models\Setting::first();
     }
 
     /* Seller Notification Icons */
-    .notif-icon.chat {
-        background: #f3e5f5;
-        color: #7b1fa2;
-    }
 
     .notif-icon.courier {
         background: #e8f5e9;

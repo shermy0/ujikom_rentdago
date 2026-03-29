@@ -57,26 +57,7 @@
                     </button>
                 </form>
 
-                <a href="{{ route('seller.chat.index') }}"
-                    class="nav-item {{ request()->routeIs('seller.chat.*') ? 'active' : '' }}">
-                    <i class="fa fa-comments"></i>
 
-                    @php
-                    $shop = Auth::user()->shop ?? null;
-                    $unreadChatCount = 0;
-
-                    if ($shop) {
-                    $unreadChatCount = \App\Models\Conversation::where('shop_id', $shop->id)
-                    ->get()
-                    ->sum(function($conversation) {
-                    return $conversation->unreadForSeller();
-                    });
-                    }
-                    @endphp
-                    @if($unreadChatCount > 0)
-                    <span class="badge chat-badge">{{ $unreadChatCount > 99 ? '99+' : $unreadChatCount }}</span>
-                    @endif
-                </a>
 
                  <!-- Notification Bell -->
                 <button type="button" class="notification-btn" id="notificationBtn">
@@ -137,9 +118,6 @@
                 <span class="badge order-badge" style="display: none;">0</span>
             </a>
 
-            <!-- ✅ CHAT NAV WITH BADGE -->
-
-
             <a href="{{ route('seller.scan.index') }}"
                 class="nav-item {{ request()->routeIs('seller.scan.*') ? 'active' : '' }}">
                 <i class="fas fa-box"></i>
@@ -185,53 +163,15 @@
             // Force hide loader
             $('#ftco-loader').removeClass('show').addClass('hide');
 
-            // Load chat count
-            loadUnreadChatCount();
-
-            // ✅ Manually trigger order badge load
+            // Init order badge
             if (window.SellerOrderBadge) {
                 console.log('🎯 Triggering Order Badge refresh');
                 window.SellerOrderBadge.loadUnreadCount();
             }
         });
 
-        // Function to load unread chat count
-        function loadUnreadChatCount() {
-            $.ajax({
-                url: '{{ route("seller.chat.unread-count") }}',
-                method: 'GET',
-                success: function(response) {
-                    if (response.count > 0) {
-                        updateChatBadge(response.count);
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Error loading unread chat count:', xhr);
-                }
-            });
-        }
-
-        // Function to update chat badge
-        function updateChatBadge(count) {
-            const chatNavItem = $('.seller-bottom-nav a[href*="chat"]');
-            let badge = chatNavItem.find('.badge.chat-badge');
-
-            if (count > 0) {
-                const displayCount = count > 99 ? '99+' : count;
-
-                if (badge.length === 0) {
-                    chatNavItem.append('<span class="badge chat-badge">' + displayCount + '</span>');
-                } else {
-                    badge.text(displayCount).show();
-                }
-            } else {
-                badge.remove();
-            }
-        }
-
         // Poll for updates
         setInterval(function() {
-            loadUnreadChatCount();
             if (window.SellerOrderBadge) {
                 window.SellerOrderBadge.loadUnreadCount();
             }

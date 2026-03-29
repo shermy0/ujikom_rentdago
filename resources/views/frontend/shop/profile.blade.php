@@ -1,4 +1,4 @@
-﻿@extends('frontend.master')
+@extends('frontend.master')
 
 @section('navbar')
     @include('frontend.navbar')
@@ -150,11 +150,6 @@
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Profil Toko</div>
-        
-        {{-- TOMBOL CHAT --}}
-        <a href="{{ route('customer.chat.show', $shop->id) }}" class="header-chat-btn">
-            <i class="fa fa-comments"></i>
-        </a>
     </div>
 
     {{-- SHOP INFO CARD --}}
@@ -197,14 +192,6 @@
                         <p>{{ $shop->description }}</p>
                     </div>
                 @endif
-
-                {{-- TOMBOL CHAT (VERSI MOBILE) --}}
-                <div class="shop-actions">
-                    <a href="{{ route('customer.chat.show', $shop->id) }}" class="btn-chat-shop">
-                        <i class="fa fa-comments"></i>
-                        Chat Toko
-                    </a>
-                </div>
             </div>
 
         </div>
@@ -353,148 +340,6 @@
 
 </div>
 <style>
-    /* ============================
-   TOMBOL CHAT DI HEADER
-   ============================ */
-.shop-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-chat-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #ee4d2d; /* WhatsApp green */
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(238, 77, 45, 0.3);
-}
-
-.header-chat-btn:hover {
-    background: #d63a1e;
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.4);
-}
-
-/* ============================
-   TOMBOL CHAT DI BANNER
-   ============================ */
-.shop-actions {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-}
-
-.btn-chat-shop {
-    flex: 1;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
-    text-decoration: none;
-}
-
-.btn-chat-shop:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(238, 77, 45, 0.4);
-    color: white;
-}
-
-.btn-chat-shop:active {
-    transform: translateY(0);
-}
-
-.btn-chat-shop i {
-    font-size: 18px;
-}
-
-/* ============================
-   FLOATING CHAT BUTTON
-   ============================ */
-.floating-chat-btn {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
-    box-shadow: 0 4px 20px rgba(238, 77, 45, 0.4);
-    z-index: 999;
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.floating-chat-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 24px rgba(238, 77, 45, 0.5);
-    color: white;
-}
-
-.floating-chat-btn .chat-badge {
-    position: absolute;
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #fff;
-    color: #ee4d2d;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.floating-chat-btn:hover .chat-badge {
-    opacity: 1;
-    bottom: -30px;
-}
-
-/* Animasi pulse */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(238, 77, 45, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 15px rgba(238, 77, 45, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(238, 77, 45, 0);
-    }
-}
-
-.floating-chat-btn {
-    animation: pulse 2s infinite;
-}
 
 @if(session('success'))
 <script>
@@ -520,14 +365,5 @@
 @endif
 
 /* Mobile responsive */
-@media (max-width: 767px) {
-    .floating-chat-btn {
-        width: 56px;
-        height: 56px;
-        font-size: 22px;
-        bottom: 70px;
-        right: 16px;
-    }
-}
 </style>
 @endsection
