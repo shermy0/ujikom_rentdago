@@ -76,7 +76,6 @@ class SellerController extends Controller
 
         $rating = 0;
         $unreadNotif = 0;
-        $unreadChat = 0;
 
         return view('seller.dashboard.index', compact(
             'user',
@@ -87,8 +86,7 @@ class SellerController extends Controller
             'totalRevenue',
             'rating',
             'recentOrders',
-            'unreadNotif',
-            'unreadChat'
+            'unreadNotif'
         ))->with('title', 'Dashboard Seller');
     }
 
