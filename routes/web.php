@@ -154,7 +154,8 @@ Route::middleware(['auth', 'role:admin'])
 
         // Shops Map (placed before resource to avoid conflict with {shop} param)
         Route::get('/shops/map', [App\Http\Controllers\Admin\ShopMapController::class, 'index'])->name('shops.map');
-        Route::resource('shops', ShopController::class);
+        Route::resource('shops', ShopController::class)->only(['index', 'show']);
+
 
         // Settings
         Route::prefix('settings')->name('settings.')->group(function () {
@@ -496,10 +497,7 @@ Route::middleware(['auth'])
         Route::get('/orders/{orderId}/pickup-scan', [App\Http\Controllers\Kurir\PickupController::class, 'showScan'])->name('pickup.scan');
         Route::post('/pickup/verify', [App\Http\Controllers\Kurir\PickupController::class, 'verifyPickup'])->name('pickup.verify');
 
-        // Handover Routes
-        Route::get('/orders/{shipmentId}/handover', [App\Http\Controllers\Kurir\KurirQrController::class, 'showHandoverOptions'])->name('handover.options');
-        Route::post('/handover/verify-otp', [App\Http\Controllers\Kurir\KurirQrController::class, 'verifyOtp'])->name('handover.verify-otp');
-        Route::post('/handover/verify-qr', [App\Http\Controllers\Kurir\KurirQrController::class, 'verifyCustomerQr'])->name('handover.verify-qr');
+
         // API Routes for Courier Notifications
         Route::prefix('api')->name('api.')->group(function () {
             Route::get('/notifications/all', [\App\Http\Controllers\Kurir\CourierNotificationController::class, 'getAllNotifications'])->name('notifications.all');

@@ -74,59 +74,6 @@ class KurirQrController extends Controller
         return view('kurir.delivery-photo.take-photo', compact('shipment'));
     }
 
-    /**
-     * Verify OTP for handover
-     */
-    public function verifyOtp(Request $request)
-    {
-        $request->validate([
-            'shipment_id' => 'required|exists:shipments,id',
-            'otp' => 'required|string|size:6',
-        ]);
-
-        $courier = Courier::where('user_id', Auth::id())->firstOrFail();
-        $shipment = Shipment::with('order.user')
-            ->where('id', $request->shipment_id)
-            ->where('courier_id', $courier->id)
-            ->firstOrFail();
-
-        $otpRecord = \App\Models\Otp::where('user_id', $shipment->order->user_id)
-            ->where('code', $request->otp)
-            ->where('expired_at', '>', now())
-            ->first();
-
-        if (!$otpRecord) {
-            return response()->json(['success' => false, 'message' => 'OTP tidak valid atau sudah kadaluarsa.'], 422);
-        }
-
-        // Mark OTP as used (by deleting or marking) - for now just delete if it works
-        $otpRecord->delete();
-
-        return $this->processHandover($shipment, 'otp');
-    }
-
-    /**
-     * Verify Customer QR for handover
-     */
-    public function verifyCustomerQr(Request $request)
-    {
-        $request->validate([
-            'shipment_id' => 'required|exists:shipments,id',
-            'order_code' => 'required|string',
-        ]);
-
-        $courier = Courier::where('user_id', Auth::id())->firstOrFail();
-        $shipment = Shipment::with('order')
-            ->where('id', $request->shipment_id)
-            ->where('courier_id', $courier->id)
-            ->firstOrFail();
-
-        if ($shipment->order->order_code !== $request->order_code) {
-            return response()->json(['success' => false, 'message' => 'QR Code tidak cocok dengan pesanan ini.'], 422);
-        }
-
-        return $this->processHandover($shipment, 'qr');
-    }
 
     /**
      * Complete delivery with photo proof

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+
 
 class ShopController extends Controller
 {
@@ -50,59 +50,6 @@ class ShopController extends Controller
         return view('admin.shops.index', $data);
     }
 
-    /**
-     * Show the form for creating a new shop.
-     */
-    public function create()
-    {
-        // Get sellers without shop (for dropdown)
-        $users = User::whereDoesntHave('shop')
-            ->where('role', 'seller')
-            ->orderBy('name')
-            ->get();
-
-        $data = [
-            'title' => 'Tambah Toko',
-            'breadcrumbs' => [
-                ['title' => 'Admin', 'url' => route('admin.dashboard')],
-                ['title' => 'Data Toko', 'url' => route('admin.shops.index')],
-                ['title' => 'Tambah Toko', 'url' => '#'],
-            ],
-            'users' => $users,
-        ];
-
-        return view('admin.shops.create', $data);
-    }
-
-    /**
-     * Store a newly created shop in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id|unique:shops,user_id',
-            'name_store' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'address_store' => 'required|string',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean',
-        ]);
-
-        // Handle logo upload
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $logoName = time() . '_' . Str::slug($validated['name_store']) . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs('shops', $logoName, 'public');
-            $validated['logo'] = 'shops/' . $logoName;
-        }
-
-        $validated['is_active'] = $request->has('is_active');
-
-        Shop::create($validated);
-
-        return redirect()->route('admin.shops.index')
-            ->with('success', 'Toko berhasil ditambahkan.');
-    }
 
     /**
      * Display the specified shop.
