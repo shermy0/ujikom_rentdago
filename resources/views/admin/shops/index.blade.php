@@ -330,7 +330,8 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '{{ route('admin.shops.create') }}';
+                // Route admin.shops.create no longer exists
+                Swal.fire('Info', 'Pembuatan toko hanya dapat dilakukan oleh seller.', 'info');
             }
         });
     }
