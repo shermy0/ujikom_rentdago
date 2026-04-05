@@ -8,36 +8,30 @@ HEADER TAMBAH ALAMAT
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
-    padding: 14px 16px;
+    padding: 16px 20px;
     margin-bottom: 20px;
 
-    background: linear-gradient(135deg, #ee4d2d, #ff8c42);
-    border-radius: 18px;
+    background: linear-gradient(135deg, #ee4d2d, #ff6b35);
 
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 20px rgba(238, 77, 45, 0.3);
 }
 
 
 .header-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     color: #ffffff;
-    letter-spacing: 0.3px;
-
-    pointer-events: none;
+    letter-spacing: 0.5px;
 }
 
 .header-back {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
 
-    background: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.2);
     color: #ffffff;
 
     display: flex;
@@ -45,16 +39,22 @@ HEADER TAMBAH ALAMAT
     justify-content: center;
 
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
 }
 
 .header-back:hover {
-    background: rgba(255,255,255,0.4);
-    transform: translateX(-2px);
+    background: rgba(255,255,255,0.35);
+    transform: translateX(-3px);
+    color: #fff;
 }
 
 .header-back i {
     font-size: 14px;
+}
+
+.header-spacer {
+    width: 40px;
 }
 
 .address-form-card {

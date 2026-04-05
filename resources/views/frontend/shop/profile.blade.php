@@ -150,6 +150,7 @@
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Profil Toko</div>
+        <div class="header-spacer"></div>
     </div>
 
     {{-- SHOP INFO CARD --}}

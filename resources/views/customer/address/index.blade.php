@@ -12,13 +12,14 @@
 <div class="container py-4" style="max-width: 720px;">
 
     {{-- HEADER ALAMAT --}}
-    <div class="product-detail-header address-header">
+    <div class="address-header">
         <a href="{{ route('profile.index') }}" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">
             Alamat Saya
         </div>
+        <div class="header-spacer"></div>
     </div>
 
     {{-- ACTION TOP --}}

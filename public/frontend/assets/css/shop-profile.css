@@ -15,37 +15,44 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-    padding: 16px;
+    background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
     margin: 0 -16px 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 20px rgba(238, 77, 45, 0.3);
 }
 
 .header-back {
     width: 40px;
     height: 40px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 18px;
-    transition: all 0.3s ease;
+    text-decoration: none;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
 }
 
 .header-back:hover {
-    background: rgba(255,255,255,0.3);
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-3px);
+    color: white;
 }
 
 .header-title {
     color: white;
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.header-spacer {
+    width: 40px;
 }
 
 /* SHOP BANNER */

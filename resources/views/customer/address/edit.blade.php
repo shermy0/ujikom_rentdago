@@ -17,27 +17,46 @@
     }
 
     .address-header-bar {
-        background: linear-gradient(135deg, #ee4d2d 0%, #d63a1e 100%);
-        padding: 15px 20px;
+        background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+        padding: 16px 20px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         position: sticky;
         top: 0;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 20px rgba(238, 77, 45, 0.3);
     }
 
     .address-header-bar a {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.2);
         color: #fff;
-        font-size: 20px;
+        font-size: 16px;
         text-decoration: none;
-        margin-right: 1rem;
+        transition: all 0.3s;
+        backdrop-filter: blur(10px);
+    }
+
+    .address-header-bar a:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(-3px);
     }
 
     .address-header-bar .title {
         color: #fff;
         font-size: 18px;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .header-spacer {
+        width: 40px;
     }
 
     .address-form-container {
@@ -230,6 +249,7 @@
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="title">Edit Alamat</div>
+        <div class="header-spacer"></div>
     </div>
 
     <div class="address-form-container">
