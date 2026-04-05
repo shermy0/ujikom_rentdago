@@ -15,37 +15,44 @@
 }
 
 .vouchers-header {
-    background: white;
-    padding: 16px;
+    background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+    padding: 16px 20px;
     margin: -20px -16px 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 20px rgba(238, 77, 45, 0.3);
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
 }
 
 .vouchers-header .back-btn {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    background: #f5f5f5;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #333;
+    color: #fff;
     text-decoration: none;
     transition: all 0.3s;
+    backdrop-filter: blur(10px);
 }
 
 .vouchers-header .back-btn:hover {
-    background: #ee4d2d;
-    color: white;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-3px);
+    color: #fff;
 }
 
 .vouchers-header h4 {
     margin: 0;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
 }
 
 .voucher-card {
@@ -277,6 +284,15 @@
 </style>
 
 <div class="vouchers-container">
+    <!-- Header -->
+    <div class="vouchers-header">
+        <a href="{{ route('profile.index') }}" class="back-btn">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+        <h4>Voucher Saya</h4>
+        <div style="width:40px;"></div>
+    </div>
+
     <!-- Vouchers List -->
     @forelse($vouchers as $voucher)
         @php

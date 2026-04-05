@@ -25,6 +25,7 @@
     .edit-header-top {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         margin-bottom: 10px;
     }
     .header-back-btn {
@@ -231,6 +232,7 @@
                 <i class="fa fa-arrow-left"></i>
             </a>
             <div class="header-title-text">Edit Profil</div>
+            <div style="width:40px;"></div>
         </div>
     </div>
 

@@ -16,6 +16,7 @@
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Pembayaran</div>
+        <div style="width:40px;"></div>
     </div>
 
     <div class="order-card">

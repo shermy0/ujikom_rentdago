@@ -67,6 +67,7 @@
 </a>
 
         <div class="header-title">Checkout</div>
+        <div style="width:40px;"></div>
     </div>
 
     {{-- FORM KE CUSTOMER ORDER STORE YANG SUDAH ADA --}}
