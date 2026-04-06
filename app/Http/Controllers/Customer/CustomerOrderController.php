@@ -578,17 +578,7 @@ class CustomerOrderController extends Controller
             // 🔥 Kirim notifikasi ke Seller
             $this->sendSellerOrderPaidNotification($order);
 
-            // 🔥 GENERATE OTP untuk Handover (valid 24 jam)
-            try {
-                \App\Models\Otp::create([
-                    'user_id' => $order->user_id,
-                    'phone'   => $order->user->phone,
-                    'code'    => sprintf("%06d", mt_rand(1, 999999)),
-                    'expired_at' => now()->addHours(24),
-                ]);
-            } catch (\Exception $e) {
-                Log::error('OTP generation failed after payment success: ' . $e->getMessage());
-            }
+
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
             $order->update([
                 'status'             => 'cancelled',
@@ -863,15 +853,17 @@ class CustomerOrderController extends Controller
                 $message .= $order->delivery_address_snapshot . "\n\n";
             }
 
-            $message .= " *QR CODE*\n";
-            $message .= "Tunjukkan QR Code ini kepada penjual saat pengambilan atau pengembalian barang.\n\n";
+            if ($order->delivery_method !== 'delivery') {
+                $message .= " *QR CODE*\n";
+                $message .= "Tunjukkan QR Code ini kepada penjual saat pengambilan atau pengembalian barang.\n\n";
+            }
             $message .= "Detail pesanan:\n";
             $message .= route('customer.order.show', $order->id) . "\n\n";
             $message .= "Terima kasih telah berbelanja! 🙏";
             logger($message);
 
             // ✅ Ambil QR Code dari database (kolom qr_code di tabel orders)
-            if (!empty($order->qr_code)) {
+            if (!empty($order->qr_code) && $order->delivery_method !== 'delivery') {
                 // Path lengkap ke file QR code di storage
                 $qrCodePath = config('app.url') . Storage::url($order->qr_code);
                 logger($qrCodePath);

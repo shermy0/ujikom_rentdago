@@ -354,7 +354,6 @@ class KurirController extends Controller
     {
         $request->validate([
             'order_id' => 'required',
-            // 'otp' => 'required', // Optional validation logic
         ]);
 
         $courier = Courier::where('user_id', Auth::id())->first();

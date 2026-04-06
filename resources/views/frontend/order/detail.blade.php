@@ -150,17 +150,9 @@
     {{-- QR Code & OTP - Hanya untuk confirmed/ongoing --}}
     @if(in_array($order->status, ['confirmed','ongoing']))
     <div class="detail-section qr-section">
-        @if($order->status === 'confirmed' && $order->delivery_method === 'delivery' && $shipmentStatus === 'arrived')
-        <h6><i class="fa fa-shield-check"></i> Verifikasi Penyerahan</h6>
-        <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin-top: 10px;">
-            <div style="font-size: 14px; color: #666; margin-bottom: 10px;">Berikan Kode OTP ini ke Kurir:</div>
-            <div style="font-size: 32px; font-weight: 800; letter-spacing: 5px; color: #3b82f6;">
-                {{ Auth::user()->otps()->where('expired_at', '>', now())->latest()->first()->code ?? '------' }}
-            </div>
-            <div style="font-size: 12px; margin-top: 15px; color: #999;">ATAU Scan QR Code di bawah</div>
-        </div>
-        @endif
 
+
+        @if($order->delivery_method !== 'delivery')
         <h6 style="margin-top: 20px;"><i class="fa fa-qrcode"></i> QR Verifikasi</h6>
         <div style="text-align:center; margin-top:10px">
             <div style="display: inline-block; background: white; padding: 8px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -173,9 +165,10 @@
                 @endif
             </div>
             <p style="font-size:12px; margin-top:8px; color:#666;">
-                Tunjukkan QR ini ke {{ $order->delivery_method === 'pickup' ? 'Penjual' : 'Kurir' }}
+                Tunjukkan QR ini ke Penjual
             </p>
         </div>
+        @endif
     </div>
     @endif
 

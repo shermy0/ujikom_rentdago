@@ -75,8 +75,8 @@ class ReportController extends Controller
 
         // Tabel detail pesanan
         $orders = Order::with(['user', 'productRental.product.shop'])
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->orderByDesc('created_at')
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->orderByDesc('orders.created_at')
             ->paginate(15)
             ->withQueryString();
 
@@ -107,7 +107,7 @@ class ReportController extends Controller
             ? Carbon::parse($request->end_date)->endOfDay()
             : Carbon::now()->endOfDay();
 
-        $baseQuery = Order::whereBetween('created_at', [$startDate, $endDate]);
+        $baseQuery = Order::whereBetween('orders.created_at', [$startDate, $endDate]);
 
         $stats = [
             'total'       => (clone $baseQuery)->count(),
@@ -126,8 +126,8 @@ class ReportController extends Controller
             ->toArray();
 
         $orders = Order::with(['user', 'productRental.product.shop'])
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->orderByDesc('created_at')
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->orderByDesc('orders.created_at')
             ->get();
 
         $appName = \App\Models\Setting::first()?->app_name ?? 'RentDago';
