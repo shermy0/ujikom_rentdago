@@ -30,8 +30,8 @@ class ReportController extends Controller
         $stats = [
             'total'       => (clone $baseQuery)->count(),
             'pendapatan'  => (clone $baseQuery)
-                ->whereIn('status', ['completed', 'returned'])
                 ->join('payments', 'payments.order_id', '=', 'orders.id')
+                ->where('payments.payment_status', 'paid')
                 ->sum('payments.total_amount'),
             'selesai'     => (clone $baseQuery)->whereIn('status', ['completed', 'returned'])->count(),
             'dibatalkan'  => (clone $baseQuery)->where('status', 'cancelled')->count(),
@@ -51,7 +51,7 @@ class ReportController extends Controller
                 DB::raw('YEAR(orders.created_at) as tahun'),
                 DB::raw('MONTH(orders.created_at) as bulan'),
                 DB::raw('count(*) as total'),
-                DB::raw('sum(payments.total_amount) as pendapatan')
+                DB::raw("sum(case when payments.payment_status = 'paid' then payments.total_amount else 0 end) as pendapatan")
             )
             ->leftJoin('payments', 'payments.order_id', '=', 'orders.id')
             ->where('orders.created_at', '>=', Carbon::now()->subMonths(11)->startOfMonth())
@@ -74,7 +74,7 @@ class ReportController extends Controller
         }
 
         // Tabel detail pesanan
-        $orders = Order::with(['user', 'productRental.product.shop'])
+        $orders = Order::with(['user', 'productRental.product.shop', 'payment'])
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->orderByDesc('orders.created_at')
             ->paginate(15)
@@ -112,8 +112,8 @@ class ReportController extends Controller
         $stats = [
             'total'       => (clone $baseQuery)->count(),
             'pendapatan'  => (clone $baseQuery)
-                ->whereIn('status', ['completed', 'returned'])
                 ->join('payments', 'payments.order_id', '=', 'orders.id')
+                ->where('payments.payment_status', 'paid')
                 ->sum('payments.total_amount'),
             'selesai'     => (clone $baseQuery)->whereIn('status', ['completed', 'returned'])->count(),
             'dibatalkan'  => (clone $baseQuery)->where('status', 'cancelled')->count(),
@@ -125,7 +125,7 @@ class ReportController extends Controller
             ->pluck('total', 'status')
             ->toArray();
 
-        $orders = Order::with(['user', 'productRental.product.shop'])
+        $orders = Order::with(['user', 'productRental.product.shop', 'payment'])
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->orderByDesc('orders.created_at')
             ->get();

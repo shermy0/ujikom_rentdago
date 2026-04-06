@@ -146,7 +146,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-8">
         <div class="chart-card">
-            <div class="chart-title"><i class="bi bi-bar-chart me-2" style="color:#ee4d2d;"></i>Pesanan per Bulan (12 Bulan Terakhir)</div>
+            <div class="chart-title"><i class="bi bi-bar-chart me-2" style="color:#ee4d2d;"></i>Pesanan & Pendapatan per Bulan</div>
             <canvas id="chartBulanan" height="100"></canvas>
         </div>
     </div>
@@ -210,7 +210,7 @@
                         @endphp
                         <span class="badge badge-status bg-{{ $c }}">{{ \App\Models\Order::getStatusLabel($order->status) }}</span>
                     </td>
-                    <td class="text-end fw-semibold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
+                    <td class="text-end fw-semibold">Rp {{ number_format($order->payment->total_amount ?? 0, 0, ',', '.') }}</td>
                 </tr>
                 @empty
                 <tr>
@@ -240,19 +240,46 @@ new Chart(ctxBar, {
     type: 'bar',
     data: {
         labels: @json($chartLabels),
-        datasets: [{
-            label: 'Jumlah Pesanan',
-            data: @json($chartOrders),
-            backgroundColor: 'rgba(238,77,45,0.7)',
-            borderRadius: 6,
-            borderSkipped: false,
-        }]
+        datasets: [
+            {
+                label: 'Jumlah Pesanan',
+                data: @json($chartOrders),
+                backgroundColor: 'rgba(238,77,45,0.7)',
+                borderRadius: 6,
+                borderSkipped: false,
+                yAxisID: 'yOrders',
+            },
+            {
+                label: 'Pendapatan (Rp)',
+                data: @json($chartRevenue),
+                type: 'line',
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59,130,246,0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                yAxisID: 'yRevenue',
+            }
+        ]
     },
     options: {
         responsive: true,
-        plugins: { legend: { display: false } },
+        plugins: { legend: { display: true, position: 'top', labels: { font: { size: 12 }, boxWidth: 12 } } },
         scales: {
-            y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { precision: 0 } },
+            yOrders: {
+                type: 'linear',
+                position: 'left',
+                beginAtZero: true,
+                grid: { color: '#f3f4f6' },
+                ticks: { precision: 0 }
+            },
+            yRevenue: {
+                type: 'linear',
+                position: 'right',
+                beginAtZero: true,
+                grid: { drawOnChartArea: false },
+                ticks: { callback: v => 'Rp ' + v.toLocaleString('id-ID') }
+            },
             x: { grid: { display: false } }
         }
     }
