@@ -208,7 +208,21 @@ class KurirController extends Controller
      */
     public function profile()
     {
-        return view('kurir.profile')->with('title', 'Profil');
+        $courier = Courier::where('user_id', Auth::id())->first();
+
+        $totalCount = 0;
+        $monthCount = 0;
+
+        if ($courier) {
+            $delivered = Shipment::where('courier_id', $courier->id)
+                ->where('status', Shipment::STATUS_DELIVERED)
+                ->get();
+
+            $totalCount = $delivered->count();
+            $monthCount = $delivered->filter(fn($s) => $s->updated_at->isCurrentMonth())->count();
+        }
+
+        return view('kurir.profile', compact('totalCount', 'monthCount'))->with('title', 'Profil');
     }
 
     /**

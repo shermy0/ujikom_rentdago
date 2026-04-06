@@ -30,7 +30,7 @@
                     <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 40px; height: 40px; background: rgba(34, 197, 94, 0.1);">
                         <i class="fa fa-box" style="color: #22c55e;"></i>
                     </div>
-                    <h4 class="fw-bold mb-0 text-dark">0</h4>
+                    <h4 class="fw-bold mb-0 text-dark">{{ $totalCount }}</h4>
                     <small class="text-muted" style="font-size: 11px;">Total Pengiriman</small>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                     <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 40px; height: 40px; background: rgba(34, 197, 94, 0.1);">
                         <i class="fa fa-calendar-check" style="color: #22c55e;"></i>
                     </div>
-                    <h4 class="fw-bold mb-0 text-dark">0</h4>
+                    <h4 class="fw-bold mb-0 text-dark">{{ $monthCount }}</h4>
                     <small class="text-muted" style="font-size: 11px;">Bulan Ini</small>
                 </div>
             </div>

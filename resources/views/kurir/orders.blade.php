@@ -9,19 +9,16 @@
 @section('content')
 <div class="pb-5">
     <!-- Filter Tabs -->
-    <div class="px-3 py-2 bg-white shadow-sm sticky-top" style="z-index: 90;">
-        <div class="d-flex gap-2 overflow-auto pb-2" style="scrollbar-width: none;">
-            <button class="tab-btn active px-4 py-2 rounded-pill border-0 small fw-bold" data-status="all">
+    <div class="px-3 py-3 bg-white shadow-sm sticky-top" style="z-index: 90;">
+        <div class="d-flex gap-2">
+            <button class="tab-btn active flex-fill py-2 rounded-pill border-0 small fw-bold" data-status="all">
                 Semua
             </button>
-            <button class="tab-btn px-4 py-2 rounded-pill border-0 small fw-bold" data-status="pickup">
+            <button class="tab-btn flex-fill py-2 rounded-pill border-0 small fw-bold" data-status="pickup">
                 Perlu Diambil
             </button>
-            <button class="tab-btn px-4 py-2 rounded-pill border-0 small fw-bold" data-status="delivery">
+            <button class="tab-btn flex-fill py-2 rounded-pill border-0 small fw-bold" data-status="delivery">
                 Sedang Dikirim
-            </button>
-            <button class="tab-btn px-4 py-2 rounded-pill border-0 small fw-bold" data-status="completed">
-                Selesai
             </button>
         </div>
     </div>
@@ -260,9 +257,6 @@
                     card.style.display = '';
                 } else if (status === 'delivery' && (cardStatus === 'picked_up' || cardStatus === 'on_the_way' || cardStatus === 'arrived')) {
                     // Sedang Dikirim = picked_up, on_the_way, arrived
-                    card.style.display = '';
-                } else if (status === 'completed' && cardStatus === 'arrived') {
-                    // Selesai = arrived (shipment completed)
                     card.style.display = '';
                 } else {
                     // Hide card
