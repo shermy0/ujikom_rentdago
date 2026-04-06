@@ -16,10 +16,10 @@
     .edit-header {
         background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
         padding: 20px;
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        box-shadow: 0 2px 20px rgba(238, 77, 45, 0.3);
+        position: relative;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        box-shadow: 0 4px 20px rgba(238, 77, 45, 0.2);
         padding-bottom: 60px;
     }
     .edit-header-top {
