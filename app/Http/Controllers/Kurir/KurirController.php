@@ -19,113 +19,148 @@ class KurirController extends Controller
     /**
      * Display courier dashboard
      */
-    public function index()
-    {
-        // Get courier record for logged-in user
-        $courier = Courier::where('user_id', Auth::id())->first();
+/**
+ * Display courier dashboard
+ */
+public function index()
+{
+    // Ambil data kurir berdasarkan user login
+    $courier = Courier::where('user_id', Auth::id())->first();
 
-        $stats = [
-            'perlu_diambil' => 0,
-            'sedang_dikirim' => 0,
-        ];
+    // Default statistik (kalau kurir tidak ditemukan)
+    $stats = [
+        'perlu_diambil' => 0,      // paket yang belum diambil
+        'sedang_dikirim' => 0,     // paket yang sedang dikirim
+    ];
 
-        if ($courier) {
-            // Count shipments by status - include pending (awaiting acceptance)
-            $stats['perlu_diambil'] = Shipment::where('courier_id', $courier->id)
-                ->where('type', Shipment::TYPE_DELIVERY)
-                ->whereIn('status', [Shipment::STATUS_PENDING, Shipment::STATUS_ASSIGNED])
-                ->count();
+    if ($courier) {
 
-            $stats['sedang_dikirim'] = Shipment::where('courier_id', $courier->id)
-                ->where('type', Shipment::TYPE_DELIVERY)
-                ->whereIn('status', [
-                    Shipment::STATUS_PICKED_UP,
-                    Shipment::STATUS_ON_THE_WAY
-                ])
-                ->count();
+        // ===============================
+        // 📦 HITUNG PAKET PERLU DIAMBIL
+        // ===============================
+        // Status:
+        // - pending (belum diterima)
+        // - assigned (sudah ditugaskan)
+        $stats['perlu_diambil'] = Shipment::where('courier_id', $courier->id)
+            ->where('type', Shipment::TYPE_DELIVERY)
+            ->whereIn('status', [
+                Shipment::STATUS_PENDING,
+                Shipment::STATUS_ASSIGNED
+            ])
+            ->count();
 
-            // Get recent activity (latest shipment update)
-            $recentShipment = Shipment::with('order.user')
-                ->where('courier_id', $courier->id)
-                ->where('type', Shipment::TYPE_DELIVERY)
-                ->orderBy('updated_at', 'desc')
-                ->first();
-        } else {
-            $recentShipment = null;
-        }
+        // ===============================
+        // 🚚 HITUNG YANG SEDANG DIKIRIM
+        // ===============================
+        // Status:
+        // - picked_up (sudah diambil)
+        // - on_the_way (sedang jalan)
+        $stats['sedang_dikirim'] = Shipment::where('courier_id', $courier->id)
+            ->where('type', Shipment::TYPE_DELIVERY)
+            ->whereIn('status', [
+                Shipment::STATUS_PICKED_UP,
+                Shipment::STATUS_ON_THE_WAY
+            ])
+            ->count();
 
-        return view('kurir.index', compact('stats', 'recentShipment'))->with('title', 'Beranda');
+        // ===============================
+        // 📊 AMBIL AKTIVITAS TERAKHIR
+        // ===============================
+        $recentShipment = Shipment::with('order.user')
+            ->where('courier_id', $courier->id)
+            ->where('type', Shipment::TYPE_DELIVERY)
+            ->orderBy('updated_at', 'desc') // terbaru
+            ->first();
+
+    } else {
+        $recentShipment = null;
     }
 
-    /**
-     * Display courier orders list
-     */
-    public function orders()
-    {
-        // Get courier record for logged-in user
-        $courier = Courier::where('user_id', Auth::id())->first();
+    // Kirim ke view
+    return view('kurir.index', compact('stats', 'recentShipment'))
+        ->with('title', 'Beranda');
+}
+/**
+ * Display courier orders list
+ */
+public function orders()
+{
+    // Ambil kurir login
+    $courier = Courier::where('user_id', Auth::id())->first();
 
-        if (!$courier) {
-            return view('kurir.orders', ['orders' => collect([])]);
-        }
-
-        // Get orders through shipments
-        // 1. Specifically assigned to this courier OR
-        // 2. Unassigned (pool) but from the same shop and not rejected by this courier before
-        $orders = Order::with([
-            'user',
-            'productRental.product.images',
-            'productRental.product.shop',
-            'shipments' => function ($query) use ($courier) {
-                // Ensure we see both delivery and return shipments related to this courier or the pool
-                $query->where('type', Shipment::TYPE_DELIVERY);
-            }
-        ])
-            ->whereHas('shipments', function ($query) use ($courier) {
-                $query->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
-                    ->where(function ($q) use ($courier) {
-                        // Priority 1: Specifically assigned to this courier
-                        $q->where('courier_id', $courier->id)
-                            ->whereIn('status', [
-                                Shipment::STATUS_PENDING,
-                                Shipment::STATUS_ASSIGNED,
-                                Shipment::STATUS_PICKED_UP,
-                                Shipment::STATUS_ON_THE_WAY,
-                                Shipment::STATUS_ARRIVED
-                            ]);
-                    })
-                    ->orWhere(function ($q) use ($courier) {
-                        // Priority 2: Pool (unassigned) from the same shop
-                        $q->whereNull('courier_id')
-                            ->where('status', Shipment::STATUS_PENDING)
-                            ->whereHas('order.productRental.product.shop', function ($sq) use ($courier) {
-                                $sq->where('id', $courier->shop_id);
-                            });
-                    });
-            })
-            ->get()
-            ->filter(function ($order) use ($courier) {
-                // Get the latest relevant shipment (delivery or return)
-                $shipment = $order->shipments
-                    ->where('type', Shipment::TYPE_DELIVERY)
-                    ->sortByDesc('created_at')
-                    ->first();
-
-                if (!$shipment) return false;
-
-                // ALWAYS show if assigned to this courier (overrides rejection history)
-                if ($shipment->courier_id === $courier->id) {
-                    return true;
-                }
-
-                // If not assigned to me (pool order), hide if I rejected it
-                return !$shipment->hasBeenRejectedBy($courier->id);
-            })
-            ->values();
-
-        return view('kurir.orders', compact('orders'))->with('title', 'Pesanan');
+    // Kalau tidak ada kurir → kosongkan
+    if (!$courier) {
+        return view('kurir.orders', ['orders' => collect([])]);
     }
 
+    // ===============================
+    // 📦 AMBIL ORDER BERDASARKAN SHIPMENT
+    // ===============================
+    $orders = Order::with([
+        'user',
+        'productRental.product.images',
+        'productRental.product.shop',
+        'shipments' => function ($query) {
+            $query->where('type', Shipment::TYPE_DELIVERY);
+        }
+    ])
+    ->whereHas('shipments', function ($query) use ($courier) {
+
+        $query->whereIn('type', [Shipment::TYPE_DELIVERY])
+
+            // ===============================
+            // PRIORITAS 1: YANG DITUGASKAN KE SAYA
+            // ===============================
+            ->where(function ($q) use ($courier) {
+                $q->where('courier_id', $courier->id)
+                  ->whereIn('status', [
+                      Shipment::STATUS_PENDING,
+                      Shipment::STATUS_ASSIGNED,
+                      Shipment::STATUS_PICKED_UP,
+                      Shipment::STATUS_ON_THE_WAY,
+                      Shipment::STATUS_ARRIVED
+                  ]);
+            })
+
+            // ===============================
+            // PRIORITAS 2: POOL (BELUM ADA KURIR)
+            // ===============================
+            ->orWhere(function ($q) use ($courier) {
+                $q->whereNull('courier_id') // belum diambil
+                  ->where('status', Shipment::STATUS_PENDING)
+                  ->whereHas('order.productRental.product.shop', function ($sq) use ($courier) {
+                      $sq->where('id', $courier->shop_id); // harus toko yang sama
+                  });
+            });
+    })
+    ->get()
+
+    // ===============================
+    // 🔍 FILTER LAGI DI COLLECTION
+    // ===============================
+    ->filter(function ($order) use ($courier) {
+
+        // Ambil shipment terbaru
+        $shipment = $order->shipments
+            ->where('type', Shipment::TYPE_DELIVERY)
+            ->sortByDesc('created_at')
+            ->first();
+
+        if (!$shipment) return false;
+
+        // Kalau memang ditugaskan ke saya → tampilkan
+        if ($shipment->courier_id === $courier->id) {
+            return true;
+        }
+
+        // Kalau bukan milik saya → cek apakah pernah ditolak
+        return !$shipment->hasBeenRejectedBy($courier->id);
+    })
+    ->values();
+
+    return view('kurir.orders', compact('orders'))
+        ->with('title', 'Pesanan');
+}
     /**
      * Display scan QR page
      */
@@ -134,98 +169,108 @@ class KurirController extends Controller
         return view('kurir.scan')->with('title', 'Scan');
     }
 
-    /**
-     * Display delivery history
-     */
-    public function history()
-    {
-        $courier = Courier::where('user_id', Auth::id())->first();
+/**
+ * Display delivery history
+ */
+public function history()
+{
+    $courier = Courier::where('user_id', Auth::id())->first();
 
-        if (!$courier) {
-            return view('kurir.history', [
-                'shipments' => collect([]),
-                'todayCount' => 0,
-                'weekCount' => 0,
-                'monthCount' => 0
-            ]);
-        }
-
-        // Get completed deliveries (delivered, failed, returned, or rejected)
-        // Get completed deliveries (delivered, failed, returned, or rejected)
-        // Fetch SHIPMENTS directly to allow multiple entries per order (e.g. Rejected then Delivered)
-        $shipments = Shipment::with([
-            'order.user',
-            'order.productRental.product.images',
-            'order.productRental.product.shop',
-            'order.address'
-        ])
-            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
-            ->where(function ($q) use ($courier) {
-                // Show shipments assigned to this courier OR rejected by this courier
-                $q->where('courier_id', $courier->id)
-                    ->orWhereJsonContains('rejected_by', $courier->id);
-            })
-            ->whereIn('status', [
-                Shipment::STATUS_DELIVERED,
-                Shipment::STATUS_FAILED,
-                Shipment::STATUS_RETURNED,
-                Shipment::STATUS_REJECTED
-            ])
-            ->orderBy('updated_at', 'desc')
-            ->get();
-
-        // Calculate statistics (only successful deliveries for stats)
-        $now = now();
-        $todayCount = $shipments->filter(function ($shipment) use ($now) {
-            return $shipment->updated_at->isToday() && $shipment->status === Shipment::STATUS_DELIVERED;
-        })->count();
-
-        $weekCount = $shipments->filter(function ($shipment) use ($now) {
-            return $shipment->updated_at->isCurrentWeek() && $shipment->status === Shipment::STATUS_DELIVERED;
-        })->count();
-
-        $monthCount = $shipments->filter(function ($shipment) use ($now) {
-            return $shipment->updated_at->isCurrentMonth() && $shipment->status === Shipment::STATUS_DELIVERED;
-        })->count();
-
-        return view('kurir.history', compact('shipments', 'todayCount', 'weekCount', 'monthCount'))->with('title', 'Riwayat');
-
-        $weekCount = $orders->filter(function ($order) use ($now) {
-            $deliveredAt = $order->deliveryShipment->updated_at ?? $order->updated_at;
-            return $deliveredAt->isCurrentWeek() && $order->deliveryShipment->status === Shipment::STATUS_DELIVERED;
-        })->count();
-
-        $monthCount = $orders->filter(function ($order) use ($now) {
-            $deliveredAt = $order->deliveryShipment->updated_at ?? $order->updated_at;
-            return $deliveredAt->isCurrentMonth() && $order->deliveryShipment->status === Shipment::STATUS_DELIVERED;
-        })->count();
-
-        return view('kurir.history', compact('orders', 'todayCount', 'weekCount', 'monthCount'))->with('title', 'Riwayat');
+    // Kalau tidak ada kurir
+    if (!$courier) {
+        return view('kurir.history', [
+            'shipments' => collect([]),
+            'todayCount' => 0,
+            'weekCount' => 0,
+            'monthCount' => 0
+        ]);
     }
 
+    // ===============================
+    // 📦 AMBIL SHIPMENT SELESAI
+    // ===============================
+    $shipments = Shipment::with([
+        'order.user',
+        'order.productRental.product.images',
+        'order.productRental.product.shop',
+        'order.address'
+    ])
+    ->whereIn('type', [Shipment::TYPE_DELIVERY])
+
+    // Milik kurir ATAU pernah ditolak oleh kurir
+    ->where(function ($q) use ($courier) {
+        $q->where('courier_id', $courier->id)
+          ->orWhereJsonContains('rejected_by', $courier->id);
+    })
+
+    // Status selesai
+    ->whereIn('status', [
+        Shipment::STATUS_DELIVERED,
+        Shipment::STATUS_FAILED,
+        Shipment::STATUS_RETURNED,
+        Shipment::STATUS_REJECTED
+    ])
+    ->orderBy('updated_at', 'desc')
+    ->get();
+
+    $now = now();
+
+    // ===============================
+    // 📊 STATISTIK (HANYA DELIVERED)
+    // ===============================
+    $todayCount = $shipments->filter(fn($s) =>
+        $s->updated_at->isToday() &&
+        $s->status === Shipment::STATUS_DELIVERED
+    )->count();
+
+    $weekCount = $shipments->filter(fn($s) =>
+        $s->updated_at->isCurrentWeek() &&
+        $s->status === Shipment::STATUS_DELIVERED
+    )->count();
+
+    $monthCount = $shipments->filter(fn($s) =>
+        $s->updated_at->isCurrentMonth() &&
+        $s->status === Shipment::STATUS_DELIVERED
+    )->count();
+
+    return view('kurir.history', compact(
+        'shipments',
+        'todayCount',
+        'weekCount',
+        'monthCount'
+    ))->with('title', 'Riwayat');
+}
     /**
      * Display courier profile
      */
-    public function profile()
-    {
-        $courier = Courier::where('user_id', Auth::id())->first();
+public function profile()
+{
+    $courier = Courier::where('user_id', Auth::id())->first();
 
-        $totalCount = 0;
-        $monthCount = 0;
+    $totalCount = 0;
+    $monthCount = 0;
 
-        if ($courier) {
-            $delivered = Shipment::where('courier_id', $courier->id)
-                ->where('status', Shipment::STATUS_DELIVERED)
-                ->get();
+    if ($courier) {
 
-            $totalCount = $delivered->count();
-            $monthCount = $delivered->filter(fn($s) => $s->updated_at->isCurrentMonth())->count();
-        }
+        // Ambil semua shipment yang berhasil
+        $delivered = Shipment::where('courier_id', $courier->id)
+            ->where('status', Shipment::STATUS_DELIVERED)
+            ->get();
 
-        return view('kurir.profile', compact('totalCount', 'monthCount'))->with('title', 'Profil');
+        // Total semua
+        $totalCount = $delivered->count();
+
+        // Total bulan ini
+        $monthCount = $delivered->filter(fn($s) =>
+            $s->updated_at->isCurrentMonth()
+        )->count();
     }
 
-    /**
+    return view('kurir.profile', compact('totalCount', 'monthCount'))
+        ->with('title', 'Profil');
+}
+
+/**
      * Show edit profile form
      */
     public function editProfile()
@@ -396,55 +441,85 @@ class KurirController extends Controller
     /**
      * Reject delivery assignment
      */
-    public function rejectDelivery(Request $request, $orderId)
-    {
-        $courier = Courier::where('user_id', Auth::id())->first();
+public function rejectDelivery(Request $request, $orderId)
+{
+    // 🔍 Ambil data kurir berdasarkan user yang sedang login
+    $courier = Courier::where('user_id', Auth::id())->first();
 
-        if (!$courier) {
-            return redirect()->route('kurir.orders')->with('error', 'Kurir tidak ditemukan');
-        }
-
-        $request->validate([
-            'rejection_reason' => 'required|string|max:500',
-        ]);
-
-        $order = Order::with(['productRental.product.shop.user', 'user'])->findOrFail($orderId);
-
-        // Find the shipment
-        $shipment = Shipment::where('order_id', $order->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
-            ->where(function ($q) use ($courier) {
-                $q->where('courier_id', $courier->id)
-                    ->orWhereNull('courier_id');
-            })
-            ->whereIn('status', [Shipment::STATUS_PENDING, Shipment::STATUS_ASSIGNED])
-            ->first();
-
-        if (!$shipment) {
-            return back()->with('error', 'Pengiriman tidak ditemukan atau sudah tidak bisa ditolak');
-        }
-
-        // Reject the shipment
-        if ($shipment->rejectByCourier($courier->id, $request->rejection_reason)) {
-            Log::info('Courier rejected delivery', [
-                'courier_id' => $courier->id,
-                'order_id' => $order->id,
-                'reason' => $request->rejection_reason,
-            ]);
-
-            // 🔔 SEND NOTIFICATION TO SELLER
-            \App\Helpers\CourierNotificationHelper::notifySellerRejection($order, $courier, $request->rejection_reason);
-
-            // Shipment will remain as rejected until seller manually reassigns
-            // No automatic reassignment - seller must approve new courier assignment
-
-            return redirect()->route('kurir.orders')
-                ->with('success', 'Pengiriman berhasil ditolak. Pemberitahuan telah dikirim ke penjual.');
-        }
-
-        return back()->with('error', 'Gagal menolak pengiriman');
+    // ❌ Jika user tidak punya data kurir → tidak boleh lanjut
+    if (!$courier) {
+        return redirect()->route('kurir.orders')->with('error', 'Kurir tidak ditemukan');
     }
 
+    // ✅ Validasi input dari request (harus ada alasan penolakan)
+    $request->validate([
+        'rejection_reason' => 'required|string|max:500',
+    ]);
+
+    // 🔍 Ambil data order beserta relasi:
+    // - user (customer)
+    // - product → shop → user (seller)
+    $order = Order::with(['productRental.product.shop.user', 'user'])->findOrFail($orderId);
+
+    // 🔍 Cari shipment yang sesuai dengan kondisi:
+    $shipment = Shipment::where('order_id', $order->id)
+
+        // Hanya untuk tipe DELIVERY (bukan RETURN)
+        ->whereIn('type', [Shipment::TYPE_DELIVERY])
+
+        // Kondisi:
+        ->where(function ($q) use ($courier) {
+            $q->where('courier_id', $courier->id) // 1. shipment milik kurir ini
+              ->orWhereNull('courier_id');       // 2. atau masih di pool (belum ada kurir)
+        })
+
+        // Status yang masih boleh ditolak
+        ->whereIn('status', [
+            Shipment::STATUS_PENDING,   // belum diterima
+            Shipment::STATUS_ASSIGNED   // sudah ditugaskan
+        ])
+
+        // Ambil satu data pertama yang cocok
+        ->first();
+
+    // ❌ Jika shipment tidak ditemukan atau sudah tidak valid
+    if (!$shipment) {
+        return back()->with('error', 'Pengiriman tidak ditemukan atau sudah tidak bisa ditolak');
+    }
+
+    // 🚫 Proses penolakan oleh kurir
+    // Method ini biasanya:
+    // - menambahkan ID kurir ke field rejected_by (JSON)
+    // - menyimpan alasan penolakan
+    if ($shipment->rejectByCourier($courier->id, $request->rejection_reason)) {
+
+        // 📝 Catat log untuk debugging / histori sistem
+        Log::info('Courier rejected delivery', [
+            'courier_id' => $courier->id,
+            'order_id' => $order->id,
+            'reason' => $request->rejection_reason,
+        ]);
+
+        // 🔔 Kirim notifikasi ke seller bahwa kurir menolak
+        \App\Helpers\CourierNotificationHelper::notifySellerRejection(
+            $order,
+            $courier,
+            $request->rejection_reason
+        );
+
+        // ℹ️ Catatan:
+        // - Shipment tetap ada (tidak dihapus)
+        // - Status tetap "rejected"
+        // - Seller harus assign ulang secara manual
+
+        // ✅ Redirect kembali ke halaman orders dengan pesan sukses
+        return redirect()->route('kurir.orders')
+            ->with('success', 'Pengiriman berhasil ditolak. Pemberitahuan telah dikirim ke penjual.');
+    }
+
+    // ❌ Jika proses reject gagal
+    return back()->with('error', 'Gagal menolak pengiriman');
+}
     /**
      * Accept delivery assignment
      */
@@ -458,7 +533,7 @@ class KurirController extends Controller
 
         $order = Order::with(['productRental.product.shop', 'user'])->findOrFail($orderId);
 
-        // Find the shipment (could be assigned to me or in pool)
+       // Cari shipment pending
         $shipment = Shipment::where('order_id', $order->id)
             ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
             ->where(function ($q) use ($courier) {
