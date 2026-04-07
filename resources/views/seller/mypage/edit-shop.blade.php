@@ -210,7 +210,7 @@
     }
     
     .shop-submit-btn:hover {
-        background: #218838;
+        background: #800505;
         transform: translateY(-1px);
     }
     

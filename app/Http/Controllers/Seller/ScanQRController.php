@@ -220,7 +220,7 @@ if (!$hasStartPhoto) {
             'end_time'   => $startTime->copy()->addHours($rentalHours),
         ]);
 
-        // 🔥 Kirim kartu ucapan terima kasih karena sudah ambil barang
+        //  Kirim kartu ucapan terima kasih karena sudah ambil barang
         \App\Helpers\CustomerNotificationHelper::notifyOrderPickedUp($order);
 
         return $this->successResponse(
