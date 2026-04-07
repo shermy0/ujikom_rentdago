@@ -85,20 +85,34 @@ class CourierController extends Controller
     /**
      * Halaman Daftar Courier
      */
-    public function index()
-    {
-        $user = Auth::user();
-        $shop = $user->shop;
+public function index(Request $request)
+{
+    $user = Auth::user();
+    $shop = $user->shop;
 
-        if (!$shop) {
-            return redirect()->route('seller.mypage.index')
-                           ->with('error', 'Anda harus memiliki toko terlebih dahulu');
-        }
+    if (!$shop) {
+        return redirect()->route('seller.mypage.index')
+            ->with('error', 'Anda harus memiliki toko terlebih dahulu');
+    }
+
+    $query = $shop->couriers()->with('user');
+
+    // 🔍 SEARCH (nama / phone)
+    if ($request->search) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%')
+              ->orWhere('phone', 'like', '%' . $request->search . '%');
+        });
+    }
+
+// 🎯 FILTER STATUS
+if ($request->filled('status')) {
+    $query->where('status', $request->status);
+}
 
         $couriers = $shop->couriers()->with('user')->get();
 
-        return view('seller.couriers.index', compact('shop', 'couriers'))->with('title', 'Kurir Saya');
-    }
+        return view('seller.couriers.index', compact('shop', 'couriers'))->with('title', 'Kurir Saya');}
 
     /**
      * Form Tambah Courier
@@ -129,20 +143,47 @@ class CourierController extends Controller
                            ->with('error', 'Anda harus memiliki toko terlebih dahulu');
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:users,phone|regex:/^[0-9]{10,15}$/',
-        ]);
+$request->validate([
+    'name' => 'required|string|max:255',
+    'phone' => [
+        'required',
+        'digits_between:9,13', // karena tanpa 0 (8123...)
+        'regex:/^[1-9][0-9]+$/', // tidak boleh diawali 0
+        'unique:users,phone'
+    ],
+
+], [
+    // NAME
+    'name.required' => 'Nama kurir wajib diisi.',
+    'name.max' => 'Nama maksimal 255 karakter.',
+
+    // PHONE
+    'phone.required' => 'Nomor HP wajib diisi.',
+    'phone.digits_between' => 'Nomor HP harus antara 9 sampai 13 digit (tanpa 0 di depan).',
+    'phone.regex' => 'Nomor HP tidak boleh diawali angka 0. Contoh: 81234567890',
+    'phone.unique' => 'Nomor HP sudah terdaftar, gunakan nomor lain.',
+]);
 
         DB::beginTransaction();
         try {
-            // Generate password otomatis
-            $generatedPassword = $this->generatePassword(8);
+            // Password default
+            $generatedPassword = '123456';
 
+// NORMALISASI DULU
+$normalizedPhone = preg_replace('/[^0-9]/', '', $request->phone);
+
+if (substr($normalizedPhone, 0, 1) === '0') {
+    $normalizedPhone = '62' . substr($normalizedPhone, 1);
+} elseif (substr($normalizedPhone, 0, 2) !== '62') {
+    $normalizedPhone = '62' . $normalizedPhone;
+}
+
+// MERGE ke request biar validator pakai ini
+$request->merge(['phone' => $normalizedPhone]);
             // Buat akun User dengan role courier
             $courierUser = User::create([
                 'name' => $request->name,
-                'phone' => $request->phone,
+                'phone' => $normalizedPhone,
                 'password' => Hash::make($generatedPassword),
                 'role' => 'courier',
                 'phone_verified_at' => now(),
@@ -193,12 +234,17 @@ return redirect()
     ->with('success', $successMessage);
 
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error store courier: ' . $e->getMessage());
-            return back()->withInput()
-                       ->with('error', 'Gagal menambahkan courier: ' . $e->getMessage());
-        }
+        } catch (\Illuminate\Database\QueryException $e) {
+    DB::rollBack();
+
+    if ($e->getCode() == 23000) {
+        return back()->withInput()
+            ->with('error', 'Nomor HP sudah digunakan. Silakan pakai nomor lain.');
+    }
+
+    return back()->withInput()
+        ->with('error', 'Terjadi kesalahan saat menyimpan data.');
+}
     }
 
     /**

@@ -259,6 +259,50 @@
         color: #6c757d;
         margin-bottom: 1.5rem;
     }
+
+    /* FILTER & SEARCH */
+.filter-container {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.filter-select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.filter-button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #a80b0b;
+    color: #fff;
+    cursor: pointer;
+}
+
+.filter-button:hover {
+    background: #760404;
+}
+
+/* PAGINATION */
+.pagination-container {
+    padding: 1rem;
+}
 </style>
 
 <div class="courier-container">
@@ -313,6 +357,31 @@
             <span>Tambah Kurir Baru</span>
         </a>
     </div>
+
+    <div class="filter-container">
+    <form method="GET" class="filter-form">
+
+        <!-- SEARCH -->
+        <input type="text" 
+               name="search" 
+               value="{{ request('search') }}"
+               placeholder="Cari nama / nomor..."
+               class="filter-input">
+
+        <!-- FILTER STATUS -->
+        <select name="status" class="filter-select">
+            <option value="">Semua</option>
+            <option value="active" {{ request('status')=='active' ? 'selected' : '' }}>Aktif</option>
+            <option value="inactive" {{ request('status')=='inactive' ? 'selected' : '' }}>Nonaktif</option>
+        </select>
+
+        <!-- BUTTON -->
+        <button type="submit" class="filter-button">
+            <i class="fa fa-search"></i>
+        </button>
+
+    </form>
+</div>
 
     <!-- Courier List -->
     <div class="courier-list">
