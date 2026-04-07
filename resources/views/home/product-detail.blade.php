@@ -1,9 +1,11 @@
 @extends('frontend.master')
 
+@section('navbar')
+    @include('frontend.navbar')
+@endsection
 @section('navbot')
     @include('frontend.navbot')
 @endsection
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
 

@@ -12,7 +12,7 @@
 .product-detail-header {
     position: sticky;
     top: 0;
-    background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #eb4423 100%);
     padding: 16px 20px;
     display: flex;
     align-items: center;

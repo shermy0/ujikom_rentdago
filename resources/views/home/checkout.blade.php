@@ -1,9 +1,11 @@
 @extends('frontend.master')
 
+@section('navbar')
+    @include('frontend.navbar')
+@endsection
 @section('navbot')
     @include('frontend.navbot')
 @endsection
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/checkout.css') }}?v={{ time() }}">
 <style>
@@ -57,6 +59,7 @@
 </style>
 
 <div class="checkout-container" data-shop-id="{{ $product->shop_id }}">
+    
     {{-- HEADER --}}
     <div class="checkout-header">
        <a href="{{ route('customer.product.detail', [

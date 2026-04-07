@@ -1,8 +1,23 @@
 @extends('frontend.master')
+
 @section('navbar')
     @include('frontend.navbar')
 @endsection
+@section('navbot')
+    @include('frontend.navbot')
+@endsection
 @section('content')
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
+
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ url()->previous() }}"" class="header-back">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+        <div class="header-title">Pengajuan Menjadi Seller</div>
+        <div class="header-spacer"></div>
+    </div>
+
     <style>
         .request-card {
             max-width: 600px;
@@ -282,18 +297,6 @@
             margin-top: 0.5rem;
         }
     </style>
-        <!-- Header -->
-    <div class="create-header-bar">
-        <div class="create-header-back">
-            <a href="{{ route('profile.index') }}">
-                <i class="fa fa-arrow-left"></i>
-            </a>
-        </div>
-        <div class="create-header-title">
-            Pengajuan Menjadi Seller
-        </div>
-        <div class="create-header-spacer"></div>
-    </div>
 
     <div class="seller-request-container">
         <div class="request-card">

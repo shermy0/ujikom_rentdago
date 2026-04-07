@@ -8,17 +8,19 @@
 @endsection
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/order.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
 
-<div class="order-container">
-
-    <div class="order-header">
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
         <a href="{{ route('customer.order.index') }}" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Pembayaran</div>
-        <div style="width:40px;"></div>
+        <div class="header-spacer"></div>
     </div>
 
+<div class="order-container">
+    
     <div class="order-card">
         <div class="order-status-badge pending">
             <i class="fa fa-clock"></i>

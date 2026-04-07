@@ -9,18 +9,18 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/address-customer.css') }}?v={{ time() }}">
 
-<div class="container py-4" style="max-width: 720px;">
 
-    {{-- HEADER ALAMAT --}}
-    <div class="address-header">
-        <a href="{{ route('profile.index') }}" class="header-back">
+
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ url()->previous() }}"" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
-        <div class="header-title">
-            Alamat Saya
-        </div>
+        <div class="header-title">Alamat Saya</div>
         <div class="header-spacer"></div>
     </div>
+<div class="container py-4" style="max-width: 720px;">
+
 
     {{-- ACTION TOP --}}
 <div class="address-top-action">

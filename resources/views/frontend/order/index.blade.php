@@ -6,19 +6,20 @@
 @section('navbot')
     @include('frontend.navbot')
 @endsection
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/order.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
 
-<div class="order-container">
-
-    <div class="order-header">
-        <a href="{{ url()->previous() }}" class="header-back">
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ url()->previous() }}"" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Pesanan Saya</div>
-        <div style="width:40px;"></div>
+        <div class="header-spacer"></div>
     </div>
+
+<div class="order-container">
 
     @if(session('success'))
         <div class="alert alert-success">

@@ -255,7 +255,7 @@
 .pay-button {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #eb4423 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -400,12 +400,12 @@
 }
 
 .btn-small.primary {
-    background: #667eea;
+    background: #ff6b35;
     color: white;
 }
 
 .btn-small.primary:hover {
-    background: #5568d3;
+    background: #eb4423;
 }
 
 .btn-small.secondary {

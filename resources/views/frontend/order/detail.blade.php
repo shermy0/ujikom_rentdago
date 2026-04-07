@@ -1,23 +1,26 @@
 @extends('frontend.master')
 
 @section('navbar')
-@include('frontend.navbar')
+    @include('frontend.navbar')
 @endsection
 @section('navbot')
-@include('frontend.navbot')
+    @include('frontend.navbot')
 @endsection
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/order.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
 
-<div class="order-container">
-
-    <div class="order-header">
-        <a href="{{ route('customer.order.index') }}" class="header-back">
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ url()->previous() }}"" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Detail Pesanan</div>
-        <div style="width:40px;"></div>
+        <div class="header-spacer"></div>
     </div>
+
+
+<div class="order-container">
 
     {{-- Alert Messages --}}
     @if(session('error'))
@@ -620,7 +623,7 @@
     }
 
     .countdown-box {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #ff6b35 0%, #eb4423 100%);
         border-radius: 12px;
         padding: 20px;
         margin: 20px 0;

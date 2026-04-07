@@ -7,52 +7,14 @@
     @include('frontend.navbot')
 @endsection
 @section('content')
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
+
+
 <style>
 .vouchers-container {
     padding: 20px 16px;
     background: #f8f9fa;
     min-height: 100vh;
-}
-
-.vouchers-header {
-    background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
-    padding: 16px 20px;
-    margin: -20px -16px 20px;
-    box-shadow: 0 2px 20px rgba(238, 77, 45, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-
-.vouchers-header .back-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    text-decoration: none;
-    transition: all 0.3s;
-    backdrop-filter: blur(10px);
-}
-
-.vouchers-header .back-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateX(-3px);
-    color: #fff;
-}
-
-.vouchers-header h4 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 0.5px;
 }
 
 .voucher-card {
@@ -283,15 +245,17 @@
 }
 </style>
 
-<div class="vouchers-container">
-    <!-- Header -->
-    <div class="vouchers-header">
-        <a href="{{ route('profile.index') }}" class="back-btn">
+
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ url()->previous() }}"" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
-        <h4>Voucher Saya</h4>
-        <div style="width:40px;"></div>
+        <div class="header-title">Voucher Saya</div>
+        <div class="header-spacer"></div>
     </div>
+<div class="vouchers-container">
+
 
     <!-- Vouchers List -->
     @forelse($vouchers as $voucher)
