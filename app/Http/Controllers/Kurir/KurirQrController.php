@@ -24,152 +24,224 @@ class KurirQrController extends Controller
     // {
     //     // Removed as per request to skip to photo page
     // }
+/**
+ * Show delivery list for taking photo proof (Legacy/Photo method)
+ */
+public function index()
+{
+    // 🔍 Ambil data kurir berdasarkan user yang sedang login
+    $courier = Courier::where('user_id', Auth::id())->first();
 
-    /**
-     * Show delivery list for taking photo proof (Legacy/Photo method)
-     */
-    public function index()
-    {
-        // Get courier
-        $courier = Courier::where('user_id', Auth::id())->first();
-
-        if (!$courier) {
-            return redirect()->route('kurir.dashboard')->with('error', 'Data kurir tidak ditemukan');
-        }
-
-        // Get active deliveries (status: on_the_way atau arrived)
-        $activeDeliveries = Shipment::with(['order.user', 'order.productRental.product', 'order.address'])
-            ->where('courier_id', $courier->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
-            ->whereIn('status', [Shipment::STATUS_ON_THE_WAY, Shipment::STATUS_ARRIVED])
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('kurir.delivery-photo.index', compact('activeDeliveries'));
+    // ❌ Jika tidak ada data kurir → redirect ke dashboard
+    if (!$courier) {
+        return redirect()->route('kurir.dashboard')->with('error', 'Data kurir tidak ditemukan');
     }
 
-    /**
-     * Show photo upload page for specific order
-     */
-    public function showPhotoPage($shipmentId)
-    {
-        $courier = Courier::where('user_id', Auth::id())->first();
+    // 📦 Ambil daftar pengiriman aktif (yang masih berjalan)
+    $activeDeliveries = Shipment::with([
+            'order.user',                     // relasi ke customer
+            'order.productRental.product',   // relasi ke produk
+            'order.address'                  // relasi ke alamat tujuan
+        ])
+        ->where('courier_id', $courier->id) // hanya shipment milik kurir ini
 
-        if (!$courier) {
-            return redirect()->route('kurir.dashboard')->with('error', 'Data kurir tidak ditemukan');
-        }
+        ->whereIn('type', [Shipment::TYPE_DELIVERY]) // hanya DELIVERY (bukan return)
 
-        $shipment = Shipment::with(['order.user', 'order.productRental.product', 'order.address'])
-            ->where('id', $shipmentId)
-            ->where('courier_id', $courier->id)
-            ->whereIn('type', [Shipment::TYPE_DELIVERY]) // REMOVE RETURN
-            ->firstOrFail();
+        // hanya shipment yang sedang dalam perjalanan atau sudah sampai
+        ->whereIn('status', [
+            Shipment::STATUS_ON_THE_WAY, 
+            Shipment::STATUS_ARRIVED
+        ])
 
-        // Check status
-        if (!in_array($shipment->status, [Shipment::STATUS_ON_THE_WAY, Shipment::STATUS_ARRIVED])) {
-            return redirect()->route('kurir.delivery-photo.index')
-                ->with('error', 'Status pengiriman tidak valid untuk foto bukti');
-        }
+        // urutkan dari yang terbaru dibuat
+        ->orderBy('created_at', 'desc')
 
-        return view('kurir.delivery-photo.take-photo', compact('shipment'));
+        // ambil semua data
+        ->get();
+
+    // 🎯 Kirim data ke view untuk ditampilkan
+    return view('kurir.delivery-photo.index', compact('activeDeliveries'));
+}
+
+/**
+ * Show photo upload page for specific order
+ */
+public function showPhotoPage($shipmentId)
+{
+    // 🔍 Ambil data kurir dari user login
+    $courier = Courier::where('user_id', Auth::id())->first();
+
+    // ❌ Jika tidak ada kurir → tidak boleh akses
+    if (!$courier) {
+        return redirect()->route('kurir.dashboard')->with('error', 'Data kurir tidak ditemukan');
     }
 
+    // 🔍 Ambil shipment berdasarkan ID
+    $shipment = Shipment::with([
+            'order.user',                     // customer
+            'order.productRental.product',   // produk
+            'order.address'                  // alamat tujuan
+        ])
+        ->where('id', $shipmentId)           // berdasarkan shipment ID
+        ->where('courier_id', $courier->id)  // harus milik kurir ini (security)
 
-    /**
-     * Complete delivery with photo proof
-     */
-    public function completeDelivery(Request $request)
-    {
-        $request->validate([
-            'shipment_id' => 'required|exists:shipments,id',
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+        ->whereIn('type', [Shipment::TYPE_DELIVERY]) // hanya DELIVERY
+
+        // ambil 1 data atau error jika tidak ada
+        ->firstOrFail();
+
+    // 🚫 Validasi status:
+    // hanya boleh upload foto jika:
+    // - sedang di perjalanan (on_the_way)
+    // - atau sudah sampai (arrived)
+    if (!in_array($shipment->status, [
+        Shipment::STATUS_ON_THE_WAY, 
+        Shipment::STATUS_ARRIVED
+    ])) {
+        return redirect()->route('kurir.delivery-photo.index')
+            ->with('error', 'Status pengiriman tidak valid untuk foto bukti');
+    }
+
+    // 🎯 Tampilkan halaman upload foto bukti
+    return view('kurir.delivery-photo.take-photo', compact('shipment'));
+}
+
+/**
+ * Complete delivery with photo proof
+ */
+public function completeDelivery(Request $request)
+{
+    // ✅ Validasi input:
+    // - shipment_id harus ada di tabel shipments
+    // - photo wajib berupa gambar (jpg/png) max 5MB
+    $request->validate([
+        'shipment_id' => 'required|exists:shipments,id',
+        'photo' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+    ]);
+
+    // 🔍 Ambil data kurir berdasarkan user login
+    $courier = Courier::where('user_id', Auth::id())->firstOrFail();
+
+    // 🔍 Ambil shipment:
+    // - berdasarkan ID
+    // - harus milik kurir ini (security)
+    $shipment = Shipment::with('order')
+        ->where('id', $request->shipment_id)
+        ->where('courier_id', $courier->id)
+        ->firstOrFail();
+
+    // 📸 Proses upload foto bukti
+    $photoPath = null;
+    $photoTimestamp = null;
+
+    if ($request->hasFile('photo')) {
+        $photo = $request->file('photo');
+
+        // 🏷️ Buat nama file unik:
+        // format: delivery_ORDERCODE_timestamp.jpg
+        $prefix = 'delivery_';
+        $photoName = $prefix . $shipment->order->order_code . '_' . time() . '.' . $photo->getClientOriginalExtension();
+
+        // 💾 Simpan ke storage/public/delivery-proofs
+        $photoPath = $photo->storeAs('delivery-proofs', $photoName, 'public');
+
+        // 🕒 Simpan waktu upload foto
+        $photoTimestamp = now();
+    }
+
+    // 🔄 Lanjut ke proses serah terima (handover)
+    return $this->processHandover($shipment, 'photo', $photoPath, $photoTimestamp);
+}
+
+/**
+ * Shared logic to process handover
+ */
+private function processHandover($shipment, $method, $photoPath = null, $photoTimestamp = null)
+{
+    // 🔒 Mulai database transaction (biar aman kalau gagal)
+    DB::beginTransaction();
+
+    try {
+        $order = $shipment->order;
+
+        // 🚚 HANDLE DELIVERY (pengiriman ke customer)
+        if ($shipment->type === Shipment::TYPE_DELIVERY) {
+
+            // 📝 Update data shipment
+            $shipment->update([
+                'status' => Shipment::STATUS_DELIVERED,        // status jadi delivered
+                'delivered_at' => now(),                       // waktu selesai
+                'is_tracking_active' => false,                 // tracking dimatikan
+                'delivery_proof_photo' => $photoPath,          // simpan path foto
+                'delivery_proof_photo_at' => $photoTimestamp,  // waktu foto diambil
+                'courier_notes' => (
+                    $shipment->courier_notes 
+                    ? $shipment->courier_notes . "\n" 
+                    : ""
+                ) . "Diverifikasi via " . strtoupper($method), // catatan kurir
+            ]);
+
+            // 🔄 Update status order jadi ONGOING (barang sedang dipakai/disewa)
+            $order->update([
+                'status' => Order::STATUS_ONGOING,
+            ]);
+
+            // 🔔 Kirim notifikasi ke customer (barang sudah diterima)
+            \App\Helpers\CustomerNotificationHelper::notifyOrderPickedUp($order);
+
+            // 📢 Pesan sukses
+            $successMessage = 'Pesanan berhasil diserahkan! Status kini: Sedang Berlangsung.';
+        }
+
+        // ✅ Commit perubahan ke database
+        DB::commit();
+
+        // 🔔 Kirim notifikasi ke seller & customer
+        $this->sendHandoverNotifications($order, $shipment);
+
+        // 🎯 Return response sukses
+        return response()->json([
+            'success' => true,
+            'message' => $successMessage,
+            'redirect' => route('kurir.history') // redirect ke riwayat
         ]);
 
-        $courier = Courier::where('user_id', Auth::id())->firstOrFail();
-        $shipment = Shipment::with('order')
-            ->where('id', $request->shipment_id)
-            ->where('courier_id', $courier->id)
-            ->firstOrFail();
+    } catch (\Exception $e) {
+        // ❌ Jika error → rollback semua perubahan
+        DB::rollBack();
 
-        // Upload photo
-        $photoPath = null;
-        $photoTimestamp = null;
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $prefix = 'delivery_';
-            $photoName = $prefix . $shipment->order->order_code . '_' . time() . '.' . $photo->getClientOriginalExtension();
-            $photoPath = $photo->storeAs('delivery-proofs', $photoName, 'public');
-            $photoTimestamp = now(); // Capture waktu foto diupload
-        }
+        // 📝 Log error
+        Log::error('Handover Error: ' . $e->getMessage());
 
-        return $this->processHandover($shipment, 'photo', $photoPath, $photoTimestamp);
+        // ❌ Return response gagal
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
 
-    /**
-     * Shared logic to process handover
-     */
-    private function processHandover($shipment, $method, $photoPath = null, $photoTimestamp = null)
-    {
-        DB::beginTransaction();
-        try {
-            $order = $shipment->order;
+/**
+ * Send notifications after handover
+ */
+private function sendHandoverNotifications($order, $shipment)
+{
+    try {
+        // 🚚 Jika ini pengiriman delivery
+        if ($shipment->type === Shipment::TYPE_DELIVERY) {
 
-            // HANDLE DELIVERY
-            if ($shipment->type === Shipment::TYPE_DELIVERY) {
-                $shipment->update([
-                    'status' => Shipment::STATUS_DELIVERED,
-                    'delivered_at' => now(),
-                    'is_tracking_active' => false,
-                    'delivery_proof_photo' => $photoPath,
-                    'delivery_proof_photo_at' => $photoTimestamp, // Simpan waktu foto
-                    'courier_notes' => ($shipment->courier_notes ? $shipment->courier_notes . "\n" : "") . "Diverifikasi via " . strtoupper($method),
-                ]);
-
-                // Update order to ONGOING
-                $order->update([
-                    'status' => Order::STATUS_ONGOING,
-                ]);
-
-                // 🔥 Kirim kartu ucapan terima kasih karena sudah ambil barang
-                \App\Helpers\CustomerNotificationHelper::notifyOrderPickedUp($order);
-
-                $successMessage = 'Pesanan berhasil diserahkan! Status kini: Sedang Berlangsung.';
+            // 📸 Jika ada foto bukti → kirim notifikasi dengan foto
+            if ($shipment->delivery_proof_photo) {
+                \App\Helpers\CourierNotificationHelper::notifySellerHandover($order, $shipment);
+            } else {
+                // 📩 Jika tidak ada foto → notifikasi biasa
+                \App\Helpers\CourierNotificationHelper::notifySellerDeliveryComplete($order);
             }
-
-
-            DB::commit();
-
-            // Notify Seller & Customer (optional logic here)
-            $this->sendHandoverNotifications($order, $shipment);
-
-            return response()->json([
-                'success' => true,
-                'message' => $successMessage,
-                'redirect' => route('kurir.history') // Or dashboard/orders
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Handover Error: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
-    }
 
-    /**
-     * Send notifications after handover
-     */
-    private function sendHandoverNotifications($order, $shipment)
-    {
-        try {
-            if ($shipment->type === Shipment::TYPE_DELIVERY) {
-                // If photo proof exists, send special notification with photo
-                if ($shipment->delivery_proof_photo) {
-                    \App\Helpers\CourierNotificationHelper::notifySellerHandover($order, $shipment);
-                } else {
-                    \App\Helpers\CourierNotificationHelper::notifySellerDeliveryComplete($order);
-                }
-            }
-        } catch (\Exception $e) {
-            Log::error('Failed to send handover notifications: ' . $e->getMessage());
-        }
+    } catch (\Exception $e) {
+        // ❌ Jika gagal kirim notifikasi → hanya log (tidak ganggu proses utama)
+        Log::error('Failed to send handover notifications: ' . $e->getMessage());
     }
+}
 }

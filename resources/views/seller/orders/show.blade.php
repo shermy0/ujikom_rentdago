@@ -8,22 +8,6 @@
         margin: 0 auto;
     }
 
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .page-header h2 {
-        font-size: 24px;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin: 0;
-    }
-
     .back-btn {
         display: inline-flex;
         align-items: center;
@@ -347,7 +331,7 @@
 
     .btn {
         flex: 1;
-        min-width: 150px;
+        /* min-width: 150px; */
         padding: 12px 24px;
         border-radius: 8px;
         border: none;
