@@ -55,12 +55,13 @@
                        id="phone"
                        class="form-control"
                        style="border-left: none; border-radius: 0 25px 25px 0; height: 45px; padding-left: 0;"
-                       placeholder="Contoh: 08123456789"
+                       placeholder="62 | (input nomor) Contoh: 628123456789"
+                       value="62"
                        required
                        autofocus>
             </div>
-            <small class="text-muted">
-                <i class="fa fa-info-circle"></i> Pastikan nomor yang Anda masukkan terdaftar
+            <small class="text-muted d-block mt-1">
+                <i class="fa fa-info-circle"></i> Pastikan nomor yang Anda masukkan terdaftar dan dimulai dr 62
             </small>
         </div>
 

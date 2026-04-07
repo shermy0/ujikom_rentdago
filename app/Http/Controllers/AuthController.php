@@ -66,20 +66,18 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Normalisasi nomor HP sebelum validasi
-        $normalizedPhone = $this->normalizePhone($request->phone ?? '');
-        
-        // Simpan versi normalisasi ke request agar validator menggunakan nilai ini
-        $request->merge(['phone' => $normalizedPhone]);
+        // Tidak dinormalisasi lagi saat registrasi, melainkan di validasi agar harus 62
+
 
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string|max:255',
-            'phone'    => 'required|string|unique:users,phone',
+            'phone'    => ['required', 'string', 'unique:users,phone', 'regex:/^62[0-9]+$/'],
             'password' => 'required|min:6|confirmed',
         ], [
             'name.required' => 'Nama wajib diisi',
             'phone.required' => 'Nomor telepon wajib diisi',
             'phone.unique' => 'Nomor telepon sudah terdaftar',
+            'phone.regex' => 'Nomor telepon harus diawali dengan 62 dan hanya berisi angka',
             'password.required' => 'Password wajib diisi',
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok'
@@ -93,7 +91,7 @@ class AuthController extends Controller
         }
 
         try {
-            // Gunakan nomor yang sudah dinormalisasi
+            // Gunakan nomor langsung dari input (karena sudah divalidasi 62)
             $normalizedPhone = $request->phone;
 
             // create user (role default customer)
