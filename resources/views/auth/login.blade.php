@@ -55,9 +55,11 @@
                    id="phone"
                    class="form-control rounded-pill px-4"
                    style="border: 1px solid #ddd; height: 45px;"
-                   placeholder="Contoh: 08123456789"
+                   placeholder="62 | (input nomor) Contoh: 628123456789"
+                   value="62"
                    required
                    autofocus>
+            <small class="text-muted d-block mt-1">Nomor dimulai dr 62</small>
         </div>
 
         <!-- PASSWORD -->

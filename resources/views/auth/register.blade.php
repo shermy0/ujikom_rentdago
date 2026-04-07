@@ -65,9 +65,10 @@
                    id="phone"
                    class="form-control rounded-pill px-4"
                    style="border: 1px solid #ddd; height: 45px;"
-                   placeholder="Contoh: 08123456789"
+                   placeholder="62 | (input nomor) Contoh: 628123456789"
+                   value="62"
                    required>
-            <small class="text-muted">Nomor ini akan digunakan untuk login</small>
+            <small class="text-muted d-block mt-1">Nomor dimulai dr 62. Nomor ini akan digunakan untuk login</small>
         </div>
 
         <!-- PASSWORD -->
@@ -282,8 +283,8 @@ document.getElementById('phone').addEventListener('input', function() {
     // Hanya angka
     this.value = this.value.replace(/[^0-9]/g, '');
     
-    // Validasi format Indonesia
-    if (this.value.length > 0 && !this.value.startsWith('0')) {
+    // Validasi format: Harus dimulai dengan 62
+    if (this.value.length > 0 && !this.value.startsWith('62')) {
         this.style.borderColor = '#dc3545';
     } else {
         this.style.borderColor = '#ddd';
