@@ -40,10 +40,6 @@
             <i class="fa fa-home"></i>
             <span>Beranda</span>
         </a>
-        <a href="{{ route('seller-request.create') }}" class="nav-item {{ Request::routeIs('seller-request.create') ? 'active' : '' }}">
-            <i class="fas fa-store"></i>
-            <span>Pengajuan</span>
-        </a>
 
         <a href="{{ route('customer.order.index') }}" class="nav-item {{ Request::routeIs('customer.order.index') ? 'active' : '' }}">
             <i class="fa fa-shopping-bag"></i>
