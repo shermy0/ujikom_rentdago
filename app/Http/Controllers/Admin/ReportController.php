@@ -10,8 +10,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+/**
+ * ReportController — Mengelola laporan statistik pesanan oleh Admin.
+ *
+ * Menyediakan tampilan laporan dengan rentang tanggal yang bisa difilter,
+ * lengkap dengan statistik ringkasan, data chart (donut & bar),
+ * serta daftar pesanan detail. Juga mendukung ekspor laporan ke format PDF.
+ */
 class ReportController extends Controller
 {
+    /**
+     * Menampilkan halaman laporan pesanan dengan statistik dan grafik.
+     *
+     * Jika tidak ada filter tanggal, default menampilkan data 30 hari terakhir.
+     * Menghasilkan data untuk chart donut (per status), chart bar (per bulan),
+     * dan tabel detail pesanan dengan pagination.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         // Default: 30 hari terakhir
@@ -97,6 +114,16 @@ class ReportController extends Controller
         ]);
     }
 
+    /**
+     * Mengekspor laporan pesanan ke file PDF dan mengunduhnya.
+     *
+     * Mengambil data berdasarkan rentang tanggal, lalu menghasilkan
+     * file PDF format A4 landscape yang berisi statistik dan daftar pesanan.
+     * Nama file otomatis berisi rentang tanggal laporan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function exportPdf(Request $request)
     {
         $startDate = $request->filled('start_date')

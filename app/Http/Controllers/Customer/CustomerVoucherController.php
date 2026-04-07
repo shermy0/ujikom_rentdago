@@ -10,10 +10,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * CustomerVoucherController — Mengelola voucher diskon milik Customer.
+ *
+ * Menyediakan fitur mengambil voucher yang tersedia untuk toko tertentu,
+ * mengklaim voucher dari halaman toko, menampilkan daftar voucher yang
+ * sudah diklaim, serta memvalidasi voucher saat checkout (endpoint AJAX).
+ */
 class CustomerVoucherController extends Controller
 {
     /**
-     * Get available vouchers for a specific shop that user has claimed
+     * Mengambil daftar voucher toko yang sudah diklaim dan masih bisa digunakan.
+     *
+     * Digunakan saat proses checkout untuk menampilkan pilihan voucher.
+     * Voucher yang sudah pernah digunakan oleh customer tidak ditampilkan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getAvailable(Request $request)
     {
@@ -101,7 +114,14 @@ class CustomerVoucherController extends Controller
     }
 
     /**
-     * Claim voucher dari halaman toko
+     * Mengklaim voucher dari halaman toko.
+     *
+     * Memvalidasi apakah voucher masih bisa diklaim oleh user,
+     * lalu menyimpan relasi user-voucher ke tabel `user_vouchers`.
+     * Menggunakan database transaction untuk menjaga konsistensi data.
+     *
+     * @param int $voucherId ID voucher yang akan diklaim
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function claim($voucherId)
     {
@@ -139,7 +159,11 @@ class CustomerVoucherController extends Controller
     }
 
     /**
-     * Daftar voucher yang sudah diklaim user
+     * Menampilkan halaman daftar voucher yang sudah diklaim customer.
+     *
+     * Setiap voucher dilengkapi info apakah sudah pernah digunakan atau belum.
+     *
+     * @return \Illuminate\View\View
      */
     public function myVouchers()
     {
@@ -157,7 +181,14 @@ class CustomerVoucherController extends Controller
     }
 
     /**
-     * Validasi voucher untuk order (AJAX)
+     * Memvalidasi voucher berdasarkan kode dan jumlah transaksi (endpoint AJAX).
+     *
+     * Mengecek vouhcer dari kode, memastikan user sudah mengklaimnya,
+     * validasi apakah masih bisa digunakan, lalu menghitung jumlah diskon.
+     * Digunakan secara real-time di halaman checkout saat user input kode voucher.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function validate(Request $request)
     {

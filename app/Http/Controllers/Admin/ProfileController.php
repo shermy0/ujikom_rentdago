@@ -9,10 +9,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * ProfileController — Mengelola profil akun Admin.
+ *
+ * Menyediakan fitur melihat profil, mengedit nama/nomor HP/avatar,
+ * serta mengubah password dengan verifikasi password lama.
+ */
 class ProfileController extends Controller
 {
     /**
-     * Display admin profile
+     * Menampilkan halaman profil admin yang sedang login.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -21,7 +29,9 @@ class ProfileController extends Controller
     }
 
     /**
-     * Show edit profile form
+     * Menampilkan form edit profil admin.
+     *
+     * @return \Illuminate\View\View
      */
     public function edit()
     {
@@ -30,7 +40,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update profile (name, phone, avatar)
+     * Memperbarui data profil admin (nama, nomor HP, dan avatar).
+     *
+     * Jika ada foto avatar baru, foto lama akan dihapus terlebih dahulu
+     * sebelum foto baru disimpan ke storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request)
     {
@@ -58,7 +74,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update password
+     * Memperbarui password admin.
+     *
+     * Memvalidasi password lama sebelum menyimpan password baru yang sudah di-hash.
+     * Mengembalikan error jika password lama tidak cocok.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function updatePassword(Request $request)
     {

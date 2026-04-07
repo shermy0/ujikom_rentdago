@@ -22,19 +22,39 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * CustomerOrderController — Mengelola alur pemesanan dan pembayaran Customer.
+ *
+ * Menangani seluruh siklus hidup pesanan dari sisi customer, mulai dari
+ * membuat pesanan baru, menampilkan detail dengan peta tracking,
+ * mengelola pembayaran via Midtrans, hingga pembatalan pesanan.
+ * Juga menangani webhook/callback notifikasi dari Midtrans untuk update status pembayaran.
+ */
 class CustomerOrderController extends Controller
 {
+    /**
+     * Inisialisasi konfigurasi koneksi Midtrans Payment Gateway.
+     *
+     * Dipanggil otomatis sebelum setiap method di controller ini dijalankan.
+     */
     public function __construct()
     {
-        // Set konfigurasi Midtrans
-        Config::$serverKey = config('midtrans.server_key');
+        // Atur server key Midtrans dari konfigurasi aplikasi
+        Config::$serverKey    = config('midtrans.server_key');
+        // Tentukan mode produksi atau sandbox
         Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = config('midtrans.is_sanitized');
-        Config::$is3ds = config('midtrans.is_3ds');
+        // Sanitasi input sebelum dikirim ke Midtrans
+        Config::$isSanitized  = config('midtrans.is_sanitized');
+        // Aktifkan 3D Secure untuk verifikasi tambahan
+        Config::$is3ds        = config('midtrans.is_3ds');
     }
 
     /**
-     * Halaman daftar order user
+     * Menampilkan daftar seluruh pesanan milik customer yang sedang login.
+     *
+     * Pesanan diurutkan dari yang terbaru dan ditampilkan dengan pagination 10 data per halaman.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -47,7 +67,21 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * Proses pembuatan order
+     * Memproses pembuatan pesanan sewa baru oleh customer.
+     *
+     * Alur:
+     * 1. Validasi input (rental ID, waktu mulai, metode pengiriman, alamat, voucher)
+     * 2. Cek apakah waktu mulai tidak di masa lalu
+     * 3. Cek bentrok jadwal dengan pesanan lain yang aktif
+     * 4. Validasi alamat jika metode pengiriman adalah delivery
+     * 5. Hitung diskon dari voucher (jika ada)
+     * 6. Buat record Order dan record Payment
+     * 7. Catat pemakaian voucher
+     * 8. Redirect ke halaman pembayaran
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $productId ID produk yang akan disewa
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $productId)
     {
@@ -170,7 +204,18 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * Halaman detail order & pembayaran
+     * Menampilkan halaman detail pesanan dan status pembayaran.
+     *
+     * Menampilkan view yang berbeda bergantung pada kondisi pesanan:
+     * - Pesanan dibatalkan → tampilkan halaman detail
+     * - Sudah dibayar → tampilkan halaman detail dengan peta tracking
+     * - Belum dibayar & masih pending → tampilkan halaman pembayaran dengan Snap token
+     *
+     * Juga menyiapkan data peta (mapData) untuk menampilkan posisi customer
+     * dan kurir/toko secara real-time sesuai metode pengiriman (pickup/delivery).
+     *
+     * @param int $id ID pesanan
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
@@ -282,7 +327,14 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * Generate Midtrans Snap Token
+     * Membuat ulang Midtrans Snap Token untuk pesanan yang gagal bayar.
+     *
+     * Midtrans mengharuskan order_id yang unik di setiap pemanggilan API,
+     * sehingga ditambahkan suffix timestamp agar tidak terjadi duplikasi.
+     * Token ini digunakan di frontend untuk membuka Midtrans Snap popup.
+     *
+     * @param \App\Models\Order $order
+     * @return string|null Snap token atau null jika gagal
      */
     private function generateSnapToken($order)
     {
@@ -682,10 +734,14 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * Batalkan order
-     */
-    /**
-     * Batalkan order
+     * Membatalkan pesanan yang belum dibayar.
+     *
+     * Pesanan hanya dapat dibatalkan jika status pembayarannya masih 'unpaid'.
+     * Jika ada shipment yang sedang aktif tracking, maka tracking dihentikan secara otomatis.
+     * Status pesanan diubah menjadi 'cancelled' dan seller dinotifikasi melalui flag `is_read_by_seller`.
+     *
+     * @param int $id ID pesanan yang akan dibatalkan
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function cancel($id)
     {

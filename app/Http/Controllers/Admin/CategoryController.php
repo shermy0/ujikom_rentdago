@@ -9,19 +9,32 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
+/**
+ * CategoryController — Mengelola data kategori produk oleh Admin.
+ *
+ * Menyediakan fitur CRUD lengkap untuk kategori hierarkis (parent & sub-kategori),
+ * termasuk upload icon, generate slug unik, dan validasi sebelum penghapusan.
+ */
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of categories.
+     * Menampilkan daftar kategori dengan pencarian dan filter parent.
+     *
+     * Secara default hanya menampilkan kategori root (tanpa parent_id).
+     * Sub-kategori di-render lewat nested loop di view, bukan query utama.
+     * Mendukung pencarian berdasarkan nama di parent maupun sub-kategori.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
         // Selalu mulai dari root (parent) kategori saja
-        // Children di-render lewat nested loop di view, bukan query utama
+        // Sub-kategori di-render lewat nested loop di view
         $query = Category::with(['parent', 'children'])
             ->whereNull('parent_id');
 
-        // Search by name — cari di parent dan anak-anaknya
+        // Pencarian berdasarkan nama (di parent dan sub-kategorinya)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -32,7 +45,7 @@ class CategoryController extends Controller
             });
         }
 
-        // Filter by parent: tampilkan children dari parent yg dipilih
+        // Filter berdasarkan parent: tampilkan sub-kategori dari parent yang dipilih
         if ($request->filled('parent') && $request->parent !== 'root') {
             $query = Category::with(['parent', 'children'])
                 ->where('parent_id', $request->parent);
@@ -40,7 +53,7 @@ class CategoryController extends Controller
 
         $categories = $query->orderBy('name', 'asc')->paginate(10);
 
-        // Get root categories for filter dropdown
+        // Ambil semua kategori root untuk dropdown filter
         $parentCategories = Category::whereNull('parent_id')->orderBy('name')->get();
 
         $data = [
@@ -57,11 +70,13 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new category.
+     * Menampilkan form untuk membuat kategori baru.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
-        // Get all categories for parent dropdown
+        // Ambil semua kategori root untuk dropdown pilihan parent
         $parentCategories = Category::whereNull('parent_id')->orderBy('name')->get();
 
         $data = [
@@ -78,7 +93,13 @@ class CategoryController extends Controller
     }
 
     /**
-     * Store a newly created category in storage.
+     * Menyimpan kategori baru ke database.
+     *
+     * Melakukan validasi input, generate slug unik dari nama kategori,
+     * upload icon ke storage, lalu menyimpan data kategori.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -94,7 +115,7 @@ class CategoryController extends Controller
             'icon.max' => 'Ukuran gambar maksimal 2MB.'
         ]);
 
-        // Generate unique slug
+        // Generate slug unik dari nama kategori (ditambahkan angka jika sudah ada)
         $slug = Str::slug($validated['name']);
         $originalSlug = $slug;
         $counter = 1;
@@ -110,7 +131,7 @@ class CategoryController extends Controller
             'parent_id' => $validated['parent_id'] ?? null,
         ];
 
-        // Handle icon upload
+        // Upload icon kategori jika ada file yang dikirim
         if ($request->hasFile('icon')) {
             $iconPath = $request->file('icon')->store('categories', 'public');
             $categoryData['icon'] = $iconPath;
@@ -123,11 +144,17 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified category.
+     * Menampilkan form edit kategori.
+     *
+     * Mengambil semua kategori root kecuali diri sendiri untuk dropdown pilihan parent
+     * (mencegah loop hierarki tak terbatas).
+     *
+     * @param \App\Models\Category $category
+     * @return \Illuminate\View\View
      */
     public function edit(Category $category)
     {
-        // Get all root categories except current and its children for parent dropdown
+        // Ambil semua kategori root kecuali kategori saat ini untuk dropdown parent
         $parentCategories = Category::whereNull('parent_id')
             ->where('id', '!=', $category->id)
             ->orderBy('name')
@@ -148,7 +175,15 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified category in storage.
+     * Memperbarui data kategori di database.
+     *
+     * Mencegah kategori menjadi parent dirinya sendiri dengan Rule::notIn.
+     * Jika nama berubah, slug di-generate ulang secara unik.
+     * Icon lama dihapus sebelum icon baru disimpan (jika ada upload baru).
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Category $category)
     {
@@ -157,7 +192,7 @@ class CategoryController extends Controller
             'parent_id' => [
                 'nullable',
                 'exists:categories,id',
-                // Prevent setting self as parent
+                // Cegah kategori menjadi parent dirinya sendiri
                 Rule::notIn([$category->id]),
             ],
             'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
@@ -168,7 +203,7 @@ class CategoryController extends Controller
             'parent_id' => $validated['parent_id'] ?? null,
         ];
 
-        // Generate unique slug if name changed
+        // Generate ulang slug jika nama berubah
         if ($category->name !== $validated['name']) {
             $slug = Str::slug($validated['name']);
             $originalSlug = $slug;
@@ -182,9 +217,9 @@ class CategoryController extends Controller
             $categoryData['slug'] = $slug;
         }
 
-        // Handle icon upload
+        // Upload icon baru jika ada file yang dikirim
         if ($request->hasFile('icon')) {
-            // Delete old icon if exists
+            // Hapus icon lama dari storage sebelum menyimpan yang baru
             if ($category->icon && Storage::disk('public')->exists($category->icon)) {
                 Storage::disk('public')->delete($category->icon);
             }
@@ -193,7 +228,7 @@ class CategoryController extends Controller
             $categoryData['icon'] = $iconPath;
         }
 
-        // Handle remove icon checkbox
+        // Hapus icon jika checkbox "Hapus Icon" dicentang oleh admin
         if ($request->has('remove_icon') && $request->remove_icon) {
             if ($category->icon && Storage::disk('public')->exists($category->icon)) {
                 Storage::disk('public')->delete($category->icon);
@@ -208,17 +243,23 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified category from storage.
+     * Menghapus kategori dari database.
+     *
+     * Penghapusan ditolak jika kategori masih memiliki sub-kategori
+     * atau masih digunakan oleh produk yang ada.
+     *
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Category $category)
     {
-        // Check if category has children
+        // Cek apakah kategori memiliki sub-kategori
         if ($category->hasChildren()) {
             return redirect()->route('admin.categories.index')
                 ->with('error', 'Kategori tidak dapat dihapus karena memiliki sub-kategori.');
         }
 
-        // Check if category is being used by products
+        // Cek apakah kategori sedang digunakan oleh produk
         if ($category->isInUse()) {
             return redirect()->route('admin.categories.index')
                 ->with('error', 'Kategori tidak dapat dihapus karena sedang digunakan oleh produk.');

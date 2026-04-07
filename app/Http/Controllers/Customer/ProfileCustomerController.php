@@ -12,8 +12,23 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 
+/**
+ * ProfileCustomerController — Mengelola profil akun Customer.
+ *
+ * Menyediakan fitur melihat profil, mengedit data diri (nama, HP, avatar),
+ * serta alur verifikasi 2 tahap berbasis OTP WhatsApp ketika nomor HP berubah.
+ * Juga menangani alur reset password dengan atau tanpa password lama.
+ */
 class ProfileCustomerController extends Controller
 {
+    /**
+     * Menampilkan halaman profil customer yang sedang login.
+     *
+     * Turut mengambil data pengajuan seller request terakhir (jika ada)
+     * untuk menampilkan status pengajuan menjadi seller.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $user = Auth::user();
@@ -26,6 +41,11 @@ class ProfileCustomerController extends Controller
         return view('customer.profile.index', compact('user', 'sellerRequest'))->with('title', 'Profil');
     }
 
+    /**
+     * Menampilkan form edit profil customer.
+     *
+     * @return \Illuminate\View\View
+     */
     public function edit()
     {
         $user = Auth::user();
@@ -58,6 +78,17 @@ class ProfileCustomerController extends Controller
         return $result;
     }
 
+    /**
+     * Memperbarui data profil customer (nama, nomor HP, dan avatar).
+     *
+     * Jika nomor HP berubah, alur verifikasi 2 tahap via OTP WhatsApp dijalankan:
+     * 1. OTP dikirim ke nomor LAMA untuk konfirmasi identitas
+     * 2. Setelah terverifikasi, OTP dikirim ke nomor BARU
+     * Jika nomor HP tidak berubah, data langsung disimpan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -309,6 +340,11 @@ class ProfileCustomerController extends Controller
         ], 200);
     }
 
+    /**
+     * Menampilkan form reset password menggunakan password lama.
+     *
+     * @return \Illuminate\View\View
+     */
     public function showResetPassword()
     {
         $user = Auth::user();
@@ -360,12 +396,17 @@ class ProfileCustomerController extends Controller
     }
 
     /**
-     * Request OTP untuk reset password tanpa password lama
+     * Mengirim OTP ke nomor HP customer untuk keperluan reset password
+     * tanpa perlu memasukkan password lama.
+     *
+     * OTP disimpan ke database terlebih dahulu sebelum dikirim.
+     * Jika pengiriman WhatsApp gagal, OTP tetap valid dan user dapat
+     * meminta kirim ulang melalui tombol "Kirim Ulang".
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    /**
- * Request OTP untuk reset password tanpa password lama
- */
-public function requestPasswordResetOtp(Request $request)
+    public function requestPasswordResetOtp(Request $request)
 {
     $user = Auth::user();
     $phone = $user->phone;

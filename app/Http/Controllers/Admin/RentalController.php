@@ -8,8 +8,25 @@ use App\Models\ProductRental;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 
+/**
+ * RentalController — Mengelola data paket sewa produk (ProductRental) oleh Admin.
+ *
+ * Menyediakan tampilan baca-saja (read-only) atas seluruh paket sewa
+ * yang didaftarkan oleh seller, lengkap dengan filter pencarian,
+ * filter toko, dan filter metode pengiriman.
+ */
 class RentalController extends Controller
 {
+    /**
+     * Menampilkan daftar seluruh paket sewa yang tersedia.
+     *
+     * Mendukung pencarian berdasarkan nama atau kode produk,
+     * filter berdasarkan toko, dan filter berdasarkan metode pengiriman
+     * (pickup, delivery, atau pickup_delivery).
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = ProductRental::with([
@@ -63,6 +80,14 @@ class RentalController extends Controller
 
 
 
+    /**
+     * Menampilkan halaman detail sebuah paket sewa.
+     *
+     * Memuat relasi kategori, gambar produk, dan informasi toko.
+     *
+     * @param int $id ID paket sewa (product_rentals)
+     * @return \Illuminate\View\View
+     */
     public function show($id)
     {
         $rental = ProductRental::with(['product.category', 'product.images', 'product.shop'])

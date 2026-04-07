@@ -12,9 +12,26 @@ use Midtrans\Snap;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+/**
+ * CustomerPenaltyController — Mengelola pembayaran denda keterlambatan oleh Customer.
+ *
+ * Menangani alur pembayaran denda (OrderReturn dengan payment_status 'unpaid')
+ * menggunakan Midtrans Snap. Juga menyediakan endpoint simulasi callback
+ * Midtrans khusus untuk keperluan pengujian di environment lokal.
+ */
 class CustomerPenaltyController extends Controller
 {
-public function pay($orderReturnId)
+    /**
+     * Menampilkan halaman pembayaran denda keterlambatan pengembalian.
+     *
+     * Mengatur konfigurasi Midtrans, membuat parameter transaksi
+     * berdasarkan data denda (OrderReturn), mengambil Snap Token dari Midtrans,
+     * lalu menyimpan midtrans_order_id unik ke database sebelum menampilkan view.
+     *
+     * @param int $orderReturnId ID denda (order_returns) yang akan dibayar
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function pay($orderReturnId)
 {
     $penalty = OrderReturn::with('order.user')->findOrFail($orderReturnId);
 
@@ -57,7 +74,17 @@ public function pay($orderReturnId)
 }
 
 
-public function simulateMidtransCallback(Request $request)
+    /**
+     * Mensimulasikan callback Midtrans untuk pengujian pembayaran denda di lokal.
+     *
+     * ⚠️ HANYA UNTUK ENVIRONMENT LOKAL / TESTING — JANGAN DIPAKAI DI PRODUCTION.
+     * Memproses simulasi status transaksi settlement/capture sebagai pembayaran berhasil,
+     * mengupdate status denda menjadi 'paid', dan menyelesaikan pesanan terkait.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function simulateMidtransCallback(Request $request)
 {
     /**
      * ⚠️ KHUSUS LOCAL / TESTING

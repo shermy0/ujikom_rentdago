@@ -6,10 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 
+/**
+ * ShopMapController — Menampilkan peta lokasi seluruh toko seller kepada Admin.
+ *
+ * Mengambil koordinat toko yang valid dari database,
+ * lalu memformat data agar siap digunakan oleh library peta di frontend (JavaScript).
+ */
 class ShopMapController extends Controller
 {
     /**
-     * Display shop map with all registered seller locations
+     * Menampilkan peta dengan semua toko seller yang memiliki koordinat terdaftar.
+     *
+     * Hanya menampilkan toko yang latitude dan longitude-nya tidak null dan tidak 0.
+     * Data diformat menjadi array ringkas untuk keperluan rendering peta di JavaScript.
      *
      * @return \Illuminate\View\View
      */

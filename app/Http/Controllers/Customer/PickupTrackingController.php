@@ -11,10 +11,25 @@ use App\Events\TrackingStarted;
 use App\Events\LocationUpdated;
 use App\Events\TrackingStopped;
 
+/**
+ * PickupTrackingController — Mengelola pelacakan lokasi Customer saat pengambilan (pickup).
+ *
+ * Menyediakan fitur mulai tracking, update lokasi secara berkala,
+ * dan konfirmasi sampai di toko. Menggunakan Pusher/WebSocket
+ * melalui Laravel Events untuk menyiarkan perubahan posisi secara real-time.
+ */
 class PickupTrackingController extends Controller
 {
     /**
-     * Start tracking for customer picking up from shop
+     * Memulai sesi tracking untuk customer yang akan mengambil barang ke toko.
+     *
+     * Membuat atau menemukan record Shipment, lalu mengubah statusnya
+     * menjadi on_the_way dan mengaktifkan tracking.
+     * Mengirimkan event TrackingStarted ke semua client yang terhubung.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id ID pesanan
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function startTracking(Request $request, $id)
     {
@@ -24,7 +39,7 @@ class PickupTrackingController extends Controller
             return response()->json(['success' => false, 'message' => 'Hanya untuk mode pickup'], 400);
         }
 
-        // Find or create shipment
+        // Cari atau buat record Shipment untuk pesanan ini
         // Menggunakan Shipment::firstOrCreate langsung untuk menghindari error ambiguous column
         // yang disebabkan oleh relationship deliveryShipment() yang menggunakan latestOfMany()
         $shipment = Shipment::firstOrCreate([
@@ -34,7 +49,7 @@ class PickupTrackingController extends Controller
             'status' => Shipment::STATUS_PENDING
         ]);
 
-        // Transition states if needed
+        // Ubah status menjadi on_the_way jika statusnya masih pending atau assigned
         if ($shipment->status === Shipment::STATUS_ASSIGNED || $shipment->status === Shipment::STATUS_PENDING) {
             $shipment->update([
                 'status' => Shipment::STATUS_ON_THE_WAY,
@@ -53,7 +68,15 @@ class PickupTrackingController extends Controller
     }
 
     /**
-     * Update customer location and calculate distance to shop
+     * Memperbarui posisi lokasi customer dan menghitung jarak ke toko.
+     *
+     * Menerima koordinat GPS dari frontend, menyimpan posisi terakhir ke Shipment,
+     * lalu menyiarkan pembaruan lokasi via WebSocket.
+     * Jika jarak kurang dari 200 meter, notifikasi "sudah dekat" dikirim ke
+     * customer dan seller (menggunakan Cache lock untuk mencegah spam notifikasi).
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updateLocation(Request $request)
     {
@@ -79,7 +102,7 @@ class PickupTrackingController extends Controller
 
         broadcast(new LocationUpdated($order->id, $request->latitude, $request->longitude))->toOthers();
 
-        // Calculate distance to shop
+        // Hitung jarak customer ke toko untuk ditampilkan di peta
         $responseData = ['success' => true];
         $shop = $order->productRental->product->shop;
 
@@ -91,18 +114,18 @@ class PickupTrackingController extends Controller
             $responseData['can_arrive'] = $canArrive;
             $responseData['threshold'] = Shipment::ARRIVAL_THRESHOLD;
 
-            // 🔥 Proximity Check: If closer than 200 meters, notify both parties
-            // Use Cache lock to prevent spam (expires in 1 hour)
+            // 🔥 Cek Kedekatan: Jika lebih dekat dari 200 meter, kirim notifikasi ke kedua pihak
+            // Gunakan Cache lock untuk mencegah notifikasi spam (kunci kadaluarsa dalam 1 jam)
             if ($distance !== null && $distance <= 200) {
                 $proximityLockKey = "pickup_proximity_alert_{$order->id}";
 
                 if (!\Illuminate\Support\Facades\Cache::has($proximityLockKey)) {
                     \Illuminate\Support\Facades\Cache::put($proximityLockKey, true, now()->addHour());
 
-                    // Notify Customer "Anda sudah dekat"
+                    // Kirim notifikasi ke Customer "Anda sudah dekat"
                     \App\Helpers\CustomerNotificationHelper::notifyNearShop($order);
 
-                    // Notify Seller "Customer sudah dekat"
+                    // Kirim notifikasi ke Seller bahwa "Customer sudah dekat"
                     \App\Helpers\CourierNotificationHelper::notifyCustomerNear($order);
                 }
             }
@@ -112,7 +135,15 @@ class PickupTrackingController extends Controller
     }
 
     /**
-     * Stop tracking (Arrival confirmation)
+     * Menghentikan tracking dan mengkonfirmasi customer telah sampai di toko.
+     *
+     * Memvalidasi posisi GPS saat ini (opsional): jika customer masih terlalu jauh
+     * dari toko (melebihi MAX_VALIDATION_THRESHOLD), konfirmasi ditolak.
+     * Jika valid, status Shipment diubah menjadi arrived dan event TrackingStopped disiarkan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id ID pesanan
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function stopTracking(Request $request, $id)
     {
@@ -126,7 +157,7 @@ class PickupTrackingController extends Controller
             return back()->with('error', 'Status tidak valid untuk konfirmasi sampai.');
         }
 
-        // Validate current GPS position (optional but recommended)
+        // Validasi posisi GPS saat ini (opsional namun disarankan)
         $lat = $request->current_lat ?? $request->latitude;
         $lng = $request->current_lng ?? $request->longitude;
 

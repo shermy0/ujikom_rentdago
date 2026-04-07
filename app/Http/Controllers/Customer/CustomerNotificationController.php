@@ -7,10 +7,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CustomerNotificationHelper;
 
+/**
+ * CustomerNotificationController — Mengelola notifikasi in-app milik Customer.
+ *
+ * Menyediakan endpoint API untuk mengambil semua notifikasi, menandai
+ * notifikasi sebagai sudah dibaca (satu per satu atau sekaligus),
+ * serta menghapus seluruh notifikasi customer.
+ */
 class CustomerNotificationController extends Controller
 {
     /**
-     * Get all notifications (unified endpoint)
+     * Mengambil seluruh notifikasi beserta jumlah yang belum dibaca.
+     *
+     * Hanya tersedia untuk customer yang sudah login (auth check dilakukan di awal).
+     * Digunakan oleh frontend untuk mengisi panel notifikasi secara real-time.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
    public function getAllNotifications()
 {
@@ -30,7 +42,13 @@ class CustomerNotificationController extends Controller
 }
 
     /**
-     * Mark specific notifications as read
+     * Menandai notifikasi tertentu sebagai sudah dibaca.
+     *
+     * Menerima array ID notifikasi dari request dan menandainya
+     * sebagai dibaca. Mengembalikan jumlah notifikasi yang berhasil diupdate.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function markAsRead(Request $request)
     {
@@ -52,7 +70,13 @@ class CustomerNotificationController extends Controller
     }
 
     /**
-     * Mark all notifications as read
+     * Menandai semua notifikasi sebagai sudah dibaca sekaligus.
+     *
+     * Menerima list ID notifikasi yang dipilih dari frontend
+     * dan menandai semuanya sebagai dibaca dalam satu operasi.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function markAllAsRead(Request $request)
     {
@@ -73,7 +97,9 @@ class CustomerNotificationController extends Controller
     }
 
     /**
-     * Clear all notifications
+     * Menghapus seluruh notifikasi milik customer yang sedang login.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function clearAll()
     {
