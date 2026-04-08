@@ -61,11 +61,60 @@
     }
     .table-card .table tbody td { padding: 12px 16px; vertical-align: middle; font-size: 13px; }
     .badge-status { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+
+    .report-header {
+        gap: 12px;
+    }
+
+    .table-card .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+    }
+
+    .table-card .table {
+        min-width: 900px;
+    }
+
+    @media (max-width: 768px) {
+        .report-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .report-header .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-bar {
+            padding: 14px;
+        }
+
+        .stat-card {
+            padding: 14px;
+            gap: 10px;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 18px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+        }
+
+        .chart-card {
+            padding: 14px;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 report-header">
     <div>
         <h4 class="fw-bold mb-1" style="color:#1f2937;">Laporan Pesanan</h4>
         <p class="text-muted mb-0" style="font-size:13px;">Analitik & rekap data penyewaan barang</p>

@@ -31,34 +31,36 @@
                         @endif
                     </div>
                     <div class="col-md-9">
-                        <table class="table table-borderless mb-0">
-                            <tr>
-                                <td width="150"><strong>Nama Produk</strong></td>
-                                <td>: {{ $rental->product->name }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kode Produk</strong></td>
-                                <td>: <code>{{ $rental->product->code }}</code></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kategori</strong></td>
-                                <td>: <span class="badge bg-info">{{ $rental->product->category->name ?? 'N/A' }}</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kondisi</strong></td>
-                                <td>: {{ $rental->product->condition ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Status</strong></td>
-                                <td>:
-                                    @if ($rental->product->is_maintenance)
-                                        <span class="badge bg-danger">Maintenance</span>
-                                    @else
-                                        <span class="badge bg-success">Tersedia</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-borderless mb-0">
+                                <tr>
+                                    <td width="150"><strong>Nama Produk</strong></td>
+                                    <td>: {{ $rental->product->name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kode Produk</strong></td>
+                                    <td>: <code>{{ $rental->product->code }}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kategori</strong></td>
+                                    <td>: <span class="badge bg-info">{{ $rental->product->category->name ?? 'N/A' }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kondisi</strong></td>
+                                    <td>: {{ $rental->product->condition ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status</strong></td>
+                                    <td>:
+                                        @if ($rental->product->is_maintenance)
+                                            <span class="badge bg-danger">Maintenance</span>
+                                        @else
+                                            <span class="badge bg-success">Tersedia</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,26 +70,28 @@
                 <i class="bi bi-shop"></i> Informasi Toko
             </div>
             <div class="info-card mb-4">
-                <table class="table table-borderless mb-0">
-                    <tr>
-                        <td width="150"><strong>Nama Toko</strong></td>
-                        <td>: {{ $rental->product->shop->name_store ?? 'N/A' }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Alamat</strong></td>
-                        <td>: {{ $rental->product->shop->address_store ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Status Toko</strong></td>
-                        <td>:
-                            @if ($rental->product->shop && $rental->product->shop->is_active)
-                                <span class="badge bg-success">Aktif</span>
-                            @else
-                                <span class="badge bg-secondary">Tidak Aktif</span>
-                            @endif
-                        </td>
-                    </tr>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td width="150"><strong>Nama Toko</strong></td>
+                            <td>: {{ $rental->product->shop->name_store ?? 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alamat</strong></td>
+                            <td>: {{ $rental->product->shop->address_store ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status Toko</strong></td>
+                            <td>:
+                                @if ($rental->product->shop && $rental->product->shop->is_active)
+                                    <span class="badge bg-success">Aktif</span>
+                                @else
+                                    <span class="badge bg-secondary">Tidak Aktif</span>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
 
             <!-- Rental Info Section -->

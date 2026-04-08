@@ -8,7 +8,7 @@
 @include('kurir.layouts.navbot')
 @endsection
 @section('content')
-<div style="padding: 0; height: 100vh; position: relative; padding-bottom: 85px;">
+<div class="courier-map-page">
 
     <!-- Hidden data for JS -->
     <input type="hidden" id="order_id_data" value="{{ $order->id }}">
@@ -18,9 +18,9 @@
     <input type="hidden" id="shipment_status_data" value="{{ $mapData['shipment']['status'] ?? '' }}">
 
     <!-- Header Info Card -->
-    <div style="position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1000; background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h6 style="margin: 0; font-weight: 700; color: #1f2937;">#{{ $order->order_code }}</h6>
+    <div class="map-info-card">
+        <div class="map-info-top">
+            <h6 class="map-order-code">#{{ $order->order_code }}</h6>
             <span id="statusBadge" class="badge" style="
                 @if($order->status === 'confirmed') background: #dbeafe; color: #1e40af;
                 @elseif(($mapData['shipment']['status'] ?? '') === 'on_the_way') background: #fef3c7; color: #92400e;
@@ -34,26 +34,25 @@
                 @elseif(($mapData['shipment']['status'] ?? '') === 'arrived') Sudah Sampai
                 @elseif($order->status === 'ongoing') Penyewaan Aktif
                 @else {{ ucfirst($order->status) }}
-                @endif
-            </span>
+                @endif</span>
         </div>
 
-        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+        <div class="map-info-row">
             <i class="fa fa-user" style="color: #22c55e; width: 20px;"></i>
-            <span style="font-size: 13px; color: #6b7280;">{{ $mapData['customer']['name'] }}</span>
+            <span class="map-customer-name">{{ $mapData['customer']['name'] }}</span>
         </div>
 
-        <div style="display: flex; gap: 10px; align-items: flex-start;">
+        <div class="map-info-row align-start">
             <i class="fa fa-location-dot" style="color: #ef4444; width: 20px; margin-top: 2px;"></i>
-            <span style="font-size: 12px; color: #9ca3af; flex: 1;">{{ $mapData['customer']['address'] }}</span>
+            <span class="map-customer-address">{{ $mapData['customer']['address'] }}</span>
         </div>
     </div>
 
     <!-- Map Container -->
-    <div id="deliveryMap" style="height: 100vh; width: 100%;"></div>
+    <div id="deliveryMap" class="delivery-map"></div>
 
     <!-- Bottom Action Button -->
-    <div style="position: absolute; bottom: 150px; left: 15px; right: 15px; z-index: 1000;">
+    <div class="map-bottom-action">
         @php
         $shipmentStatus = $mapData['shipment']['status'] ?? '';
         $shipmentId = $mapData['shipment']['id'] ?? '';
@@ -110,7 +109,7 @@
                 <p style="margin: 0; font-size: 13px; color: #6b7280; line-height: 1.4;">
                     Lanjutkan scan Foto untuk memulai masa sewa.
                 </p>
-                <button onclick="window.location.href='{{ route('kurir.delivery-photo.index') }}'" style="margin-top: 15px; width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <button onclick="window.location.href='{{ $shipmentId ? route('kurir.delivery-photo.show', $shipmentId) : route('kurir.orders') }}'" style="margin-top: 15px; width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <i class="fa fa-expand"></i> Buka Scanner
                 </button>
             </div>
@@ -137,6 +136,90 @@
     <script src="https://unpkg.com/lrm-mapbox@1.2.0/dist/lrm-mapbox.min.js"></script>
 
     <style>
+        .mobile-content {
+            overflow: hidden !important;
+        }
+
+        .courier-map-page {
+            position: relative;
+            height: 100%;
+            min-height: 100%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .delivery-map {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .map-info-card {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            z-index: 1000;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-info-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .map-order-code {
+            margin: 0;
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .map-info-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .map-info-row.align-start {
+            align-items: flex-start;
+            margin-bottom: 0;
+        }
+
+        .map-customer-name {
+            font-size: 13px;
+            color: #6b7280;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        .map-customer-address {
+            font-size: 12px;
+            color: #9ca3af;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .map-bottom-action {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 82px;
+            z-index: 1000;
+        }
+
         /* Hide routing panel */
         .leaflet-routing-container {
             display: none !important;
@@ -162,6 +245,43 @@
         .customer-icon {
             color: #22c55e;
             border: 3px solid #22c55e;
+        }
+
+        .mobile-bottom-nav {
+            position: relative;
+            z-index: 1100;
+        }
+
+        @media (max-width: 360px), (max-height: 560px) {
+            .map-info-card {
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                padding: 10px;
+            }
+
+            .map-order-code {
+                font-size: 12px;
+            }
+
+            .map-customer-name {
+                font-size: 12px;
+            }
+
+            .map-customer-address {
+                font-size: 11px;
+            }
+
+            .map-bottom-action {
+                left: 10px;
+                right: 10px;
+                bottom: 74px;
+            }
+
+            .map-bottom-action button {
+                padding: 12px !important;
+                font-size: 14px !important;
+            }
         }
     </style>
 

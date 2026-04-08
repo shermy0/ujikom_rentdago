@@ -489,7 +489,6 @@ Route::middleware(['auth'])
         Route::post('/orders/{orderId}/confirm-return', [App\Http\Controllers\Kurir\KurirController::class, 'confirmReturn'])->name('orders.confirm-return');
 
         // ✅ TAMBAHKAN SCAN QR ROUTES DI SINI
-        Route::get('/delivery-photo', [App\Http\Controllers\Kurir\KurirQrController::class, 'index'])->name('delivery-photo.index');
         Route::get('/delivery-photo/{shipmentId}', [App\Http\Controllers\Kurir\KurirQrController::class, 'showPhotoPage'])->name('delivery-photo.show');
         Route::post('/delivery-photo/complete', [App\Http\Controllers\Kurir\KurirQrController::class, 'completeDelivery'])->name('delivery-photo.complete');
 

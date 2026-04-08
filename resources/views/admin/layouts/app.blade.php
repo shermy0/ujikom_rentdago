@@ -62,6 +62,21 @@
             transition: all 0.3s ease;
         }
 
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 998;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .sidebar-header {
             padding: 20px;
             border-bottom: 1px solid #f0f0f0;
@@ -157,6 +172,20 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 30px;
+        }
+
+        .btn-sidebar-toggle {
+            display: none;
+            width: 38px;
+            height: 38px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            border-radius: 8px;
+            color: #333;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
         }
 
         .topbar-left h5 {
@@ -281,8 +310,67 @@
                 padding: 0 15px;
             }
 
+            .topbar-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 0;
+            }
+
+            .btn-sidebar-toggle {
+                display: inline-flex;
+                flex-shrink: 0;
+            }
+
+            .topbar-left h5 {
+                font-size: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 48vw;
+            }
+
+            .topbar-right {
+                gap: 8px;
+            }
+
+            .btn-topbar {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            .btn-topbar span {
+                display: none;
+            }
+
             .content-wrapper {
                 padding: 15px;
+            }
+
+            .content-wrapper .card-header,
+            .content-wrapper .card-body {
+                padding: 14px;
+            }
+
+            .content-wrapper .card-header {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .content-wrapper .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-x;
+            }
+
+            .content-wrapper .table-responsive > .table {
+                min-width: 760px;
+            }
+
+            .content-wrapper .table-borderless td,
+            .content-wrapper .table-borderless th {
+                white-space: normal;
+                word-break: break-word;
             }
         }
 
@@ -311,6 +399,7 @@
     <div class="wrapper">
         <!-- Sidebar -->
         @include('admin.partials.sidebar')
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -409,12 +498,38 @@
         // Mobile sidebar toggle
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.querySelector('.sidebar');
-        
-        if (sidebarToggle) {
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        const closeSidebar = () => {
+            sidebar?.classList.remove('show');
+            sidebarOverlay?.classList.remove('show');
+            document.body.style.overflow = '';
+        };
+
+        const openSidebar = () => {
+            sidebar?.classList.add('show');
+            sidebarOverlay?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+
+        if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
+                const isOpen = sidebar.classList.contains('show');
+                if (isOpen) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
             });
         }
+
+        sidebarOverlay?.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
     </script>
     
     @stack('scripts')

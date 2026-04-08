@@ -100,9 +100,18 @@
                 </div>
 
                 @if($shipment && $shipment->courier_notes)
+                @php
+                    $normalizedNotes = str_replace(
+                        ['Diverifikasi via PHOTO', 'Serah terima ke customer diverifikasi via FOTO kurir'],
+                        'Verifikasi serah terima: FOTO kurir',
+                        $shipment->courier_notes
+                    );
+                    $noteLines = array_values(array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $normalizedNotes))));
+                    $displayNotes = implode("\n", array_unique($noteLines));
+                @endphp
                 <div class="alert alert-warning border-0 py-2 px-3 mb-3 d-flex align-items-center">
                     <i class="fa fa-sticky-note text-warning me-2"></i>
-                    <small class="text-dark">{{ $shipment->courier_notes }}</small>
+                    <small class="text-dark">{{ $displayNotes }}</small>
                 </div>
                 @endif
 

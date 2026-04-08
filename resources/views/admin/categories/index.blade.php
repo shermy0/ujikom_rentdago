@@ -47,8 +47,8 @@
         </form>
 
         <!-- Table -->
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+        <div class="table-responsive category-table-scroll">
+            <table class="table table-hover align-middle category-table">
                 <thead class="table-light">
                     <tr>
                         <th style="width: 60px;">ID</th>
@@ -344,6 +344,23 @@
     }
     .transition-transform {
         transition: transform 0.3s ease;
+    }
+
+    .category-table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+    }
+
+    .category-table {
+        min-width: 860px;
+    }
+
+    @media (max-width: 768px) {
+        .card-header,
+        .card-body {
+            padding: 14px;
+        }
     }
 </style>
 @endpush

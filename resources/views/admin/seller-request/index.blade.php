@@ -33,21 +33,21 @@
         <div class="card-body p-4">
             
             <!-- Modern Filter Tabs -->
-            <div class="mb-4 bg-light p-1 rounded-pill d-inline-flex">
+            <div class="mb-4 bg-light p-1 rounded-pill d-inline-flex seller-filter-tabs">
                 <a href="{{ route('admin.seller-requests.index', ['status' => 'all']) }}"
-                    class="btn btn-sm rounded-pill px-4 {{ request('status') == 'all' ? 'btn-primary text-white shadow-sm' : 'text-muted' }}">
+                    class="btn btn-sm rounded-pill px-4 seller-filter-btn {{ request('status') == 'all' ? 'btn-primary text-white shadow-sm' : 'text-muted' }}">
                     Semua
                 </a>
                 <a href="{{ route('admin.seller-requests.index', ['status' => 'pending']) }}"
-                    class="btn btn-sm rounded-pill px-4 {{ !request('status') || request('status') == 'pending' ? 'btn-warning text-white shadow-sm' : 'text-muted' }}">
+                    class="btn btn-sm rounded-pill px-4 seller-filter-btn {{ !request('status') || request('status') == 'pending' ? 'btn-warning text-white shadow-sm' : 'text-muted' }}">
                     Pending
                 </a>
                 <a href="{{ route('admin.seller-requests.index', ['status' => 'approved']) }}"
-                    class="btn btn-sm rounded-pill px-4 {{ request('status') == 'approved' ? 'btn-success text-white shadow-sm' : 'text-muted' }}">
+                    class="btn btn-sm rounded-pill px-4 seller-filter-btn {{ request('status') == 'approved' ? 'btn-success text-white shadow-sm' : 'text-muted' }}">
                     Approved
                 </a>
                 <a href="{{ route('admin.seller-requests.index', ['status' => 'rejected']) }}"
-                    class="btn btn-sm rounded-pill px-4 {{ request('status') == 'rejected' ? 'btn-danger text-white shadow-sm' : 'text-muted' }}">
+                    class="btn btn-sm rounded-pill px-4 seller-filter-btn {{ request('status') == 'rejected' ? 'btn-danger text-white shadow-sm' : 'text-muted' }}">
                     Rejected
                 </a>
             </div>
@@ -436,6 +436,41 @@
     img[style*="cursor: pointer"]:hover {
         transform: scale(1.02);
         transition: transform 0.2s;
+    }
+
+    .seller-filter-tabs {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 6px;
+        max-width: 100%;
+    }
+
+    .seller-filter-btn {
+        white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        .seller-filter-tabs {
+            width: 100%;
+            border-radius: 12px !important;
+        }
+
+        .seller-filter-btn {
+            flex: 1 1 calc(50% - 6px);
+            text-align: center;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
+        }
+
+        .table-responsive .table {
+            min-width: 760px;
+        }
     }
 </style>
 @endpush
