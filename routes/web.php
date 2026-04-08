@@ -83,7 +83,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 /* =======================
 | AUTHENTICATED USER ROUTES
 ======================= */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:customer'])->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileCustomerController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileCustomerController::class, 'edit'])->name('profile.edit');
@@ -374,7 +374,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
 // Customer Orders & Shop (auth, tidak perlu role spesifik)
 // Customer Orders & Shop (auth, tidak perlu role spesifik)
-Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(function () {
+Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
     // Orders
     Route::get('/orders/index', [CustomerOrderController::class, 'index'])->name('order.index');
     Route::post('/product/{product}/order', [CustomerOrderController::class, 'store'])->name('order.store');
@@ -450,7 +450,7 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
 /* =======================
 | COURIER ROUTES
 ======================= */
-Route::middleware(['auth'])
+Route::middleware(['auth', 'role:courier'])
     ->prefix('kurir')
     ->name('kurir.')
     ->group(function () {
