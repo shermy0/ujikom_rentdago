@@ -43,14 +43,12 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
-        // Filter berdasarkan status verifikasi akun
+        // Filter berdasarkan status verifikasi nomor HP
         if ($request->filled('status')) {
             if ($request->status === 'verified') {
-                // Tampilkan hanya user yang sudah diverifikasi
-                $query->whereNotNull('user_verified_at');
+                $query->whereNotNull('phone_verified_at');
             } else {
-                // Tampilkan hanya user yang belum diverifikasi
-                $query->whereNull('user_verified_at');
+                $query->whereNull('phone_verified_at');
             }
         }
 
@@ -113,11 +111,7 @@ class UserController extends Controller
         // Tandai nomor HP sebagai sudah terverifikasi secara otomatis
         $validated['phone_verified_at'] = now();
 
-        // Akun non-seller langsung diverifikasi oleh admin
-        // Seller memerlukan proses approval terpisah melalui SellerRequest
-        if ($validated['role'] !== 'seller') {
-            $validated['user_verified_at'] = now();
-        }
+        // Simpan data user baru ke database
 
         // Simpan data user baru ke database
         User::create($validated);
@@ -135,10 +129,9 @@ class UserController extends Controller
      */
     public function approve(User $user)
     {
-        // Ubah role menjadi seller dan verifikasi akun
+        // Ubah role menjadi seller
         $user->update([
-            'role'             => 'seller',
-            'user_verified_at' => now(),
+            'role' => 'seller',
         ]);
 
         return redirect()->back()->with('success', 'User berhasil disetujui sebagai seller.');
