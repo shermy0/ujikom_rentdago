@@ -51,7 +51,7 @@ class OrderController extends Controller
         }
 
         // Urutkan dari terbaru dan ambil dengan pagination
-        $orders = $query->orderBy('created_at', 'desc')->paginate(15);
+        $orders = $query->orderBy('created_at', 'desc')->paginate(10);
 
         // Hitung statistik ringkasan untuk ditampilkan di header halaman
         $stats = [
