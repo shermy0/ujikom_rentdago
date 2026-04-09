@@ -12,7 +12,7 @@
 
     {{-- HEADER DETAIL PRODUK --}}
     <div class="product-detail-header">
-        <a href="{{ route('profile.index') }}" class="header-back">
+        <a href="{{ route('home') }}" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Pesanan Saya</div>
