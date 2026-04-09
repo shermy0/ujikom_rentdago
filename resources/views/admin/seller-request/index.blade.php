@@ -123,13 +123,13 @@
                                             <!-- Active Button (Approve) -->
                                             <button type="button" class="btn btn-sm btn-success text-white" 
                                                 data-bs-toggle="modal" data-bs-target="#approveModal{{ $request->id }}" title="Aktifkan Seller">
-                                                Active
+                                                Aktifkan
                                             </button>
 
                                             <!-- Nonactive Button (Reject) -->
                                             <button type="button" class="btn btn-sm btn-danger text-white" 
                                                 data-bs-toggle="modal" data-bs-target="#rejectModal{{ $request->id }}" title="Nonaktifkan Seller">
-                                                Nonactive
+                                                Nonaktifkan
                                             </button>
                                         @endif
                                     </div>
