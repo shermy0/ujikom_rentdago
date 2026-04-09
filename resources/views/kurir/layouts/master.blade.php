@@ -24,22 +24,24 @@
         }
 
         body {
-            background: #e8f5e9;
+            background: #f3f4f6;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
         }
 
-        /* ===== RESPONSIVE WRAPPER ===== */
         .mobile-view {
             position: relative;
             width: 100%;
+            max-width: 470px;
+            height: 97vh;
             background: #f8f8f8;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            overflow: clip; /* clip, bukan hidden, agar sticky tetap bekerja */
         }
 
         .mobile-content {
@@ -55,6 +57,7 @@
 
         .mobile-content::-webkit-scrollbar-thumb {
             background: rgba(34, 197, 94, 0.3);
+
         }
 
         /* ========== HEADER MODERN ========== */
@@ -136,13 +139,16 @@
         /* ========== BOTTOM NAVIGATION ========== */
         .mobile-bottom-nav {
             width: 100%;
+            height: 65px;
             background: white;
             border-top: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 999;
+            padding: 0 8px;
             flex-shrink: 0;
+            /* Tidak perlu sticky/fixed — flex layout sudah push ke bawah */
         }
 
         .mobile-bottom-nav .nav-item {
@@ -151,12 +157,13 @@
             text-decoration: none;
             color: #999;
             transition: all 0.3s ease;
-            padding: 10px 8px;
+            padding: 8px;
+
         }
 
         .mobile-bottom-nav .nav-item i {
             display: block;
-            font-size: 20px;
+            font-size: 22px;
             margin-bottom: 4px;
         }
 
@@ -257,92 +264,17 @@
             font-weight: 500;
         }
 
-        /* ========== MOBILE (≤ 480px) — Full Screen App ========== */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 480px) {
             body {
+                padding: 0;
                 background: #f8f8f8;
             }
 
             .mobile-view {
                 border-radius: 0;
-                min-height: 100dvh;
-            }
-        }
-
-        /* ========== TABLET (481px – 991px) — Centered Card ========== */
-        @media (min-width: 481px) and (max-width: 991px) {
-            body {
-                padding: 24px 16px;
-                align-items: flex-start;
-                background: #e8f5e9;
-            }
-
-            .mobile-view {
-                max-width: 560px;
-                margin: 0 auto;
-                border-radius: 24px;
-                box-shadow: 0 8px 40px rgba(34, 197, 94, 0.15), 0 2px 8px rgba(0,0,0,0.08);
-                min-height: calc(100vh - 48px);
-                overflow: hidden;
-            }
-
-            .mobile-top-header {
-                border-radius: 0;
-            }
-        }
-
-        /* ========== DESKTOP (≥ 992px) — Wide Centered Panel ========== */
-        @media (min-width: 992px) {
-            body {
-                padding: 32px;
-                align-items: flex-start;
-                background: linear-gradient(135deg, #e8f5e9 0%, #f0fdf4 50%, #dcfce7 100%);
-            }
-
-            .mobile-view {
-                max-width: 680px;
-                margin: 0 auto;
-                border-radius: 28px;
-                box-shadow: 0 20px 60px rgba(34, 197, 94, 0.18), 0 4px 16px rgba(0,0,0,0.1);
-                min-height: calc(100vh - 64px);
-                overflow: hidden;
-            }
-
-            .mobile-top-header {
-                padding: 14px 24px 18px;
-                border-radius: 0;
-            }
-
-            .app-title {
-                font-size: 20px;
-            }
-
-            .mobile-bottom-nav .nav-item i {
-                font-size: 22px;
-            }
-
-            .mobile-bottom-nav .nav-item span {
-                font-size: 12px;
-            }
-
-            .mobile-bottom-nav .nav-item {
-                padding: 12px 8px;
-            }
-
-            .card-section {
-                margin: 14px 20px;
-                padding: 20px;
-            }
-
-            .menu-grid {
-                margin: 14px 20px;
-                padding: 20px;
-                gap: 20px;
-            }
-
-            .menu-grid .menu-icon {
-                width: 62px;
-                height: 62px;
+                height: 100vh;
+                max-width: 100%;
             }
         }
     </style>

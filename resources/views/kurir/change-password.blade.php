@@ -7,7 +7,7 @@
     @include('kurir.layouts.navbot')
 @endsection
 @section('content')
-<div class="kurir-inner-page">
+<div style="background: #f8f9fa; min-height: 100vh; padding: 20px;">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);">
         <i class="fa fa-check-circle"></i> {{ session('success') }}
@@ -112,19 +112,14 @@
 </div>
 
 <style>
-    .kurir-inner-page {
-        background: #f8f9fa;
-        padding: 16px;
-        flex: 1;
-    }
-    @media (min-width: 992px) {
-        .kurir-inner-page { padding: 24px; }
-    }
     .mobile-bottom-nav .nav-item.active,
     .mobile-bottom-nav .nav-item:hover {
         color: #22c55e !important;
     }
-    .toggle-password { cursor: pointer; }
+
+    .toggle-password {
+        cursor: pointer;
+    }
 </style>
 
 <script>

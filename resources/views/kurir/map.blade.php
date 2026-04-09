@@ -216,20 +216,8 @@
             position: absolute;
             left: 12px;
             right: 12px;
-            bottom: 75px;
+            bottom: 82px;
             z-index: 1000;
-        }
-
-        @media (min-width: 481px) {
-            .map-bottom-action {
-                bottom: 80px;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .map-bottom-action {
-                bottom: 88px;
-            }
         }
 
         /* Hide routing panel */
@@ -272,14 +260,22 @@
                 padding: 10px;
             }
 
-            .map-order-code { font-size: 12px; }
-            .map-customer-name { font-size: 12px; }
-            .map-customer-address { font-size: 11px; }
+            .map-order-code {
+                font-size: 12px;
+            }
+
+            .map-customer-name {
+                font-size: 12px;
+            }
+
+            .map-customer-address {
+                font-size: 11px;
+            }
 
             .map-bottom-action {
                 left: 10px;
                 right: 10px;
-                bottom: 68px;
+                bottom: 74px;
             }
 
             .map-bottom-action button {
