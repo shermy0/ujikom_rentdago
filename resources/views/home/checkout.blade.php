@@ -134,7 +134,27 @@
                 <i class="fa fa-calendar"></i>
                 <span>Tanggal & Jam Mulai</span>
             </div>
-            <input type="datetime-local" id="startTime" name="start_time" required>
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="datetime-local" id="startTime" name="start_time" required 
+                    style="width: 100%; padding-right: 48px; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px 14px; font-size: 14px; color: #333; background: white;"
+                    onfocus="this.style.borderColor='#ff6b35'; this.style.boxShadow='0 0 0 3px rgba(255, 107, 53, 0.1)';"
+                    onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none';">
+                    
+                <style>
+                    /* Sembunyikan icon kalender bawaan browser kecil */
+                    #startTime::-webkit-calendar-picker-indicator {
+                        display: none;
+                        -webkit-appearance: none;
+                    }
+                </style>
+                
+                <div onclick="const el = document.getElementById('startTime'); if(el.showPicker) el.showPicker(); else el.focus();" 
+                     style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; background: #fff5f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ff6b35; cursor: pointer; transition: 0.3s; z-index: 10;"
+                     onmouseover="this.style.background='#ffe8dc'" 
+                     onmouseout="this.style.background='#fff5f0'">
+                    <i class="fa fa-calendar-alt"></i>
+                </div>
+            </div>
             <small class="text-hint" id="timeHint" style="display:none;"></small>
         </div>
 
@@ -613,8 +633,31 @@ function goToAddAddress() {
 }
 
 
-/* RESTORE STATE FROM SESSION */
+    /* RESTORE STATE FROM SESSION OR BROWSER CACHE */
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. Handle browser native back/refresh radio caching
+    const preChecked = document.querySelector('.rental-radio-input:checked');
+    if (preChecked) {
+        // Simpan nilai bawaan browser yang ter-cache agar tidak hangus tereset
+        const cachedDelivery = deliverySelect.value;
+        const cachedTime = startTimeInput.value;
+        
+        preChecked.dispatchEvent(new Event('change'));
+        
+        // Kembalikan nilai yang ter-cache
+        setTimeout(() => {
+            if (cachedTime) {
+                startTimeInput.value = cachedTime;
+                startTimeInput.dispatchEvent(new Event('change'));
+            }
+            if (cachedDelivery) {
+                deliverySelect.value = cachedDelivery;
+                deliverySelect.dispatchEvent(new Event('change'));
+            }
+        }, 50);
+    }
+
+    // 2. Handle session storage restore
     const savedState = sessionStorage.getItem('rent_state');
 
     if (!savedState) return;
