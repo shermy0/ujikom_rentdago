@@ -145,6 +145,8 @@
         overflow: hidden;
         border: 2px solid #ddd;
         margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
     }
 
     .map-info {
