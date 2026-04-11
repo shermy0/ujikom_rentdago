@@ -5,7 +5,7 @@
   }
 
   body {
-    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    background: #f3f4f6;
     display: flex;
     justify-content: center;
     align-items: flex-start; /* ✅ UBAH dari center ke flex-start */
@@ -280,7 +280,7 @@
 /* Responsive: Hide on desktop */
 @media (min-width: 992px) {
     body {
-      background-image: url('/frontend/assets/images/fujiyama.jpg');
+      background: #f3f4f6;
     }
 
     .mobile-bottom-nav {
