@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -329,8 +330,8 @@ class CustomerOrderController extends Controller
     /**
      * Membuat ulang Midtrans Snap Token untuk pesanan yang gagal bayar.
      *
-     * Midtrans mengharuskan order_id yang unik di setiap pemanggilan API,
-     * sehingga ditambahkan suffix timestamp agar tidak terjadi duplikasi.
+     * `order_id` di Midtrans memakai `order_code` tetap; transaksi pending lama di-expire
+     * agar Snap baru tidak bentrok (tanpa kolom tambahan di database).
      * Token ini digunakan di frontend untuk membuka Midtrans Snap popup.
      *
      * @param \App\Models\Order $order
@@ -350,13 +351,21 @@ class CustomerOrderController extends Controller
         // Load shop relationship to get merchant name
         $order->load('productRental.product.shop');
 
-        // Add unique timestamp suffix to order_id to allow retry payments
-        // Midtrans requires globally unique order_id for each API call
-        $uniqueOrderId = $order->order_code . '-' . time();
+        // Satu order_code = satu order_id di Midtrans (tanpa kolom DB tambahan).
+        // Jika masih pending, expire dulu agar order_id boleh dipakai lagi untuk Snap baru.
+        $midtransOrderId = $order->order_code;
+        try {
+            $existing = Transaction::status($midtransOrderId);
+            if (is_object($existing) && ($existing->transaction_status ?? '') === 'pending') {
+                Transaction::expire($midtransOrderId);
+            }
+        } catch (\Throwable $e) {
+            // 404 / belum pernah charge — lanjut
+        }
 
         $params = [
             'transaction_details' => [
-                'order_id'     => $uniqueOrderId,
+                'order_id'     => $midtransOrderId,
                 'gross_amount' => $order->payment?->total_amount ?? 0,
             ],
             'customer_details' => [
@@ -559,12 +568,17 @@ class CustomerOrderController extends Controller
         // =====================================================
         $order = Order::where('order_code', $notification->order_id)->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Guard double callback
+        // Guard double callback (tetap isi payment_method jika finish URL lebih dulu)
         if ($order->payment?->payment_status === 'paid') {
+            $method = $this->resolveMidtransPaymentMethod($notification);
+            if ($method && empty($order->payment->payment_method)) {
+                $order->payment->update(['payment_method' => $method]);
+            }
+
             return response()->json(['message' => 'Already processed']);
         }
 
@@ -605,6 +619,7 @@ class CustomerOrderController extends Controller
                 [
                     'payment_status' => 'paid',
                     'paid_at'        => $now,
+                    'payment_method' => $this->resolveMidtransPaymentMethod($notification),
                 ]
             );
 
@@ -651,6 +666,78 @@ class CustomerOrderController extends Controller
         return response()->json(['message' => 'Callback processed']);
     }
 
+    /**
+     * Ringkasan metode bayar dari body notifikasi / response status Midtrans (payment_type + detail VA/QRIS bila ada).
+     */
+    private function paymentMethodFromMidtransNotification(object $notification): ?string
+    {
+        $type = $notification->payment_type ?? null;
+        if (! is_string($type) || $type === '') {
+            return null;
+        }
+
+        $detail = '';
+        if ($type === 'bank_transfer' && ! empty($notification->va_numbers) && is_array($notification->va_numbers)) {
+            $first = $notification->va_numbers[0] ?? null;
+            if (is_object($first) && ! empty($first->bank)) {
+                $detail = ':' . strtolower((string) $first->bank);
+            } elseif (is_array($first) && ! empty($first['bank'])) {
+                $detail = ':' . strtolower((string) $first['bank']);
+            }
+        } elseif ($type === 'qris' && ! empty($notification->issuer)) {
+            $detail = ':' . strtolower((string) $notification->issuer);
+        }
+
+        return $type . $detail;
+    }
+
+    /**
+     * Ambil payment_method: dari payload notifikasi, atau GET /v2/{id}/status bila payment_type tidak ikut di POST.
+     */
+    private function resolveMidtransPaymentMethod(object $notification): ?string
+    {
+        $direct = $this->paymentMethodFromMidtransNotification($notification);
+        if ($direct !== null) {
+            return $direct;
+        }
+
+        $txId = $notification->transaction_id ?? null;
+        if (is_string($txId) && $txId !== '') {
+            $fromTx = $this->midtransPaymentMethodByOrderOrTransactionId($txId);
+            if ($fromTx !== null) {
+                return $fromTx;
+            }
+        }
+
+        $orderId = $notification->order_id ?? null;
+        if (is_string($orderId) && $orderId !== '' && ! Str::startsWith($orderId, 'PENALTY-')) {
+            return $this->midtransPaymentMethodByOrderOrTransactionId($orderId);
+        }
+
+        return null;
+    }
+
+    /**
+     * Mengambil ringkasan metode bayar via API Status Midtrans (Snap redirect / notifikasi minimal).
+     */
+    private function midtransPaymentMethodByOrderOrTransactionId(string $orderIdOrTransactionId): ?string
+    {
+        try {
+            $status = Transaction::status($orderIdOrTransactionId);
+        } catch (\Throwable $e) {
+            Log::warning('Midtrans Transaction::status failed', [
+                'id' => $orderIdOrTransactionId,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+
+        return is_object($status)
+            ? $this->paymentMethodFromMidtransNotification($status)
+            : null;
+    }
+
     private function generateQrCode($order)
     {
         $qrData = $order->order_code;
@@ -675,7 +762,7 @@ class CustomerOrderController extends Controller
     {
         $orderCode = $request->order_id;
 
-        $order = Order::with(['productRental.product.shop'])
+        $order = Order::with(['productRental.product.shop', 'payment'])
             ->where('order_code', $orderCode)
             ->first();
 
@@ -686,19 +773,24 @@ class CustomerOrderController extends Controller
         }
 
         // ==========================
-        // PASTIKAN STATUS PEMBAYARAN
+        // PASTIKAN STATUS PEMBAYARAN (+ metode bayar dari API Midtrans — alur Snap onSuccess tidak lewat webhook)
         // ==========================
+        $midtransMethod = $this->midtransPaymentMethodByOrderOrTransactionId($order->order_code);
+
         if ($order->payment?->payment_status !== 'paid') {
             $order->payment()->updateOrCreate(
                 ['order_id' => $order->id],
                 [
                     'payment_status' => 'paid',
                     'paid_at'        => now(),
+                    'payment_method' => $midtransMethod,
                 ]
             );
             $order->update([
                 'status' => $order->status === 'pending' ? 'confirmed' : $order->status,
             ]);
+        } elseif ($midtransMethod && $order->payment && empty($order->payment->payment_method)) {
+            $order->payment->update(['payment_method' => $midtransMethod]);
         }
 
         // ==========================
