@@ -89,8 +89,8 @@
         text-transform: uppercase;
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
+    /* Tablet & mobile */
+    @media (max-width: 991.98px) {
         .overlay-header {
             top: 10px;
             left: 10px;

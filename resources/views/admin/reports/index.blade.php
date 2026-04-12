@@ -58,8 +58,9 @@
         color: #6b7280;
         border-bottom: 1px solid #e5e7eb;
         padding: 12px 16px;
+        white-space: nowrap;
     }
-    .table-card .table tbody td { padding: 12px 16px; vertical-align: middle; font-size: 13px; }
+    .table-card .table tbody td { padding: 12px 16px; vertical-align: middle; font-size: 13px; white-space: nowrap; }
     .badge-status { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
 
     .report-header {
@@ -76,7 +77,7 @@
         min-width: 900px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 991.98px) {
         .report-header {
             flex-direction: column;
             align-items: flex-start !important;
@@ -217,7 +218,7 @@
         <span class="text-muted" style="font-size:12px;">{{ $orders->total() }} pesanan ditemukan</span>
     </div>
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table class="table table-hover text-nowrap">
             <thead>
                 <tr>
                     <th>#</th>

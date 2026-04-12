@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
     $appName = \App\Models\Setting::first()?->app_name ?? 'Customer';
@@ -19,6 +19,9 @@
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Admin: jarak & komponen responsif (setelah Bootstrap) -->
+    <link rel="stylesheet" href="{{ asset('css/admin-responsive.css') }}?v=1">
     
     <!-- Custom CSS -->
     <style>
@@ -179,7 +182,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 30px;
+            padding: 0 clamp(12px, 2.2vw, 30px);
         }
 
         .btn-sidebar-toggle {
@@ -241,10 +244,10 @@
             background-color: #c82333;
         }
 
-        /* Content Wrapper */
+        /* Content Wrapper — padding menyesuaikan lebar layar */
         .content-wrapper {
             flex: 1;
-            padding: 30px;
+            padding: clamp(12px, 2.2vw, 30px);
         }
 
         /* Breadcrumb */
@@ -290,7 +293,7 @@
         .footer {
             background: white;
             border-top: 1px solid #f0f0f0;
-            padding: 20px 30px;
+            padding: clamp(12px, 2vw, 20px) clamp(12px, 2.2vw, 30px);
             margin-top: auto;
         }
 
@@ -300,8 +303,8 @@
             color: #999;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Responsif: tablet & mobile (Bootstrap lg ke bawah) */
+        @media (max-width: 991.98px) {
             .sidebar {
                 transform: translateX(-100%);
             }
@@ -315,7 +318,7 @@
             }
 
             .topbar {
-                padding: 0 15px;
+                padding: 0 clamp(10px, 2vw, 16px);
             }
 
             .topbar-left {
@@ -331,11 +334,11 @@
             }
 
             .topbar-left h5 {
-                font-size: 16px;
+                font-size: clamp(0.95rem, 2.8vw, 1.1rem);
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                max-width: 48vw;
+                max-width: min(52vw, 320px);
             }
 
             .topbar-right {
@@ -352,12 +355,12 @@
             }
 
             .content-wrapper {
-                padding: 15px;
+                padding: clamp(10px, 2.5vw, 20px);
             }
 
             .content-wrapper .card-header,
             .content-wrapper .card-body {
-                padding: 14px;
+                padding: clamp(10px, 2vw, 16px);
             }
 
             .content-wrapper .card-header {
@@ -379,6 +382,18 @@
             .content-wrapper .table-borderless th {
                 white-space: normal;
                 word-break: break-word;
+            }
+
+            .menu-link {
+                min-height: 44px;
+                align-items: center;
+            }
+        }
+
+        /* HP kecil: tabel scroll horizontal tetap nyaman */
+        @media (max-width: 575.98px) {
+            .content-wrapper .table-responsive > .table {
+                min-width: 640px;
             }
         }
 
@@ -534,7 +549,7 @@
         sidebarOverlay?.addEventListener('click', closeSidebar);
 
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
+            if (window.innerWidth >= 992) {
                 closeSidebar();
             }
         });

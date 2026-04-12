@@ -53,8 +53,8 @@
             </div>
 
             <!-- Table -->
-            <div class="table-responsive bg-white rounded-3 border">
-                <table class="table table-hover align-middle mb-0" style="width: 100%;">
+            <div class="table-responsive bg-white rounded-3 border seller-table-scroll">
+                <table class="table table-hover align-middle mb-0 text-nowrap seller-table" style="width: 100%;">
                     <thead class="bg-light">
                         <tr>
                             <th class="ps-4 text-muted fw-bold text-uppercase small border-0" style="width: 50px;">#</th>
@@ -449,6 +449,16 @@
         white-space: nowrap;
     }
 
+    .seller-table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+    }
+
+    .seller-table {
+        min-width: 900px;
+    }
+
     @media (max-width: 768px) {
         .seller-filter-tabs {
             width: 100%;
@@ -460,16 +470,6 @@
             text-align: center;
             padding-left: 12px !important;
             padding-right: 12px !important;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            touch-action: pan-x;
-        }
-
-        .table-responsive .table {
-            min-width: 760px;
         }
     }
 </style>
