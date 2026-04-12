@@ -451,16 +451,19 @@ function showVoucherError(message) {
 /* CALCULATE RENT */
 function calculateRent() {
     const selected = document.querySelector('.rental-radio-input:checked');
-    if (!selected || !selected.dataset.cycle) return;
+    if (!selected || !selected.dataset.cycle) {
+        currentPrice = 0;
+        return;
+    }
 
     const cycle = parseInt(selected.dataset.cycle);
     const price = parseInt(selected.dataset.price);
     const penalty = parseInt(selected.dataset.penalty);
-    const startTime = startTimeInput.value;
-
-    if (!startTime) return;
-
+    
     currentPrice = price;
+
+    const startTime = startTimeInput.value;
+    if (!startTime) return;
 
     const start = new Date(startTime);
     const end = new Date(start.getTime() + cycle * 60 * 60 * 1000);
