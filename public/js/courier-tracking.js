@@ -206,7 +206,7 @@ window.CourierTracking = {
         if (container) {
             // Langsung munculkan tombol foto
             const shipmentId = this.config.mapData.shipment ? this.config.mapData.shipment.id : '';
-            const photoUrl = shipmentId ? `/kurir/delivery-photo/${shipmentId}` : '/kurir/delivery-photo';
+            const photoUrl = shipmentId ? `/kurir/delivery-photo/${shipmentId}` : '/kurir/orders';
 
             container.innerHTML = `
                 <button id="btnMainAction" 

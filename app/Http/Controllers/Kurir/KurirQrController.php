@@ -25,45 +25,6 @@ class KurirQrController extends Controller
     //     // Removed as per request to skip to photo page
     // }
 /**
- * Show delivery list for taking photo proof (Legacy/Photo method)
- */
-public function index()
-{
-    // 🔍 Ambil data kurir berdasarkan user yang sedang login
-    $courier = Courier::where('user_id', Auth::id())->first();
-
-    // ❌ Jika tidak ada data kurir → redirect ke dashboard
-    if (!$courier) {
-        return redirect()->route('kurir.dashboard')->with('error', 'Data kurir tidak ditemukan');
-    }
-
-    // 📦 Ambil daftar pengiriman aktif (yang masih berjalan)
-    $activeDeliveries = Shipment::with([
-            'order.user',                     // relasi ke customer
-            'order.productRental.product',   // relasi ke produk
-            'order.address'                  // relasi ke alamat tujuan
-        ])
-        ->where('courier_id', $courier->id) // hanya shipment milik kurir ini
-
-        ->whereIn('type', [Shipment::TYPE_DELIVERY]) // hanya DELIVERY (bukan return)
-
-        // hanya shipment yang sedang dalam perjalanan atau sudah sampai
-        ->whereIn('status', [
-            Shipment::STATUS_ON_THE_WAY, 
-            Shipment::STATUS_ARRIVED
-        ])
-
-        // urutkan dari yang terbaru dibuat
-        ->orderBy('created_at', 'desc')
-
-        // ambil semua data
-        ->get();
-
-    // 🎯 Kirim data ke view untuk ditampilkan
-    return view('kurir.delivery-photo.index', compact('activeDeliveries'));
-}
-
-/**
  * Show photo upload page for specific order
  */
 public function showPhotoPage($shipmentId)
@@ -98,7 +59,7 @@ public function showPhotoPage($shipmentId)
         Shipment::STATUS_ON_THE_WAY, 
         Shipment::STATUS_ARRIVED
     ])) {
-        return redirect()->route('kurir.delivery-photo.index')
+        return redirect()->route('kurir.orders')
             ->with('error', 'Status pengiriman tidak valid untuk foto bukti');
     }
 
@@ -168,17 +129,25 @@ private function processHandover($shipment, $method, $photoPath = null, $photoTi
         if ($shipment->type === Shipment::TYPE_DELIVERY) {
 
             // 📝 Update data shipment
+            $existingNotes = trim((string) $shipment->courier_notes);
+            $existingNotes = str_replace([
+                'Diverifikasi via PHOTO',
+                'Serah terima ke customer diverifikasi via FOTO kurir',
+                'Verifikasi serah terima: FOTO kurir',
+            ], '', $existingNotes);
+            $existingNotes = trim(preg_replace("/\n{2,}/", "\n", $existingNotes));
+
+            $verificationNote = $method === 'photo'
+                ? 'Verifikasi serah terima: FOTO kurir'
+                : 'Verifikasi serah terima: ' . strtoupper($method);
+
             $shipment->update([
                 'status' => Shipment::STATUS_DELIVERED,        // status jadi delivered
                 'delivered_at' => now(),                       // waktu selesai
                 'is_tracking_active' => false,                 // tracking dimatikan
                 'delivery_proof_photo' => $photoPath,          // simpan path foto
                 'delivery_proof_photo_at' => $photoTimestamp,  // waktu foto diambil
-                'courier_notes' => (
-                    $shipment->courier_notes 
-                    ? $shipment->courier_notes . "\n" 
-                    : ""
-                ) . "Diverifikasi via " . strtoupper($method), // catatan kurir
+                'courier_notes' => trim($existingNotes . "\n" . $verificationNote), // catatan kurir
             ]);
 
             // 🔄 Update status order jadi ONGOING (barang sedang dipakai/disewa)

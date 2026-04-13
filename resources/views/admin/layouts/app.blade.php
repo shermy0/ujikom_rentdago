@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
     $appName = \App\Models\Setting::first()?->app_name ?? 'Customer';
@@ -19,6 +19,9 @@
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Admin: jarak & komponen responsif (setelah Bootstrap) -->
+    <link rel="stylesheet" href="{{ asset('css/admin-responsive.css') }}?v=1">
     
     <!-- Custom CSS -->
     <style>
@@ -40,12 +43,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
         }
 
         /* Wrapper */
         .wrapper {
             display: flex;
             min-height: 100vh;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
         }
 
         /* Sidebar */
@@ -60,6 +68,21 @@
             overflow-y: auto;
             z-index: 1000;
             transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 998;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .sidebar-header {
@@ -143,6 +166,9 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-width: 0;
+            max-width: 100vw;
+            overflow-x: hidden;
         }
 
         /* Topbar */
@@ -156,7 +182,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 30px;
+            padding: 0 clamp(12px, 2.2vw, 30px);
+        }
+
+        .btn-sidebar-toggle {
+            display: none;
+            width: 38px;
+            height: 38px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            border-radius: 8px;
+            color: #333;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
         }
 
         .topbar-left h5 {
@@ -204,10 +244,10 @@
             background-color: #c82333;
         }
 
-        /* Content Wrapper */
+        /* Content Wrapper — padding menyesuaikan lebar layar */
         .content-wrapper {
             flex: 1;
-            padding: 30px;
+            padding: clamp(12px, 2.2vw, 30px);
         }
 
         /* Breadcrumb */
@@ -253,7 +293,7 @@
         .footer {
             background: white;
             border-top: 1px solid #f0f0f0;
-            padding: 20px 30px;
+            padding: clamp(12px, 2vw, 20px) clamp(12px, 2.2vw, 30px);
             margin-top: auto;
         }
 
@@ -263,8 +303,8 @@
             color: #999;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Responsif: tablet & mobile (Bootstrap lg ke bawah) */
+        @media (max-width: 991.98px) {
             .sidebar {
                 transform: translateX(-100%);
             }
@@ -278,11 +318,82 @@
             }
 
             .topbar {
-                padding: 0 15px;
+                padding: 0 clamp(10px, 2vw, 16px);
+            }
+
+            .topbar-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 0;
+            }
+
+            .btn-sidebar-toggle {
+                display: inline-flex;
+                flex-shrink: 0;
+            }
+
+            .topbar-left h5 {
+                font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: min(52vw, 320px);
+            }
+
+            .topbar-right {
+                gap: 8px;
+            }
+
+            .btn-topbar {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            .btn-topbar span {
+                display: none;
             }
 
             .content-wrapper {
-                padding: 15px;
+                padding: clamp(10px, 2.5vw, 20px);
+            }
+
+            .content-wrapper .card-header,
+            .content-wrapper .card-body {
+                padding: clamp(10px, 2vw, 16px);
+            }
+
+            .content-wrapper .card-header {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .content-wrapper .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-x;
+            }
+
+            .content-wrapper .table-responsive > .table {
+                min-width: 760px;
+            }
+
+            .content-wrapper .table-borderless td,
+            .content-wrapper .table-borderless th {
+                white-space: normal;
+                word-break: break-word;
+            }
+
+            .menu-link {
+                min-height: 44px;
+                align-items: center;
+            }
+        }
+
+        /* HP kecil: tabel scroll horizontal tetap nyaman */
+        @media (max-width: 575.98px) {
+            .content-wrapper .table-responsive > .table {
+                min-width: 640px;
             }
         }
 
@@ -311,6 +422,7 @@
     <div class="wrapper">
         <!-- Sidebar -->
         @include('admin.partials.sidebar')
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -409,12 +521,38 @@
         // Mobile sidebar toggle
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.querySelector('.sidebar');
-        
-        if (sidebarToggle) {
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        const closeSidebar = () => {
+            sidebar?.classList.remove('show');
+            sidebarOverlay?.classList.remove('show');
+            document.body.style.overflow = '';
+        };
+
+        const openSidebar = () => {
+            sidebar?.classList.add('show');
+            sidebarOverlay?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+
+        if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
+                const isOpen = sidebar.classList.contains('show');
+                if (isOpen) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
             });
         }
+
+        sidebarOverlay?.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 992) {
+                closeSidebar();
+            }
+        });
     </script>
     
     @stack('scripts')

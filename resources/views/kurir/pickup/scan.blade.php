@@ -1,14 +1,13 @@
 @extends('kurir.layouts.master')
 
 @section('navbar')
-<div class="mobile-top-header">
-    <div class="header-left">
-        <a href="{{ route('kurir.orders') }}" class="text-dark">
+<div class="mobile-top-header scan-header">
+    <div class="d-flex align-items-center justify-content-between gap-2">
+        <a href="{{ route('kurir.orders') }}" class="scan-back-btn" aria-label="Kembali">
             <i class="fa fa-arrow-left"></i>
         </a>
-    </div>
-    <div class="header-center">
-        <h5 class="mb-0 fw-bold">Scan QR Pengambilan</h5>
+        <h5 class="mb-0 fw-bold scan-title">Scan QR Pengambilan</h5>
+        <span></span>
     </div>
 </div>
 @endsection
@@ -18,28 +17,47 @@
 @endsection
 
 @section('content')
-<div class="container pb-5">
-    <div class="card border-0 shadow-sm mb-3">
+<div class="container pb-5 pt-3">
+    @php
+        $shop = $order->productRental->product->shop ?? null;
+        $pickupAddress = $shop->address_store
+            ?? $order->pickup_address
+            ?? 'Alamat toko belum diatur';
+    @endphp
+    <div class="card border-0 shadow-sm mb-3 scan-detail-card">
         <div class="card-body">
-            <h6 class="fw-bold mb-3">Detail Pesanan</h6>
-            <div class="row g-2 small">
-                <div class="col-4 text-muted">Kode</div>
-                <div class="col-8 fw-bold">#{{ $order->order_code }}</div>
+            <h6 class="fw-bold mb-3 d-flex align-items-center">
+                <i class="fa fa-receipt me-2 text-success"></i>Detail Pesanan
+            </h6>
+            <div class="scan-info-grid">
+                <div class="scan-label">Kode</div>
+                <div class="scan-value fw-bold">{{ $order->order_code }}</div>
 
-                <div class="col-4 text-muted">Toko</div>
-                <div class="col-8">{{ $order->productRental->product->shop->name_store ?? 'N/A' }}</div>
+                <div class="scan-label">Customer</div>
+                <div class="scan-value">{{ $order->user->name ?? 'N/A' }}</div>
+
+                <div class="scan-label">Produk</div>
+                <div class="scan-value">{{ $order->productRental->product->name ?? 'N/A' }}</div>
+
+                <div class="scan-label">Alamat Pickup</div>
+                <div class="scan-value scan-address">{{ $pickupAddress }}</div>
             </div>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card border-0 shadow-sm overflow-hidden scan-reader-card">
         <div class="card-body p-0">
-            <div id="reader" style="width: 100%; min-height: 300px; background: #000;"></div>
+            <div class="scan-reader-wrap">
+                <div id="reader" class="scan-reader-box"></div>
+                <button id="startScanBtn" type="button" class="btn btn-success scan-start-btn">
+                    Aktifkan Kamera
+                </button>
+            </div>
 
-            <div class="p-4 text-center">
-                <div class="alert alert-info small mb-0">
+            <div class="p-3 p-md-4 text-center">
+                <div class="alert alert-info small mb-0 scan-info-alert">
                     <i class="fa fa-info-circle me-2"></i>
-                    Scan QR Code yang ada di <strong>dashboard seller</strong> untuk konfirmasi pengambilan paket.
+                    Arahkan kamera ke QR Code di <strong>dashboard seller</strong> untuk konfirmasi pengambilan.
                 </div>
             </div>
         </div>
@@ -49,14 +67,153 @@
 <input type="hidden" id="orderId" value="{{ $order->id }}">
 @endsection
 
+@push('styles')
+<style>
+    .scan-header {
+        padding: 12px 14px;
+    }
+
+    .scan-title {
+        font-size: 18px;
+        color: #0f172a;
+        flex: 1;
+        margin-left: 10px;
+    }
+
+    .scan-back-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.9);
+        color: #111827;
+    }
+
+    .scan-detail-card,
+    .scan-reader-card {
+        border-radius: 10px;
+    }
+
+    .scan-info-grid {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        row-gap: 8px;
+        column-gap: 10px;
+        font-size: 13px;
+    }
+
+    .scan-label {
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .scan-value {
+        color: #111827;
+        overflow-wrap: anywhere;
+    }
+
+    .scan-address {
+        line-height: 1.45;
+    }
+
+    .scan-reader-wrap {
+        padding: 12px;
+        background: #f8fafc;
+    }
+
+    .scan-reader-box {
+        border-radius: 10px;
+        overflow: hidden !important;
+        min-height: 250px;
+        background: #000;
+    }
+
+    .scan-start-btn {
+        margin-top: 10px;
+        width: 100%;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 10px 12px;
+    }
+
+    .scan-info-alert {
+        border: 0;
+        border-radius: 12px;
+    }
+
+    #reader video {
+        border-radius: 10px;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
 const soundSuccess = new Audio('/sounds/scan-success.mp3');
 const soundError   = new Audio('/sounds/scan-error.mp3');
+let html5QrCode = null;
+let isScanning = false;
+
+function initScanner() {
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+    }
+}
+
+function startScanner() {
+    if (isScanning) return;
+
+    initScanner();
+    const startBtn = document.getElementById('startScanBtn');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.textContent = 'Membuka kamera...';
+    }
+
+    html5QrCode.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: { width: 220, height: 220 },
+            aspectRatio: 1
+        },
+        onScanSuccess,
+        onScanFailure
+    ).then(() => {
+        isScanning = true;
+        if (startBtn) {
+            startBtn.style.display = 'none';
+        }
+    }).catch((error) => {
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.textContent = 'Aktifkan Kamera';
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Kamera tidak tersedia',
+            text: 'Mohon izinkan akses kamera untuk scan QR.'
+        });
+        console.error(error);
+    });
+}
+
+function stopScanner() {
+    if (!html5QrCode || !isScanning) return Promise.resolve();
+    return html5QrCode.stop().then(() => {
+        isScanning = false;
+    }).catch(() => {
+        isScanning = false;
+    });
+}
+
     function onScanSuccess(decodedText, decodedResult) {
         // Stop scanning
-        html5QrcodeScanner.clear();
+        stopScanner();
 
         // Use browser geolocation
         if (navigator.geolocation) {
@@ -119,8 +276,13 @@ const soundError   = new Audio('/sounds/scan-error.mp3');
                     title: 'Gagal',
                     text: message
                 }).then(() => {
-                    // Start scanning again
-                    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                    const startBtn = document.getElementById('startScanBtn');
+                    if (startBtn) {
+                        startBtn.style.display = 'block';
+                        startBtn.disabled = false;
+                        startBtn.textContent = 'Aktifkan Kamera';
+                    }
+                    startScanner();
                 });
             }
         });
@@ -130,11 +292,6 @@ const soundError   = new Audio('/sounds/scan-error.mp3');
         // console.warn(`Code scan error = ${error}`);
     }
 
-    let html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader", {
-            fps: 10,
-            qrbox: 250
-        });
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    document.getElementById('startScanBtn')?.addEventListener('click', startScanner);
 </script>
 @endpush

@@ -137,8 +137,8 @@
             </form>
 
             <!-- Table -->
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
+            <div class="table-responsive order-table-scroll">
+                <table class="table table-hover align-middle order-table text-nowrap">
                     <thead class="table-light">
                         <tr>
                             <th>Kode Order</th>
@@ -315,6 +315,23 @@
 
             .badge i {
                 font-size: 12px;
+            }
+
+            .order-table-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-x;
+            }
+
+            .order-table {
+                min-width: 1000px;
+            }
+
+            @media (max-width: 768px) {
+                .card-header,
+                .card-body {
+                    padding: 14px;
+                }
             }
         </style>
     @endpush

@@ -36,39 +36,41 @@
             </div>
             
             <div class="col-md-8">
-                <table class="table table-borderless">
-                    <tr>
-                        <th width="200">ID Toko</th>
-                        <td>{{ $shop->id }}</td>
-                    </tr>
-                    <tr>
-                        <th>Pemilik</th>
-                        <td>
-                            @if($shop->user)
-                                <span class="badge bg-info">{{ $shop->user->name }}</span>
-                                <br><small class="text-muted">{{ $shop->user->phone }}</small>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Deskripsi</th>
-                        <td>{{ $shop->description ?: '-' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Alamat</th>
-                        <td>{{ $shop->address_store }}</td>
-                    </tr>
-                    <tr>
-                        <th>Dibuat</th>
-                        <td>{{ $shop->created_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Terakhir Diupdate</th>
-                        <td>{{ $shop->updated_at->format('d M Y H:i') }}</td>
-                    </tr>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="200">ID Toko</th>
+                            <td>{{ $shop->id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pemilik</th>
+                            <td>
+                                @if($shop->user)
+                                    <span class="badge bg-info">{{ $shop->user->name }}</span>
+                                    <br><small class="text-muted">{{ $shop->user->phone }}</small>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Deskripsi</th>
+                            <td>{{ $shop->description ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Alamat</th>
+                            <td>{{ $shop->address_store }}</td>
+                        </tr>
+                        <tr>
+                            <th>Dibuat</th>
+                            <td>{{ $shop->created_at->format('d M Y H:i') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Terakhir Diupdate</th>
+                            <td>{{ $shop->updated_at->format('d M Y H:i') }}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

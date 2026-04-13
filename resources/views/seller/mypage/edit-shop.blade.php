@@ -387,7 +387,7 @@
                     </div>
 
                     <!-- Peta -->
-                    <div id="shopMap" style="height: 350px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; margin-bottom: 1rem;"></div>
+                    <div id="shopMap" style="height: 350px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; margin-bottom: 1rem; position: relative; z-index: 1;"></div>
 
                     <!-- Koordinat -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">

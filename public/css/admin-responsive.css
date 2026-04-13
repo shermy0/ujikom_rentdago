@@ -1,0 +1,192 @@
+/**
+ * Admin panel — jarak, ukuran, dan perilaku responsif (mobile / tablet / desktop).
+ * Dipasang setelah Bootstrap di layout admin.
+ */
+
+:root {
+    --admin-page-pad: clamp(0.75rem, 2.2vw, 1.875rem);
+    --admin-card-pad: clamp(0.75rem, 1.8vw, 1.25rem);
+    --admin-radius: 0.65rem;
+    --admin-touch-min: 2.75rem;
+}
+
+/* --- Konten & kartu --- */
+.main-content .content-wrapper .container-fluid {
+    max-width: 100%;
+}
+
+.main-content .content-wrapper .card {
+    border-radius: var(--admin-radius);
+    overflow: hidden;
+}
+
+.main-content .content-wrapper .card-header,
+.main-content .content-wrapper .card-footer {
+    padding: var(--admin-card-pad);
+}
+
+.main-content .content-wrapper .card-body {
+    padding: var(--admin-card-pad);
+}
+
+.main-content .content-wrapper .card-header.d-flex {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-start !important;
+}
+
+.main-content .content-wrapper .card-header .btn,
+.main-content .content-wrapper .card-header .btn-group {
+    flex-shrink: 0;
+}
+
+/* Judul halaman di topbar / card */
+.main-content .topbar-left h5 {
+    line-height: 1.25;
+}
+
+/* Breadcrumb tidak overflow */
+.main-content .breadcrumb {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+}
+
+/* Tabel: scroll halus + tidak keluar viewport */
+.main-content .table-responsive {
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+.main-content .table-responsive > .table {
+    margin-bottom: 0;
+}
+
+/* Form: cegah zoom otomatis iOS pada input kecil */
+@media (max-width: 575.98px) {
+    .main-content .form-control,
+    .main-content .form-select {
+        font-size: 1rem;
+        min-height: var(--admin-touch-min);
+    }
+
+    .main-content .input-group .form-control {
+        min-height: var(--admin-touch-min);
+    }
+}
+
+/* Gambar & thumbnail di admin */
+.main-content img.img-thumbnail,
+.main-content .table img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Dashboard (class dari halaman dashboard) */
+.admin-dashboard {
+    padding: clamp(0.5rem, 1.5vw, 1.25rem) !important;
+}
+
+.admin-dashboard .dashboard-title {
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+}
+
+.admin-dashboard .dashboard-cards {
+    gap: clamp(0.65rem, 2vw, 1rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+}
+
+.admin-dashboard .dashboard-grid {
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+.admin-dashboard .stat-card,
+.admin-dashboard .dashboard-box {
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+/* Stat card pola orders index */
+.main-content .stat-card {
+    min-height: 100%;
+}
+
+@media (max-width: 767.98px) {
+    .main-content .row.g-3 > [class*="col-"] .stat-card {
+        padding: 0.85rem 1rem;
+    }
+
+    .main-content .row.g-3 > [class*="col-"] .stat-card h3,
+    .main-content .row.g-3 > [class*="col-"] .stat-card .stat-value {
+        font-size: clamp(1.25rem, 5vw, 1.5rem);
+    }
+}
+
+/* Footer */
+.main-content .footer {
+    padding: clamp(0.75rem, 2vw, 1.25rem) var(--admin-page-pad);
+}
+
+.main-content .footer .text-muted {
+    font-size: clamp(0.8rem, 2vw, 0.875rem);
+}
+
+/* Modal & offcanvas Bootstrap — tidak melebihi layar */
+.modal-dialog {
+    margin: clamp(0.5rem, 3vw, 1.75rem);
+}
+
+/* Peta toko (#shop-map): tablet */
+@media (max-width: 991.98px) {
+    body:has(#shop-map) .overlay-header {
+        top: 0.65rem;
+        left: 0.65rem;
+        right: 0.65rem;
+        width: auto;
+        max-width: none;
+    }
+
+    body:has(#shop-map) .overlay-stats {
+        top: auto;
+        bottom: 8.5rem;
+        right: 0.65rem;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    body:has(#shop-map) .overlay-legend {
+        bottom: 1.25rem;
+        left: 0.65rem;
+        right: 0.65rem;
+    }
+
+    body:has(#shop-map) .custom-popup .leaflet-popup-content {
+        width: min(280px, calc(100vw - 48px)) !important;
+    }
+}
+
+/* Pagination tidak overflow di HP */
+@media (max-width: 575.98px) {
+    .main-content .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.25rem;
+    }
+
+    .main-content .page-link {
+        padding: 0.35rem 0.55rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Judul sidebar panjang (flex + ellipsis) */
+.sidebar-header {
+    min-width: 0;
+}
+
+.sidebar-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+}

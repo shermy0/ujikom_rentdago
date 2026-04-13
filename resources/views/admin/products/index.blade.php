@@ -56,8 +56,8 @@
             </form>
 
             <!-- Table -->
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
+            <div class="table-responsive product-table-scroll">
+                <table class="table table-hover align-middle product-table text-nowrap">
                     <thead class="table-light">
                         <tr>
                             <th style="width: 60px;">No</th>
@@ -180,6 +180,23 @@
                 padding: 2px 6px;
                 border-radius: 4px;
                 font-size: 12px;
+            }
+
+            .product-table-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-x;
+            }
+
+            .product-table {
+                min-width: 900px;
+            }
+
+            @media (max-width: 768px) {
+                .card-header,
+                .card-body {
+                    padding: 14px;
+                }
             }
         </style>
     @endpush

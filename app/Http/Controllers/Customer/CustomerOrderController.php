@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -329,8 +330,8 @@ class CustomerOrderController extends Controller
     /**
      * Membuat ulang Midtrans Snap Token untuk pesanan yang gagal bayar.
      *
-     * Midtrans mengharuskan order_id yang unik di setiap pemanggilan API,
-     * sehingga ditambahkan suffix timestamp agar tidak terjadi duplikasi.
+     * `order_id` di Midtrans memakai `order_code` tetap; transaksi pending lama di-expire
+     * agar Snap baru tidak bentrok (tanpa kolom tambahan di database).
      * Token ini digunakan di frontend untuk membuka Midtrans Snap popup.
      *
      * @param \App\Models\Order $order
@@ -338,7 +339,7 @@ class CustomerOrderController extends Controller
      */
     private function generateSnapToken($order)
     {
-        // Log Midtrans configuration status (without exposing keys)
+        // Catat upaya ambil token (tanpa menuliskan secret key)
         Log::info('Attempting to generate Midtrans token', [
             'order_id' => $order->id,
             'order_code' => $order->order_code,
@@ -347,16 +348,25 @@ class CustomerOrderController extends Controller
             'is_production' => config('midtrans.is_production'),
         ]);
 
-        // Load shop relationship to get merchant name
+        // Muat relasi toko untuk nama merchant di item Snap
         $order->load('productRental.product.shop');
 
-        // Add unique timestamp suffix to order_id to allow retry payments
-        // Midtrans requires globally unique order_id for each API call
-        $uniqueOrderId = $order->order_code . '-' . time();
+        // Di Midtrans, order_id = order_code kita (sama dengan URL finish & callback).
+        // Kalau transaksi lama masih pending, wajib expire dulu supaya Snap baru tidak kena error duplicate order_id.
+        $midtransOrderId = $order->order_code;
+        try {
+            $existing = Transaction::status($midtransOrderId);
+            if (is_object($existing) && ($existing->transaction_status ?? '') === 'pending') {
+                Transaction::expire($midtransOrderId);
+            }
+        } catch (\Throwable $e) {
+            // Belum pernah ada transaksi / 404 dari Midtrans — lanjut buat Snap baru
+        }
 
+        // Parameter body ke API Snap Midtrans
         $params = [
             'transaction_details' => [
-                'order_id'     => $uniqueOrderId,
+                'order_id'     => $midtransOrderId,
                 'gross_amount' => $order->payment?->total_amount ?? 0,
             ],
             'customer_details' => [
@@ -468,7 +478,7 @@ class CustomerOrderController extends Controller
     public function midtransCallback(Request $request)
     {
         // =====================================================
-        // 1. Ambil RAW payload
+        // 1. Baca body POST mentah (JSON) dari Midtrans
         // =====================================================
         $payload = $request->getContent();
         $notification = json_decode($payload);
@@ -484,7 +494,7 @@ class CustomerOrderController extends Controller
         }
 
         // =====================================================
-        // 2. Verifikasi Signature Midtrans
+        // 2. Pastikan permintaan benar-benar dari Midtrans (signature SHA512)
         // =====================================================
         $serverKey = config('midtrans.server_key');
         $signatureKey = hash(
@@ -505,14 +515,14 @@ class CustomerOrderController extends Controller
         }
 
         // =====================================================
-        // 3. Common Variables
+        // 3. Nilai yang dipakai di semua cabang di bawah
         // =====================================================
         $transactionStatus = $notification->transaction_status;
         $fraudStatus = $notification->fraud_status ?? null;
         $now = now();
 
         // =====================================================
-        // 🔥 4. HANDLE PENALTY (ORDER_RETURN)
+        // 4. Cabang denda: order_id Midtrans diawali PENALTY-
         // =====================================================
         if (Str::startsWith($notification->order_id, 'PENALTY-')) {
 
@@ -527,7 +537,7 @@ class CustomerOrderController extends Controller
                 return response()->json(['message' => 'Penalty not found'], 404);
             }
 
-            // Guard multiple callback
+            // Jangan proses dua kali jika denda sudah lunas
             if ($penalty->payment_status === 'paid') {
                 return response()->json(['message' => 'Penalty already processed']);
             }
@@ -536,18 +546,17 @@ class CustomerOrderController extends Controller
                 $transactionStatus === 'settlement' ||
                 ($transactionStatus === 'capture' && $fraudStatus === 'accept')
             ) {
-                // Update penalty
+                // Tandai denda lunas
                 $penalty->update([
                     'payment_status' => 'paid',
                     'paid_at' => $now,
                 ]);
 
-                // 🔥 Order baru boleh completed SETELAH denda lunas
+                // Order boleh completed setelah denda dibayar
                 $penalty->order->update([
                     'status' => 'completed'
                 ]);
 
-                // 🔥 NEW: Trigger Penalty Paid Notification
                 \App\Helpers\CustomerNotificationHelper::notifyPenaltyPaid($penalty->order);
             }
 
@@ -555,26 +564,33 @@ class CustomerOrderController extends Controller
         }
 
         // =====================================================
-        // 5. HANDLE ORDER NORMAL
+        // 5. Pesanan sewa biasa (bukan denda)
         // =====================================================
+        // Notifikasi memakai order_id = order_code di aplikasi kita
         $order = Order::where('order_code', $notification->order_id)->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Guard double callback
+        // Hindari memproses callback dua kali; kalau finish URL lebih dulu, isi payment_method dari notifikasi ini
         if ($order->payment?->payment_status === 'paid') {
+            $method = $this->resolveMidtransPaymentMethod($notification);
+            if ($method && empty($order->payment->payment_method)) {
+                $order->payment->update(['payment_method' => $method]);
+            }
+
             return response()->json(['message' => 'Already processed']);
         }
 
+        // Pembayaran sukses: settlement, atau kartu capture + fraud accept
         if (
             $transactionStatus === 'settlement' ||
             ($transactionStatus === 'capture' && $fraudStatus === 'accept')
         ) {
             $rental = $order->productRental;
 
-            // Tentukan status order
+            // Sesuaikan status order & waktu sewa (delivery/pickup vs jadwal)
             if (in_array($order->delivery_method, ['delivery', 'pickup'])) {
                 $newStatus = 'confirmed';
                 $startTime = $now;
@@ -599,16 +615,17 @@ class CustomerOrderController extends Controller
                 'end_time'   => $endTime,
             ]);
 
-            // Update payment record
+            // Tandai lunas + simpan cara bayar (dari body notifikasi atau API status Midtrans)
             $order->payment()->updateOrCreate(
                 ['order_id' => $order->id],
                 [
                     'payment_status' => 'paid',
                     'paid_at'        => $now,
+                    'payment_method' => $this->resolveMidtransPaymentMethod($notification),
                 ]
             );
 
-            // Generate QR Code
+            // QR untuk scan di toko (hanya jika status confirmed & belum punya file)
             if ($newStatus === 'confirmed' && !$order->qr_code) {
                 try {
                     $qrCodePath = $this->generateQrCode($order);
@@ -621,17 +638,18 @@ class CustomerOrderController extends Controller
                 }
             }
 
-            // Kirim receipt WA
+            // Kirim struk/konfirmasi ke WhatsApp customer
             $this->sendConfirmedPaymentReceipt($order);
 
-            // 🔥 Kirim notifikasi In-App ke Customer (Bell) - HANDLED BY OrderObserver
+            // Notifikasi in-app customer: diurus OrderObserver saat payment_status order berubah
             // \App\Helpers\CustomerNotificationHelper::notifyPaymentSuccess($order);
 
-            // 🔥 Kirim notifikasi ke Seller
+            // Beri tahu seller ada order baru yang sudah dibayar
             $this->sendSellerOrderPaidNotification($order);
 
 
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+            // Pembayaran gagal / ditolak / kadaluarsa di Midtrans
             $order->update([
                 'status'             => 'cancelled',
                 'is_read_by_seller'  => false
@@ -641,14 +659,94 @@ class CustomerOrderController extends Controller
                 ['payment_status' => 'unpaid']
             );
         } elseif ($transactionStatus === 'pending') {
+            // Menunggu bayar (contoh VA); di aplikasi order tetap status pending
             $order->update([
                 'status'            => Order::STATUS_PENDING,
                 'is_read_by_seller' => false
             ]);
-            // payment_status stays unpaid, no change needed
+            // payment_status tetap unpaid — tidak ubah record payment
         }
 
         return response()->json(['message' => 'Callback processed']);
+    }
+
+    /**
+     * Ringkasan metode bayar dari body notifikasi / response status Midtrans (payment_type + detail VA/QRIS bila ada).
+     */
+    private function paymentMethodFromMidtransNotification(object $notification): ?string
+    {
+        // Contoh payment_type: credit_card, bank_transfer, gopay, qris, ...
+        $type = $notification->payment_type ?? null;
+        if (! is_string($type) || $type === '') {
+            return null;
+        }
+
+        // Tambah bank VA atau issuer QRIS supaya lebih spesifik
+        $detail = '';
+        if ($type === 'bank_transfer' && ! empty($notification->va_numbers) && is_array($notification->va_numbers)) {
+            $first = $notification->va_numbers[0] ?? null;
+            if (is_object($first) && ! empty($first->bank)) {
+                $detail = ':' . strtolower((string) $first->bank);
+            } elseif (is_array($first) && ! empty($first['bank'])) {
+                $detail = ':' . strtolower((string) $first['bank']);
+            }
+        } elseif ($type === 'qris' && ! empty($notification->issuer)) {
+            $detail = ':' . strtolower((string) $notification->issuer);
+        }
+
+        return $type . $detail;
+    }
+
+    /**
+     * Ambil payment_method: dari payload notifikasi, atau GET /v2/{id}/status bila payment_type tidak ikut di POST.
+     */
+    private function resolveMidtransPaymentMethod(object $notification): ?string
+    {
+        // Coba langsung dari JSON notifikasi
+        $direct = $this->paymentMethodFromMidtransNotification($notification);
+        if ($direct !== null) {
+            return $direct;
+        }
+
+        // Fallback: panggil API status pakai transaction_id
+        $txId = $notification->transaction_id ?? null;
+        if (is_string($txId) && $txId !== '') {
+            $fromTx = $this->midtransPaymentMethodByOrderOrTransactionId($txId);
+            if ($fromTx !== null) {
+                return $fromTx;
+            }
+        }
+
+        // Fallback kedua: status pakai order_id (order sewa, bukan prefix denda)
+        $orderId = $notification->order_id ?? null;
+        if (is_string($orderId) && $orderId !== '' && ! Str::startsWith($orderId, 'PENALTY-')) {
+            return $this->midtransPaymentMethodByOrderOrTransactionId($orderId);
+        }
+
+        return null;
+    }
+
+    /**
+     * Mengambil ringkasan metode bayar via API Status Midtrans (Snap redirect / notifikasi minimal).
+     */
+    private function midtransPaymentMethodByOrderOrTransactionId(string $orderIdOrTransactionId): ?string
+    {
+        try {
+            // GET /v2/{order_id atau transaction_id}/status
+            $status = Transaction::status($orderIdOrTransactionId);
+        } catch (\Throwable $e) {
+            Log::warning('Midtrans Transaction::status failed', [
+                'id' => $orderIdOrTransactionId,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+
+        // Objek response sama bentuknya dengan isi notifikasi untuk field payment_type
+        return is_object($status)
+            ? $this->paymentMethodFromMidtransNotification($status)
+            : null;
     }
 
     private function generateQrCode($order)
@@ -673,9 +771,10 @@ class CustomerOrderController extends Controller
 
     public function finish(Request $request)
     {
+        // Query string dari redirect Snap onSuccess (?order_id=ORDER_CODE)
         $orderCode = $request->order_id;
 
-        $order = Order::with(['productRental.product.shop'])
+        $order = Order::with(['productRental.product.shop', 'payment'])
             ->where('order_code', $orderCode)
             ->first();
 
@@ -685,24 +784,38 @@ class CustomerOrderController extends Controller
                 ->with('error', 'Order tidak ditemukan');
         }
 
+        // Hanya pemilik order yang boleh menyelesaikan alur finish (jangan andalkan order_code saja)
+        if ((int) $order->user_id !== (int) Auth::id()) {
+            return redirect()
+                ->route('customer.order.index')
+                ->with('error', 'Akses ditolak');
+        }
+
         // ==========================
-        // PASTIKAN STATUS PEMBAYARAN
+        // Setelah Snap sukses, user diarahkan ke sini (boleh sebelum webhook). Ambil metode bayar dari API Midtrans.
         // ==========================
+        $midtransMethod = $this->midtransPaymentMethodByOrderOrTransactionId($order->order_code);
+
         if ($order->payment?->payment_status !== 'paid') {
             $order->payment()->updateOrCreate(
                 ['order_id' => $order->id],
                 [
                     'payment_status' => 'paid',
                     'paid_at'        => now(),
+                    'payment_method' => $midtransMethod,
                 ]
             );
+            // Lanjutkan alur: pending → confirmed (aturan lama tetap dipakai)
             $order->update([
                 'status' => $order->status === 'pending' ? 'confirmed' : $order->status,
             ]);
+        } elseif ($midtransMethod && $order->payment && empty($order->payment->payment_method)) {
+            // Sudah paid (misalnya webhook dulu), tapi payment_method masih kosong — isi dari API
+            $order->payment->update(['payment_method' => $midtransMethod]);
         }
 
         // ==========================
-        // GENERATE QR CODE (ONCE)
+        // QR checkout (sekali saja)
         // ==========================
         if (
             !$order->qr_code &&
@@ -719,13 +832,13 @@ class CustomerOrderController extends Controller
             }
         }
 
-        // Kirim receipt confirmed payment ke WhatsApp
+        // WhatsApp struk / konfirmasi ke customer
         $this->sendConfirmedPaymentReceipt($order);
 
-        // 🔥 Kirim notifikasi In-App ke Customer (Bell) - HANDLED BY OrderObserver
+        // Bell in-app: lewat OrderObserver
         // \App\Helpers\CustomerNotificationHelper::notifyPaymentSuccess($order);
 
-        // 🔥 Kirim notifikasi ke Seller
+        // Notifikasi ke seller
         $this->sendSellerOrderPaidNotification($order);
 
         return redirect()
@@ -983,7 +1096,7 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * Get tracking status for customer (polling)
+     * Mengambil status tracking untuk customer (polling peta / posisi kurir).
      */
     public function getTrackingStatus($id)
     {
@@ -1007,7 +1120,7 @@ class CustomerOrderController extends Controller
             'updated_at' => $shipment->updated_at->toIso8601String()
         ];
 
-        // For pickup orders, include distance to shop
+        // Order pickup: sertakan jarak ke toko & apakah sudah dalam radius "bisa tiba"
         if ($order->delivery_method === 'pickup') {
             $shop = $order->productRental->product->shop;
 
@@ -1021,5 +1134,6 @@ class CustomerOrderController extends Controller
 
         return response()->json($data);
     }
-    // Return feature removed as per request.
+
+    // Catatan: alur return/pengembalian tidak di endpoint ini (sesuai struktur route saat ini).
 }

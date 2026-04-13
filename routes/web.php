@@ -83,7 +83,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 /* =======================
 | AUTHENTICATED USER ROUTES
 ======================= */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:customer'])->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileCustomerController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileCustomerController::class, 'edit'])->name('profile.edit');
@@ -374,7 +374,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
 // Customer Orders & Shop (auth, tidak perlu role spesifik)
 // Customer Orders & Shop (auth, tidak perlu role spesifik)
-Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(function () {
+Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
     // Orders
     Route::get('/orders/index', [CustomerOrderController::class, 'index'])->name('order.index');
     Route::post('/product/{product}/order', [CustomerOrderController::class, 'store'])->name('order.store');
@@ -450,7 +450,7 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
 /* =======================
 | COURIER ROUTES
 ======================= */
-Route::middleware(['auth'])
+Route::middleware(['auth', 'role:courier'])
     ->prefix('kurir')
     ->name('kurir.')
     ->group(function () {
@@ -489,7 +489,6 @@ Route::middleware(['auth'])
         Route::post('/orders/{orderId}/confirm-return', [App\Http\Controllers\Kurir\KurirController::class, 'confirmReturn'])->name('orders.confirm-return');
 
         // ✅ TAMBAHKAN SCAN QR ROUTES DI SINI
-        Route::get('/delivery-photo', [App\Http\Controllers\Kurir\KurirQrController::class, 'index'])->name('delivery-photo.index');
         Route::get('/delivery-photo/{shipmentId}', [App\Http\Controllers\Kurir\KurirQrController::class, 'showPhotoPage'])->name('delivery-photo.show');
         Route::post('/delivery-photo/complete', [App\Http\Controllers\Kurir\KurirQrController::class, 'completeDelivery'])->name('delivery-photo.complete');
 

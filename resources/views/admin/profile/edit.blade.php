@@ -117,37 +117,52 @@
                         <!-- Current Password -->
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Password Lama</label>
-                            <input type="password" 
-                                   name="current_password" 
-                                   id="current_password" 
-                                   class="form-control @error('current_password') is-invalid @enderror"
-                                   required>
-                            @error('current_password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="input-group">
+                                <input type="password" 
+                                       name="current_password" 
+                                       id="current_password" 
+                                       class="form-control @error('current_password') is-invalid @enderror"
+                                       required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="current_password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                @error('current_password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- New Password -->
                         <div class="mb-3">
                             <label for="password" class="form-label">Password Baru</label>
-                            <input type="password" 
-                                   name="password" 
-                                   id="password" 
-                                   class="form-control @error('password') is-invalid @enderror"
-                                   required>
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="input-group">
+                                <input type="password" 
+                                       name="password" 
+                                       id="password" 
+                                       class="form-control @error('password') is-invalid @enderror"
+                                       required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- Confirm Password -->
                         <div class="mb-3">
                             <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                            <input type="password" 
-                                   name="password_confirmation" 
-                                   id="password_confirmation" 
-                                   class="form-control"
-                                   required>
+                            <div class="input-group">
+                                <input type="password" 
+                                       name="password_confirmation" 
+                                       id="password_confirmation" 
+                                       class="form-control"
+                                       required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password_confirmation">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-warning">
@@ -255,6 +270,15 @@
         border-radius: 8px;
     }
 
+    .input-group .btn {
+        border-color: #e0e0e0;
+        z-index: 0;
+    }
+
+    .input-group .form-control.is-invalid {
+        z-index: 2;
+    }
+
     @media (max-width: 991px) {
         .profile-sidebar-card {
             position: relative;
@@ -284,6 +308,25 @@
             }
             reader.readAsDataURL(file);
         }
+    });
+
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
     });
 </script>
 @endpush

@@ -12,7 +12,7 @@
 
     {{-- HEADER DETAIL PRODUK --}}
     <div class="product-detail-header">
-        <a href="{{ url()->previous() }}" class="header-back">
+        <a href="{{ route('customer.order.index') }}" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Detail Pesanan</div>

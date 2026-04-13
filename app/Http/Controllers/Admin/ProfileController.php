@@ -56,6 +56,13 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:users,phone,' . $user->id,
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi!',
+            'phone.required' => 'Nomor telepon wajib diisi!',
+            'phone.unique' => 'Nomor telepon sudah digunakan!',
+            'avatar.image' => 'File harus berupa gambar!',
+            'avatar.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif!',
+            'avatar.max' => 'Ukuran gambar maksimal 2MB!',
         ]);
 
         // Handle avatar upload
@@ -87,6 +94,11 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'current_password' => 'required',
             'password' => ['required', 'confirmed', Password::min(6)],
+        ], [
+            'current_password.required' => 'Password lama wajib diisi!',
+            'password.required' => 'Password baru wajib diisi!',
+            'password.confirmed' => 'Konfirmasi password baru tidak cocok!',
+            'password.min' => 'Password minimal harus 6 karakter!',
         ]);
 
         $user = Auth::user();

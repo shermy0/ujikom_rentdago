@@ -144,11 +144,20 @@
 
                     {{-- General Notes --}}
                     @if($shipment->courier_notes && $shipment->status === 'delivered')
+                    @php
+                        $normalizedNotes = str_replace(
+                            ['Diverifikasi via PHOTO', 'Serah terima ke customer diverifikasi via FOTO kurir'],
+                            'Verifikasi serah terima: FOTO kurir',
+                            $shipment->courier_notes
+                        );
+                        $noteLines = array_values(array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $normalizedNotes))));
+                        $displayNotes = implode("\n", array_unique($noteLines));
+                    @endphp
                     <div class="mt-2 p-2 bg-light rounded-3">
                         <small class="text-muted d-block mb-1" style="font-size: 10px;">
                             <i class="fa fa-sticky-note me-1"></i>Catatan:
                         </small>
-                        <small class="text-dark">{{ $shipment->courier_notes }}</small>
+                        <small class="text-dark">{{ $displayNotes }}</small>
                     </div>
                     @endif
                 </div>

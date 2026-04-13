@@ -49,58 +49,60 @@
             <div class="col-md-8">
                 <h6 class="text-muted mb-3">INFORMASI USER</h6>
 
-                <table class="table table-borderless">
-                    <tr>
-                        <td style="width: 200px;" class="text-muted">
-                            <i class="bi bi-person me-2"></i>Nama Lengkap
-                        </td>
-                        <td><strong>{{ $user->name }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">
-                            <i class="bi bi-telephone me-2"></i>Nomor Telepon
-                        </td>
-                        <td><strong>{{ $user->phone }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">
-                            <i class="bi bi-shield-check me-2"></i>Role
-                        </td>
-                        <td><strong>{{ $user->role == 'courier' ? 'Kurir' : ucfirst($user->role) }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">
-                            <i class="bi bi-phone me-2"></i>Verifikasi
-                        </td>
-                        <td>
-                            @if($user->phone_verified_at)
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>
-                                    Terverifikasi pada {{ $user->phone_verified_at->format('d M Y H:i') }}
-                                </span>
-                            @else
-                                <span class="badge bg-warning text-dark">
-                                    <i class="bi bi-clock me-1"></i>Belum Verifikasi
-                                </span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td style="width: 200px;" class="text-muted">
+                                <i class="bi bi-person me-2"></i>Nama Lengkap
+                            </td>
+                            <td><strong>{{ $user->name }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">
+                                <i class="bi bi-telephone me-2"></i>Nomor Telepon
+                            </td>
+                            <td><strong>{{ $user->phone }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">
+                                <i class="bi bi-shield-check me-2"></i>Role
+                            </td>
+                            <td><strong>{{ $user->role == 'courier' ? 'Kurir' : ucfirst($user->role) }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">
+                                <i class="bi bi-phone me-2"></i>Verifikasi
+                            </td>
+                            <td>
+                                @if($user->phone_verified_at)
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Terverifikasi pada {{ $user->phone_verified_at->format('d M Y H:i') }}
+                                    </span>
+                                @else
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock me-1"></i>Belum Verifikasi
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
 
-                    </tr>
-                    <tr>
-                        <td class="text-muted">
-                            <i class="bi bi-calendar-plus me-2"></i>Terdaftar Pada
-                        </td>
-                        <td><strong>{{ $user->created_at->format('d M Y H:i') }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">
-                            <i class="bi bi-calendar-check me-2"></i>Terakhir Diupdate
-                        </td>
-                        <td><strong>{{ $user->updated_at->format('d M Y H:i') }}</strong></td>
-                    </tr>
-                </table>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">
+                                <i class="bi bi-calendar-plus me-2"></i>Terdaftar Pada
+                            </td>
+                            <td><strong>{{ $user->created_at->format('d M Y H:i') }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">
+                                <i class="bi bi-calendar-check me-2"></i>Terakhir Diupdate
+                            </td>
+                            <td><strong>{{ $user->updated_at->format('d M Y H:i') }}</strong></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

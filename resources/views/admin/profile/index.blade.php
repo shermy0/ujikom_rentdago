@@ -5,6 +5,22 @@
     <!-- Profile Card -->
     <div class="card profile-card">
         <div class="card-body">
+            @if(session('sukses'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    {{ session('sukses') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="profile-header">
                 <!-- Avatar -->
                 <div class="profile-avatar-wrapper">
@@ -65,34 +81,16 @@
                     <div class="col-md-6">
                         <div class="detail-item">
                             <label class="detail-label">
-                                <i class="bi bi-phone-vibrate me-2"></i>Status OTP
+                                <i class="bi bi-phone-vibrate me-2"></i>Status Verifikasi HP
                             </label>
                             <p class="detail-value">
                                 @if($user->phone_verified_at)
                                     <span class="badge bg-success">
-                                        <i class="bi bi-check-circle me-1"></i>Verified
+                                        <i class="bi bi-check-circle me-1"></i>Terverifikasi
                                     </span>
                                 @else
                                     <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-clock me-1"></i>Pending
-                                    </span>
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="detail-item">
-                            <label class="detail-label">
-                                <i class="bi bi-shield-check me-2"></i>Status Akun
-                            </label>
-                            <p class="detail-value">
-                                @if($user->user_verified_at)
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-shield-check me-1"></i>Aktif
-                                    </span>
-                                @else
-                                    <span class="badge bg-secondary">
-                                        <i class="bi bi-dash-circle me-1"></i>Tidak Aktif
+                                        <i class="bi bi-clock me-1"></i>Menunggu
                                     </span>
                                 @endif
                             </p>

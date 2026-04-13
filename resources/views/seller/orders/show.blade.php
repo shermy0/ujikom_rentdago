@@ -1201,25 +1201,25 @@
     @if(in_array($order->status, ['confirmed', 'ongoing']) && $order->payment?->payment_status === 'paid')
     <!-- QR Code Section -->
     <div class="detail-card">
-        <h3 class="card-title">
+        <h3 class="card-title" style="margin-bottom: 10px;">
             <i class="fas fa-qrcode"></i> QR Code Pesanan
         </h3>
-        <div style="text-align: center; background: #f8f9fa; padding: 24px; border-radius: 12px; border: 2px dashed #6366f1;">
-            <div style="display: inline-block; border: 4px solid white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: white; padding: 8px;">
+        <div style="text-align:center; margin-top:10px">
+            <div style="display: inline-block; background: white; padding: 8px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 @if($order->qr_code && file_exists(storage_path('app/public/' . $order->qr_code)))
                     <img src="{{ asset('storage/'.$order->qr_code) }}"
                         alt="QR Code Pesanan"
-                        style="width: 200px; height: 200px; display: block;">
+                        style="width: 180px; height: 180px; display: block;">
                 @else
-                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($order->order_code) !!}
+                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(180)->generate($order->order_code) !!}
                 @endif
             </div>
-            <div style="margin-top: 14px; font-size: 18px; font-weight: 700; color: #4f46e5; letter-spacing: 0.05em;">
+            <p style="font-size:14px; font-weight:700; margin-top:12px; margin-bottom: 2px; color:#333;">
                 #{{ $order->order_code }}
-            </div>
-            <div style="margin-top: 6px; font-size: 13px; color: #6b7280;">
-                {{ $order->user->name }}
-            </div>
+            </p>
+            <p style="font-size:12px; margin-top:0; color:#666;">
+                Pelanggan: {{ $order->user->name }}
+            </p>
         </div>
     </div>
     @endif

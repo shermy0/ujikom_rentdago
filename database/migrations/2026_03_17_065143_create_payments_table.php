@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->integer('total_amount');
-            $table->enum('payment_status', ['unpaid', 'paid', 'refunded'])->default('unpaid');
+            $table->enum('payment_status', ['unpaid', 'paid'])->default('unpaid');
             $table->string('payment_method')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();

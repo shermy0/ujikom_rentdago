@@ -1,6 +1,9 @@
 <header class="topbar">
     <!-- Left Section -->
     <div class="topbar-left">
+        <button type="button" class="btn-sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
         <h5>{{ $title ?? 'Admin Panel' }}</h5>
     </div>
 

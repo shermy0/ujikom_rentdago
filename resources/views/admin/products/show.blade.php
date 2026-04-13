@@ -32,46 +32,50 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="150">Kode Produk</th>
-                            <td><code class="fs-6">{{ $product->code }}</code></td>
-                        </tr>
-                        <tr>
-                            <th>Nama Barang</th>
-                            <td><strong>{{ $product->name }}</strong></td>
-                        </tr>
-                        <tr>
-                            <th>Kategori</th>
-                            <td><span class="badge bg-info">{{ $product->category->name }}</span></td>
-                        </tr>
-                        <tr>
-                            <th>Kondisi</th>
-                            <td>{{ $product->condition ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Status</th>
-                            <td>
-                                @if ($product->is_maintenance)
-                                    <span class="badge bg-danger"><i class="bi bi-tools me-1"></i>Maintenance</span>
-                                @else
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Tersedia</span>
-                                @endif
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="150">Kode Produk</th>
+                                <td><code class="fs-6">{{ $product->code }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <td><strong>{{ $product->name }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Kategori</th>
+                                <td><span class="badge bg-info">{{ $product->category->name }}</span></td>
+                            </tr>
+                            <tr>
+                                <th>Kondisi</th>
+                                <td>{{ $product->condition ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    @if ($product->is_maintenance)
+                                        <span class="badge bg-danger"><i class="bi bi-tools me-1"></i>Maintenance</span>
+                                    @else
+                                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Tersedia</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="150">Dibuat Pada</th>
-                            <td>{{ $product->created_at->format('d M Y H:i') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Terakhir Update</th>
-                            <td>{{ $product->updated_at->format('d M Y H:i') }}</td>
-                        </tr>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="150">Dibuat Pada</th>
+                                <td>{{ $product->created_at->format('d M Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Terakhir Update</th>
+                                <td>{{ $product->updated_at->format('d M Y H:i') }}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
 
