@@ -19,12 +19,12 @@
     width: 100%;
     max-width: 470px;
     height: 98vh;
-    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    background-color: #f8f9fa;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    margin: 0; /* ✅ Pastikan tidak ada margin */
+    margin: 0;
 }
 
   .mobile-content {
@@ -231,12 +231,12 @@
     width: 100%;
     max-width: 470px;
     height: 96vh;
-    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    background-color: #f8f9fa;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    overflow: visible !important; /* CRITICAL: Change from hidden to visible */
-    margin: 0; /* ✅ Pastikan tidak ada margin */
+    overflow: visible !important;
+    margin: 0;
 }
 
 /* Atau jika tidak bisa ubah overflow mobile-view, pindahkan navbar keluar */

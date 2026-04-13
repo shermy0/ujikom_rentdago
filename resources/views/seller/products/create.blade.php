@@ -109,6 +109,10 @@
     }
     
     .image-upload-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         text-align: center;
         padding: 1.5rem;
         border: 2px dashed #ddd;
@@ -116,6 +120,7 @@
         background: #f8f9fa;
         cursor: pointer;
         transition: all 0.3s;
+        width: 100%;
     }
     
     .image-upload-section:hover {
@@ -127,6 +132,7 @@
         font-size: 3rem;
         color: #6c757d;
         margin-bottom: 0.5rem;
+        display: block;
     }
     
     .image-upload-section p {
@@ -140,6 +146,10 @@
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 0.75rem;
         margin-top: 1rem;
+    }
+
+    .image-preview-container:empty {
+        display: none;
     }
     
     .image-preview-item {

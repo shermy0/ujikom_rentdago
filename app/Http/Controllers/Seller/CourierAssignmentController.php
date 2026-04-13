@@ -316,7 +316,9 @@ class CourierAssignmentController extends Controller
             $message .= "Anda dapat memantau status pengiriman di dashboard seller.\n\n";
             $message .= "Terima kasih! 🙏";
 
-            kirimWa($sellerPhone, $message);
+            if (function_exists('kirimWa')) {
+                kirimWa($sellerPhone, $message);
+            }
 
             Log::info('Seller notification sent after courier assignment', [
                 'shop_id' => $shop->id,
@@ -341,6 +343,12 @@ class CourierAssignmentController extends Controller
     {
         try {
             $sellerPhone = $shop->user->phone;
+
+            // Guard: jika tidak ada nomor, skip
+            if (!$sellerPhone) {
+                Log::warning('Seller has no phone number for courier rejection notif', ['shop_id' => $shop->id]);
+                return;
+            }
 
             // Format phone number
             if (substr($sellerPhone, 0, 1) === '0') {
@@ -367,7 +375,9 @@ class CourierAssignmentController extends Controller
             $message .= "━━━━━━━━━━━━━━━━━━━\n\n";
             $message .= "Silakan cek dashboard untuk menugaskan kurir lain.";
 
-            kirimWa($sellerPhone, $message);
+            if (function_exists('kirimWa')) {
+                kirimWa($sellerPhone, $message);
+            }
 
             Log::info('Seller notified about courier rejection', [
                 'shop_id' => $shop->id,
@@ -529,7 +539,9 @@ class CourierAssignmentController extends Controller
             $message .= "Kurir akan segera memproses pengiriman pesanan ini.\n\n";
             $message .= "Terima kasih! 🙏";
 
-            kirimWa($sellerPhone, $message);
+            if (function_exists('kirimWa')) {
+                kirimWa($sellerPhone, $message);
+            }
 
             Log::info('Seller notification sent after manual reassignment', [
                 'shop_id' => $shop->id,

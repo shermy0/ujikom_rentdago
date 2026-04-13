@@ -6,7 +6,8 @@
 }
 
 body {
-    background-image: url('/frontend/assets/images/fujiyama.jpg');
+    background-color: #1a1a2e;
+    background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -20,8 +21,8 @@ body {
     width: 470px;
     max-width: 100%;
     height: 96vh;
-    background-image: url('/frontend/assets/images/fujiyama.jpg');
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -787,7 +788,8 @@ body {
 /* Responsive */
 @media (min-width: 992px) {
     body {
-        background-image: url('/frontend/assets/images/fujiyama.jpg');
+        background-color: #1a1a2e;
+        background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     }
 }
 
