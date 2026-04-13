@@ -25,7 +25,7 @@ return new class extends Migration
                 $table->integer('total_amount'); 
                 
                 $table->enum('status', ['pending', 'confirmed', 'ongoing', 'completed', 'cancelled', 'penalty','arrived'])->default('pending');
-                $table->enum('payment_status', ['unpaid', 'paid', 'refunded'])->default('unpaid');
+                $table->enum('payment_status', ['unpaid', 'paid'])->default('unpaid');
                 $table->enum('delivery_method', ['pickup', 'delivery'])->nullable();
                
                 $table->timestamp('paid_at')->nullable(); // Waktu pembayaran (waktu mulai sewa aktual untuk delivery)
