@@ -59,7 +59,7 @@
                    value="62"
                    required
                    autofocus>
-            <small class="text-muted d-block mt-1">Nomor dimulai dr 62</small>
+            <small class="text-muted d-block mt-1">Nomor dimulai dari 62</small>
         </div>
 
         <!-- PASSWORD -->

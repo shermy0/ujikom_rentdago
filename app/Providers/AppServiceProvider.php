@@ -7,6 +7,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Order;
 use App\Observers\OrderObserver;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,5 +31,9 @@ class AppServiceProvider extends ServiceProvider
 
         // ✅ Register Order Observer untuk Auto Notifications
         Order::observe(OrderObserver::class);
+
+            URL::forceScheme('https');
+
     }
+    
 }

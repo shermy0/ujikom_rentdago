@@ -1,56 +1,24 @@
 @extends('frontend.master')
+@section('navbar')
+    @include('frontend.navbar')
+@endsection
 @section('navbot')
     @include('frontend.navbot')
 @endsection
 
 @section('content')
+
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
+
+    {{-- HEADER DETAIL PRODUK --}}
+
 <style>
-    .edit-profile-container {
-        background-color: #f8f9fa;
-        min-height: 100vh;
-        padding-bottom: 80px;
-    }
-    .edit-header {
-        background: linear-gradient(135deg, #ee4d2d 0%, #ff6b35 100%);
-        padding: 20px;
-        position: relative;
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
-        box-shadow: 0 4px 20px rgba(238, 77, 45, 0.2);
-        padding-bottom: 60px;
-    }
-    .edit-header-top {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .header-back-btn {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        text-decoration: none;
-        backdrop-filter: blur(10px);
-    }
-    .header-back-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        color: #fff;
-    }
-    .header-title-text {
-        color: #fff;
-        font-size: 20px;
-        font-weight: 700;
-        margin-left: 15px;
-        letter-spacing: 0.5px;
-    }
+
     .form-card {
         background: #fff;
         border-radius: 16px;
         padding: 24px;
+        padding-top: 100px;
         margin: -40px 15px 20px 15px;
         position: relative;
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
@@ -184,17 +152,16 @@
         border-color: #cbd5e0;
     }
 </style>
-
-<div class="edit-profile-container">
-    <div class="edit-header">
-        <div class="edit-header-top">
-            <a href="{{ route('profile.edit') }}" class="header-back-btn">
-                <i class="fa fa-arrow-left"></i>
-            </a>
-            <div class="header-title-text">Reset Password</div>
-        </div>
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ url()->previous() }}" class="header-back">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+        <div class="header-title">Reset Password</div>
+        <div class="header-spacer"></div>
     </div>
 
+<div class="edit-profile-container">
     <!-- Alert Messages -->
     @if(session('sukses'))
     <div class="alert alert-success alert-dismissible fade show mx-3 mt-3 shadow-sm" role="alert" style="border-radius: 12px; border: none; z-index: 10; position: relative;">

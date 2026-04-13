@@ -731,6 +731,7 @@ class CustomerOrderController extends Controller
         return redirect()
             ->route('customer.order.show', $order->id)
             ->with('success', 'Pembayaran berhasil diproses!');
+
     }
 
     /**

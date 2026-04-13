@@ -54,6 +54,24 @@ $setting = \App\Models\Setting::first();
             </button>
             @endif
             @endauth
+
+            @auth
+            <a href="{{ route('profile.index') }}" class="header-user-profile">
+                @php
+                    $user = auth()->user();
+                @endphp
+
+                @if(!empty($user->avatar))
+                    <img src="{{ asset('storage/' . $user->avatar) }}" 
+                        class="header-avatar" 
+                        alt="Avatar">
+                @else
+                    <div class="header-avatar placeholder">
+                        <i class="fa fa-user"></i>
+                    </div>
+                @endif
+                </a>
+            @endauth
         </div>
     </div>
 
@@ -101,28 +119,6 @@ $setting = \App\Models\Setting::first();
         </div>
     </div>
     @endif
-    @endauth
-
-    <!-- User Welcome Section (jika login) -->
-    @auth
-    <div class="user-welcome-section">
-        @php
-        $user = auth()->user();
-        @endphp
-        <div class="user-profile-mini">
-            @if(!empty($user->avatar))
-            <img src="{{ asset('storage/' . $user->avatar) }}" class="user-mini-avatar" alt="Avatar">
-            @else
-            <div class="user-mini-placeholder">
-                <i class="fa fa-user"></i>
-            </div>
-            @endif
-            <div class="user-mini-info">
-                <span class="greeting-text">Selamat datang</span>
-                <strong class="user-name-text">{{ $user->name }}</strong>
-            </div>
-        </div>
-    </div>
     @endauth
 </header>
 
@@ -264,6 +260,28 @@ $setting = \App\Models\Setting::first();
     .header-icon-btn i {
         font-size: 18px;
     }
+
+    .header-user-profile {
+    display: flex;
+    align-items: center;
+}
+
+.header-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #eee;
+}
+
+.header-avatar.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+        /* background: #ff4757; */
+    color: white;
+}
 
     .notification-badge {
         position: absolute;

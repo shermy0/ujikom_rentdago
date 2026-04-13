@@ -16,7 +16,6 @@
     {{-- SEARCH BAR SHOPEE --}}
     <div class="shopee-search-section">
         <form method="GET" action="{{ route('home') }}" class="shopee-search-bar">
-            <i class="bi bi-search search-icon"></i>
             <input 
                 type="text" 
                 name="search"

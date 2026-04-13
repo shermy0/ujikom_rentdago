@@ -1,8 +1,12 @@
 @extends('frontend.master')
+@section('navbar')
+    @include('frontend.navbar')
+@endsection
 @section('navbot')
     @include('frontend.navbot')
 @endsection
-@section('navbar')
+
+@section('content')
 <div class="mobile-top-header">
     <div class="header-left" style="flex: none; background: transparent; padding: 0;">
         <a href="{{ route('profile.edit') }}" style="color: #fff; font-size: 20px;">
