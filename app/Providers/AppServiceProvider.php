@@ -32,7 +32,10 @@ class AppServiceProvider extends ServiceProvider
         // ✅ Register Order Observer untuk Auto Notifications
         Order::observe(OrderObserver::class);
 
+        // Hanya force HTTPS di production, bukan di local
+        if (app()->environment('production')) {
             URL::forceScheme('https');
+        }
 
     }
     
