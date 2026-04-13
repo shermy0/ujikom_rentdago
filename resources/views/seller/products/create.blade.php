@@ -291,6 +291,33 @@
                 </div>
             </div>
 
+            <!-- Images -->
+            <div class="form-card">
+                <div class="form-card-title">Foto Barang</div>
+
+                <div class="form-group">
+                    <input type="file" 
+                           name="images[]" 
+                           id="images" 
+                           multiple 
+                           accept="image/jpeg,image/png,image/jpg" 
+                           style="display: none;"
+                           class="@error('images.*') is-invalid @enderror">
+
+                    <label for="images" class="image-upload-section">
+                        <i class="fa fa-camera"></i>
+                        <p><strong>Klik untuk tambah foto</strong></p>
+                        <p>Format: JPG, PNG &bull; Max: 2MB per foto<br>Bisa pilih banyak foto sekaligus</p>
+                    </label>
+
+                    @error('images.*')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+
+                    <div class="image-preview-container" id="image-preview"></div>
+                </div>
+            </div>
+
             <!-- Status -->
             <div class="form-card">
                 <div class="form-card-title">Status</div>

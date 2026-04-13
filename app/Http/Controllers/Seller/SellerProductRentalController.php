@@ -133,17 +133,8 @@ class SellerProductRentalController extends Controller
 
 $deliveryTypes = $validated['is_delivery'];
 
-if (count($deliveryTypes) == 2) {
-    $validated['is_delivery'] = 'pickup_delivery';
-} else {
-    $validated['is_delivery'] = $deliveryTypes[0];
-}
-
-ProductRental::create($validated);
-
-// ===== CEK KURIR JIKA PILIH DELIVERY =====
+// ===== CEK KURIR JIKA PILIH DELIVERY (SEBELUM SIMPAN) =====
 if (in_array('delivery', $deliveryTypes)) {
-
     $hasActiveCourier = Courier::where('shop_id', $shop->id)
         ->where('status', 'active')
         ->exists();
@@ -157,6 +148,14 @@ if (in_array('delivery', $deliveryTypes)) {
     }
 }
 
+// Konversi array ke enum string
+if (count($deliveryTypes) == 2) {
+    $validated['is_delivery'] = 'pickup_delivery';
+} else {
+    $validated['is_delivery'] = $deliveryTypes[0];
+}
+
+ProductRental::create($validated);
 
         return redirect()
             ->route('seller.rentals.index')
@@ -223,6 +222,14 @@ public function edit($id)
             'is_delivery.*.required' => 'Metode pengiriman tidak boleh kosong',
             'is_delivery.*.in' => 'Metode pengiriman harus Ambil Sendiri atau Antar',
         ]);
+
+        // Konversi array is_delivery ke enum string
+        $deliveryTypes = $validated['is_delivery'];
+        if (count($deliveryTypes) == 2) {
+            $validated['is_delivery'] = 'pickup_delivery';
+        } else {
+            $validated['is_delivery'] = $deliveryTypes[0];
+        }
 
         $rental->update($validated);
 
