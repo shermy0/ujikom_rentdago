@@ -602,15 +602,13 @@
                                 <i class="fa fa-{{ $voucher->is_active ? 'ban' : 'check' }}"></i>
                             </button>
 
-                            @if($voucher->usages_count === 0)
-                                <form action="{{ route('seller.vouchers.destroy', $voucher->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus voucher ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-icon btn-delete" title="Hapus">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
-                            @endif
+                            <form id="delete-form-{{ $voucher->id }}" action="{{ route('seller.vouchers.destroy', $voucher->id) }}" method="POST" style="margin: 0;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                            <button type="button" class="btn-icon btn-delete btn-delete-voucher" data-id="{{ $voucher->id }}" title="Hapus">
+                                <i class="fa fa-trash"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -631,7 +629,32 @@
     @endif
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Delete Confirmation
+    document.querySelectorAll('.btn-delete-voucher').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const form = document.getElementById('delete-form-' + id);
+
+            Swal.fire({
+                title: 'Hapus Voucher?',
+                text: 'Voucher akan dihapus permanen. Lanjutkan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+
 function toggleStatus(voucherId, activate) {
     Swal.fire({
         title: activate ? 'Aktifkan Voucher?' : 'Nonaktifkan Voucher?',

@@ -346,7 +346,7 @@ function openHandoverCamera() {
             </p>
         `,
         showCancelButton: true,
-        confirmButtonText: '📸 Ambil Foto',
+        confirmButtonText: 'Ambil Foto',
         cancelButtonText: 'Batal',
         confirmButtonColor: '#28a745',
         cancelButtonColor: '#dc3545',
@@ -466,7 +466,6 @@ function confirmAndUploadSnapshot(blob, previewBase64) {
         `,
         showCancelButton: true,
         confirmButtonText: 'Gunakan Foto',
-        cancelButtonText: 'Ambil Ulang',
         confirmButtonColor: '#28a745',
         cancelButtonColor: '#ffc107'
     }).then(result => {

@@ -246,11 +246,7 @@
             </p>
         </div>
 
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
+        <!-- Alert diganti dengan SweetAlert di bawah -->
 
         <form action="{{ route('seller.vouchers.store') }}" method="POST" id="voucherForm">
             @csrf
@@ -469,5 +465,42 @@ document.addEventListener('DOMContentLoaded', function() {
     updateForm();
 });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session("success") }}',
+        showConfirmButton: false,
+        timer: 2000
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: '{{ session("error") }}',
+        confirmButtonColor: '#A20B0B'
+    });
+</script>
+@endif
+
+@if($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Validasi Gagal!',
+        text: 'Silakan periksa kembali isian form Anda.',
+        confirmButtonColor: '#A20B0B'
+    });
+</script>
+@endif
+
 
 @endsection

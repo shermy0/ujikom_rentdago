@@ -540,6 +540,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @if(session('success'))
 <script>
     Swal.fire({
@@ -558,6 +560,17 @@ document.addEventListener('DOMContentLoaded', function() {
         icon: 'error',
         title: 'Gagal!',
         text: '{{ session("error") }}',
+        confirmButtonColor: '#A20B0B'
+    });
+</script>
+@endif
+
+@if($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Validasi Gagal!',
+        text: 'Silakan periksa kembali isian form Anda.',
         confirmButtonColor: '#A20B0B'
     });
 </script>

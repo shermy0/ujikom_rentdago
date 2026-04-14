@@ -45,8 +45,9 @@ public function index(Request $request)
      * - Load relasi category dan images (eager loading)
      *   agar lebih efisien (menghindari N+1 query)
      */
-    $query = Product::with(['category', 'images'])
-        ->where('shop_id', $shop->id);
+$query = Product::with(['category', 'images'])
+    ->withCount('orders') // 🔥 INI YANG KURANG
+    ->where('shop_id', $shop->id);
 
     /**
      * ======================================================
@@ -408,57 +409,40 @@ public function update(Request $request, $id)
  * - Menghapus semua gambar terkait dari storage
  * - Menggunakan transaction agar data tetap konsisten
  */
-public function destroy($id)
-{
-    // Mulai database transaction
-    DB::beginTransaction();
 
-    try {
-        /**
-         * ======================================================
-         * AMBIL DATA PRODUK
-         * ======================================================
-         * - Pastikan produk milik toko seller (security)
-         */
-        $shop = Auth::user()->shop;
-        $product = Product::where('shop_id', $shop->id)->findOrFail($id);
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
+            $shop = Auth::user()->shop;
+            
+            // Menggunakan withCount untuk efisiensi pengecekan relasi
+            $product = Product::withCount('orders')
+                ->where('shop_id', $shop->id)
+                ->findOrFail($id);
 
-        /**
-         * ======================================================
-         * HAPUS FILE GAMBAR DARI STORAGE
-         * ======================================================
-         * - Loop semua gambar milik produk
-         * - Cek apakah file ada di storage
-         * - Hapus file agar tidak menjadi file sampah
-         */
-        foreach ($product->images as $image) {
-            if (Storage::disk('public')->exists($image->image_path)) {
-                Storage::disk('public')->delete($image->image_path);
+            // 🛑 JANGAN BOLEH HAPUS jika sudah ada riwayat pesanan (Cegah Cascade Delete data penting)
+            if ($product->orders_count > 0) {
+                return back()->with('error', 'Produk tidak bisa dihapus karena sudah memiliki riwayat pesanan. Silakan gunakan fitur "Maintenance" saja untuk menonaktifkan produk.');
             }
+
+            // Hapus file foto dari storage sebelum hapus database
+            foreach ($product->images as $image) {
+                if (Storage::disk('public')->exists($image->image_path)) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
+            }
+
+            $product->delete();
+
+            DB::commit();
+            return redirect()->route('seller.products.index')
+                ->with('success', 'Barang berhasil dihapus!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal menghapus barang: ' . $e->getMessage());
         }
-
-        /**
-         * ======================================================
-         * HAPUS DATA PRODUK
-         * ======================================================
-         * - Setelah file dihapus, data produk dihapus dari database
-         */
-        $product->delete();
-
-        // Commit jika semua proses berhasil
-        DB::commit();
-
-        return redirect()->route('seller.products.index')
-            ->with('success', 'Barang berhasil dihapus!');
-
-    } catch (\Exception $e) {
-
-        // Rollback jika terjadi error agar data tetap aman
-        DB::rollBack();
-
-        return back()->with('error', 'Gagal menghapus barang: ' . $e->getMessage());
     }
-}
 
 /**
  * ======================================================

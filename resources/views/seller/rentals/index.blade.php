@@ -343,19 +343,7 @@
             </div>
     </div>
 
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-error">
-                {{ session('error') }}
-                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-            </div>
-        @endif
+        <!-- Alert dihapus, diganti SweetAlert di bawah -->
 
         <!-- Filter Section -->
         <div class="filter-section">
@@ -454,15 +442,19 @@
                         <a href="{{ route('seller.rentals.edit', $rental->id) }}" class="btn-icon btn-edit">
                             <i class="fa fa-edit"></i> 
                         </a>
-                        <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST"
-                            onsubmit="return confirm('Yakin ingin menghapus paket rental ini?')">
-                            <!--tombol hapus-->
+                        <form id="delete-form-{{ $rental->id }}" action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST" style="margin: 0;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn-icon btn-delete">
-                                <i class="fa fa-trash"></i> 
-                            </button>
                         </form>
+<button 
+    type="button" 
+    class="btn-icon btn-delete btn-delete-rental" 
+    data-id="{{ $rental->id }}" 
+    data-has-orders="{{ $rental->orders_count > 0 ? 1 : 0 }}"
+    title="Hapus">
+    <i class="fa fa-trash"></i> 
+</button>
+
                     </div>
                 </div>
             @empty
@@ -480,4 +472,60 @@
             @endif
         </div>
     </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Delete Confirmation
+document.querySelectorAll('.btn-delete-rental').forEach(button => {
+    button.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        const hasOrders = parseInt(this.getAttribute('data-has-orders'));
+        const form = document.getElementById('delete-form-' + id);
+
+        // ❌ Kalau ada pesanan
+        if (hasOrders === 1) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Tidak Bisa Dihapus',
+                text: 'Paket sewa sudah memiliki pesanan. Tidak bisa dihapus.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // ✅ Kalau aman
+        Swal.fire({
+            title: 'Hapus Paket Sewa?',
+            text: 'Paket sewa akan dihapus permanen. Lanjutkan?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: "{{ session('error') }}"
+        });
+    @endif
+});
+</script>
 @endsection

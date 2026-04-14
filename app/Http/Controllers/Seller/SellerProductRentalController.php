@@ -46,13 +46,14 @@ public function index(Request $request)
      * - Load relasi product, category, dan images (eager loading)
      * - Filter hanya produk milik toko seller
      */
-    $query = ProductRental::with([
+$query = ProductRental::with([
         'product.category',
         'product.images',
     ])
-        ->whereHas('product', function ($q) use ($shop) {
-            $q->where('shop_id', $shop->id);
-        });
+    ->withCount('orders') // 🔥 WAJIB
+    ->whereHas('product', function ($q) use ($shop) {
+        $q->where('shop_id', $shop->id);
+    });
 
     /**
      * ======================================================
@@ -373,32 +374,31 @@ public function show($id)
     return view('seller.rentals.show', compact('rental'))
         ->with('title', 'Detail Paket Sewa');
 }
-public function destroy($id)
-{
-    // Ambil data toko milik user yang sedang login
-    $shop = Auth::user()->shop;
+    public function destroy($id)
+    {
+        $shop = Auth::user()->shop;
 
-    // Jika user belum memiliki toko, redirect ke dashboard dengan pesan error
-    if (!$shop) {
+        if (!$shop) {
+            return redirect()
+                ->route('seller.dashboard.index')
+                ->with('error', 'Buka toko terlebih dahulu.');
+        }
+
+        // Ambil data dengan hitungan order
+        $rental = ProductRental::withCount('orders')
+            ->whereHas('product', function ($q) use ($shop) {
+                $q->where('shop_id', $shop->id);
+            })->findOrFail($id);
+
+        // 🛑 VALIDASI: Jangan boleh hapus jika sudah ada pesanan berkorelasi
+        if ($rental->orders_count > 0) {
+            return back()->with('error', 'Paket sewa ini tidak bisa dihapus karena sudah memiliki riwayat pesanan. Anda tetap bisa mengubah harga atau durasinya jika diperlukan.');
+        }
+
+        $rental->delete();
+
         return redirect()
-            ->route('seller.dashboard.index')
-            ->with('error', 'Buka toko terlebih dahulu.');
+            ->route('seller.rentals.index')
+            ->with('success', 'Paket rental berhasil dihapus!');
     }
-
-    // Ambil data rental berdasarkan ID
-    // whereHas → memastikan bahwa paket rental ini berasal dari produk milik toko user
-    // (mencegah user menghapus data milik toko lain / keamanan)
-    $rental = ProductRental::whereHas('product', function ($q) use ($shop) {
-        $q->where('shop_id', $shop->id);
-    })->findOrFail($id);
-
-    // Hapus data paket rental dari database
-    $rental->delete();
-
-    // Redirect ke halaman daftar rental dengan pesan sukses
-    return redirect()
-        ->route('seller.rentals.index')
-        ->with('success', 'Paket rental berhasil dihapus!');
-}
-
 }
