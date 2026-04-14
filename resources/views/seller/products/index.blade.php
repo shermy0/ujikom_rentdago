@@ -280,20 +280,7 @@
         </div>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success">
-        <i class="fa fa-check-circle"></i> {{ session('success') }}
-        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="alert alert-danger">
-        <i class="fa fa-exclamation-triangle"></i> {{ session('error') }}
-        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-    </div>
-    @endif
-
+    <!-- Alert dihapus, diganti SweetAlert di bawah -->
     <!-- Filter Section -->
     <div class="filter-section">
         <form action="{{ route('seller.products.index') }}" method="GET">
@@ -367,15 +354,14 @@
                     title="Edit">
                         <i class="fa fa-edit"></i>
                     </a>
-                    <form action="{{ route('seller.products.destroy', $product->id) }}" 
-                        method="POST" 
-                        onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
+                    <form id="delete-form-{{ $product->id }}" action="{{ route('seller.products.destroy', $product->id) }}" 
+                        method="POST" style="margin: 0;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn-icon btn-delete" title="Hapus">
-                            <i class="fa fa-trash"></i>
-                        </button>
                     </form>
+                    <button type="button" class="btn-icon btn-delete btn-delete-product" data-id="{{ $product->id }}" title="Hapus">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </div>
             </div>
         @empty
@@ -393,4 +379,47 @@
         @endif
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Delete Confirmation
+    document.querySelectorAll('.btn-delete-product').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const form = document.getElementById('delete-form-' + id);
+
+            Swal.fire({
+                title: 'Hapus Produk?',
+                text: 'Produk akan dihapus permanen. Lanjutkan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: "{{ session('error') }}"
+        });
+    @endif
+});
+</script>
 @endsection
