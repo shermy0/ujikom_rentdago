@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','paid','confirmed','ongoing','completed','cancelled','penalty','returned') DEFAULT 'pending'");
+        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','confirmed','ongoing','completed','cancelled','penalty','returned','arrived') DEFAULT 'pending'");
     }
 
     /**
@@ -20,6 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','paid','confirmed','ongoing','completed','cancelled','penalty','returned') DEFAULT 'pending'");
+        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','confirmed','ongoing','completed','cancelled','penalty','returned','arrived') DEFAULT 'pending'");
     }
 };
