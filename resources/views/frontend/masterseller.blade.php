@@ -32,7 +32,7 @@
                 @if($setting && $setting->logo)
                 <div class="logo-circle">
                     <img
-                        src="{{ asset('storage/' . $setting->logo) }}"
+                        src="{{ asset($setting->logo) }}"
                         alt="Logo"
                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 30%;">
                 </div>

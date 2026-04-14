@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-md-4 text-center mb-4">
                 @if($shop->logo)
-                    <img src="{{ asset('storage/' . $shop->logo) }}" 
+                    <img src="{{ asset($shop->logo) }}" 
                          alt="{{ $shop->name_store }}" 
                          class="shop-detail-logo rounded mb-3">
                 @else

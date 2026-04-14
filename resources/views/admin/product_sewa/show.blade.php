@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         @if ($rental->product->images->count() > 0)
-                            <img src="{{ asset('storage/' . $rental->product->images->first()->image_path) }}"
+                            <img src="{{ asset($rental->product->images->first()->image_path) }}"
                                 alt="{{ $rental->product->name }}"
                                 class="product-image">
                         @else

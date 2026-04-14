@@ -314,7 +314,7 @@
                 <div class="shop-card-title">Logo Toko</div>
                 <div class="logo-upload-section">
                     @if($shop->logo)
-                        <img src="{{ asset('storage/' . $shop->logo) }}" 
+                        <img src="{{ asset($shop->logo) }}" 
                              alt="Logo" 
                              id="logo-preview"
                              class="logo-preview">

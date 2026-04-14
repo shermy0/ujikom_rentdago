@@ -468,7 +468,7 @@
                         <div class="existing-images" id="existing-images-container">
                             @foreach ($product->images as $image)
                                 <div class="existing-image-item" id="image-{{ $image->id }}">
-                                    <img src="{{ asset('storage/' . $image->image_path) }}" alt="Product Image">
+                                    <img src="{{ asset($image->image_path) }}" alt="Product Image">
                                     <button type="button" class="delete-image-btn"
                                         onclick="deleteExistingImage({{ $image->id }})">
                                         <i class="fa fa-times"></i>

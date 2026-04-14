@@ -8,7 +8,7 @@ $setting = \App\Models\Setting::first();
         <div class="app-branding">
             @if ($setting && $setting->logo)
             <div class="app-logo-box">
-                <img src="{{ asset('storage/' . $setting->logo) }}" class="app-logo-img" alt="Logo">
+                <img src="{{ asset($setting->logo) }}" class="app-logo-img" alt="Logo">
             </div>
             @else
             <div class="app-logo-box">
@@ -62,7 +62,7 @@ $setting = \App\Models\Setting::first();
                 @endphp
 
                 @if(!empty($user->avatar))
-                    <img src="{{ asset('storage/' . $user->avatar) }}" 
+                    <img src="{{ asset($user->avatar) }}" 
                         class="header-avatar" 
                         alt="Avatar">
                 @else

@@ -34,7 +34,7 @@
         <div class="order-product">
             <div class="product-image">
                 @if($order->productRental->product->images->first())
-                    <img src="{{ asset('storage/' . $order->productRental->product->images->first()->image_path) }}" 
+                    <img src="{{ asset($order->productRental->product->images->first()->image_path) }}" 
                          alt="{{ $order->productRental->product->name }}">
                 @else
                     <div class="no-image">

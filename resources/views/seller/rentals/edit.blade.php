@@ -360,7 +360,7 @@
 
                     <div class="product-display">
                         @if ($rental->product->images->count() > 0)
-                            <img src="{{ asset('storage/' . $rental->product->images->first()->image_path) }}"
+                            <img src="{{ asset($rental->product->images->first()->image_path) }}"
                                 alt="{{ $rental->product->name }}">
                         @else
                             <div

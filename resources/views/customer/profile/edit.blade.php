@@ -214,7 +214,7 @@
                 <div class="avatar-preview-container">
                     <div id="avatar-container">
                         @if($user->avatar)
-                            <img src="{{ asset('storage/' . $user->avatar) }}" 
+                            <img src="{{ asset($user->avatar) }}" 
                                  alt="Avatar" 
                                  id="avatar-preview"
                                  class="avatar-image">

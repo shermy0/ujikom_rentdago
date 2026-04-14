@@ -291,7 +291,7 @@
                         @endphp
 
                         @if($product->images->count())
-                            <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
+                            <img src="{{ asset($product->images->first()->image_path) }}" 
                                  alt="{{ $product->name }}">
                         @else
                             <div class="product-placeholder">

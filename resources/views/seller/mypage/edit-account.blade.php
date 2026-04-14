@@ -201,7 +201,7 @@
                 <div class="edit-card-title">Foto Profil</div>
                 <div class="avatar-upload-section">
                     @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}" 
+                        <img src="{{ asset($user->avatar) }}" 
                              alt="Avatar" 
                              id="avatar-preview"
                              class="avatar-preview">

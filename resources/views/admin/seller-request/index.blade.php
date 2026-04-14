@@ -225,14 +225,14 @@
                                                         </h6>
                                                         <div class="text-center">
                                                             <label class="small text-muted d-block mb-3">Foto KTP</label>
-                                                            <a href="{{ asset('storage/' . $request->ktp_photo) }}" target="_blank">
-                                                                <img src="{{ asset('storage/' . $request->ktp_photo) }}"
+                                                            <a href="{{ asset($request->ktp_photo) }}" target="_blank">
+                                                                <img src="{{ asset($request->ktp_photo) }}"
                                                                     class="img-fluid rounded-3 border shadow-sm w-100" 
                                                                     style="max-height: 300px; object-fit: cover; cursor: pointer;" 
                                                                     alt="KTP"
                                                                     title="Klik untuk memperbesar">
                                                             </a>
-                                                            <a href="{{ asset('storage/' . $request->ktp_photo) }}" 
+                                                            <a href="{{ asset($request->ktp_photo) }}" 
                                                                target="_blank" 
                                                                class="btn btn-sm btn-light-primary w-100 mt-3">
                                                                 <i class="bi bi-zoom-in me-1"></i> Lihat Ukuran Penuh

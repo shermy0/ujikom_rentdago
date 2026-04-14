@@ -81,7 +81,7 @@
                                 <td>{{ $shop->id }}</td>
                                 <td>
                                     @if ($shop->logo)
-                                        <img src="{{ asset('storage/' . $shop->logo) }}" alt="{{ $shop->name_store }}"
+                                        <img src="{{ asset($shop->logo) }}" alt="{{ $shop->name_store }}"
                                             class="shop-logo rounded">
                                     @else
                                         <div class="shop-logo-placeholder rounded">

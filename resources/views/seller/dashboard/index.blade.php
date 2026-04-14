@@ -102,7 +102,7 @@
     <div class="order-card">
         <div class="product-image">
             @if ($order->productRental->product->images->first())
-            <img src="{{ asset('storage/' . $order->productRental->product->images->first()->image_path) }}"
+            <img src="{{ asset($order->productRental->product->images->first()->image_path) }}"
                 alt="{{ $order->productRental->product->name }}"
                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
             @else

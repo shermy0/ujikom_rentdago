@@ -10,7 +10,7 @@
                     <!-- Current Avatar -->
                     <div class="current-avatar-wrapper mb-3">
                         @if($user->avatar)
-                            <img src="{{ asset('storage/' . $user->avatar) }}" 
+                            <img src="{{ asset($user->avatar) }}" 
                                  alt="{{ $user->name }}" 
                                  class="current-avatar"
                                  id="avatarPreview">

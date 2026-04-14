@@ -11,7 +11,7 @@
         <div class="position-relative">
             @if($product->images->first())
                 <img 
-                    src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                    src="{{ asset($product->images->first()->image_path) }}"
                     class="card-img-top rounded-top-4"
                     style="height:140px; object-fit:cover"
                 >

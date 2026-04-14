@@ -76,7 +76,7 @@
                                     <div style="width: 30px; margin-right: 8px;"></div>
                                 @endif
                                 @if($category->icon)
-                                    <img src="{{ asset('storage/' . $category->icon) }}"
+                                    <img src="{{ asset($category->icon) }}"
                                          alt="{{ $category->name }}"
                                          class="me-3 flex-shrink-0"
                                          style="width: 50px; height: 50px; border-radius: 10px; object-fit: cover;">
@@ -151,7 +151,7 @@
                             <div class="d-flex align-items-start" style="padding-left: 40px;">
                                 <i class="bi bi-arrow-return-right text-muted me-3 flex-shrink-0" style="font-size: 20px; margin-top: 15px;"></i>
                                 @if($child->icon)
-                                    <img src="{{ asset('storage/' . $child->icon) }}"
+                                    <img src="{{ asset($child->icon) }}"
                                          alt="{{ $child->name }}"
                                          class="me-3 flex-shrink-0"
                                          style="width: 45px; height: 45px; border-radius: 8px; object-fit: cover;">

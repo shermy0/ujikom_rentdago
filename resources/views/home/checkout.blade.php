@@ -86,7 +86,7 @@
             <div class="product-summary">
                 <div class="product-image">
                     @if($product->images->count())
-                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->name }}">
+                        <img src="{{ asset($product->images->first()->image_path) }}" alt="{{ $product->name }}">
                     @else
                         <div class="product-placeholder">
                             <i class="fa-solid fa-box"></i>

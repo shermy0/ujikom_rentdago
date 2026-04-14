@@ -16,7 +16,7 @@
             <div class="col-md-4 text-center mb-4">
                 <div class="avatar-wrapper mb-3">
                     @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}"
+                        <img src="{{ asset($user->avatar) }}"
                              alt="{{ $user->name }}"
                              class="rounded-circle shadow"
                              style="width: 150px; height: 150px; object-fit: cover;">

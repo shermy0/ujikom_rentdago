@@ -102,7 +102,7 @@
                 <div class="row">
                     <div class="col-md-2">
                         @if($order->productRental->product->images->count() > 0)
-                            <img src="{{ asset('storage/' . $order->productRental->product->images->first()->image_path) }}" 
+                            <img src="{{ asset($order->productRental->product->images->first()->image_path) }}" 
                                  alt="{{ $order->productRental->product->name }}"
                                  class="product-image">
                         @else
@@ -171,7 +171,7 @@
             <div class="info-card">
                 <h6 class="info-title">QR Code</h6>
                 <div class="text-center">
-                    <img src="{{ asset('storage/' . $order->qr_code) }}" 
+                    <img src="{{ asset($order->qr_code) }}" 
                          alt="QR Code {{ $order->order_code }}"
                          class="qr-code">
                     <p class="text-muted mt-2 mb-0">QR Code untuk pengambilan/pengembalian barang</p>

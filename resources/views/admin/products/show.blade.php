@@ -18,10 +18,10 @@
                         @foreach ($product->images as $image)
                             <div class="col-md-3">
                                 <div class="image-card">
-                                    <img src="{{ Storage::url($image->image_path) }}" alt="Product Image"
+                                    <img src="{{ asset($image->image_path) }}" alt="Product Image"
                                         class="img-thumbnail"
                                         style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;"
-                                        onclick="showImageModal('{{ Storage::url($image->image_path) }}')">
+                                        onclick="showImageModal('{{ asset($image->image_path) }}')">
                                 </div>
                             </div>
                         @endforeach

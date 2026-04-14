@@ -344,7 +344,7 @@
     <!-- Profile Summary -->
     <div class="settings-profile">
         @if($user->avatar)
-            <img src="{{ asset('storage/' . $user->avatar) }}" 
+            <img src="{{ asset($user->avatar) }}" 
                  alt="Avatar" 
                  class="settings-avatar">
         @else
@@ -405,7 +405,7 @@
     
     <div class="shop-status-info">
         @if($shop->logo)
-            <img src="{{ asset('storage/' . $shop->logo) }}" 
+            <img src="{{ asset($shop->logo) }}" 
                  alt="Logo" 
                  class="shop-mini-logo">
         @else

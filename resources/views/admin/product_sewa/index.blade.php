@@ -77,7 +77,7 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if ($rental->product->images->count() > 0)
-                                            <img src="{{ asset('storage/' . $rental->product->images->first()->image_path) }}"
+                                            <img src="{{ asset($rental->product->images->first()->image_path) }}"
                                                 alt="{{ $rental->product->name }}" class="product-thumb me-2">
                                         @else
                                             <div class="product-thumb-placeholder me-2">

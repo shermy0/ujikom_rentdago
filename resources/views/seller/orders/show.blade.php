@@ -994,7 +994,7 @@
         <div class="product-section">
             <div class="product-image">
                 @if($order->productRental->product->images->first())
-                <img src="{{ asset('storage/' . $order->productRental->product->images->first()->image_path) }}"
+                <img src="{{ asset($order->productRental->product->images->first()->image_path) }}"
                     alt="{{ $order->productRental->product->name }}">
                 @else
                 <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;">
@@ -1147,9 +1147,9 @@
                 overflow:hidden;
                 max-width:320px;
             ">
-                <a href="{{ asset('storage/' . $order->deliveryShipment->delivery_proof_photo) }}" target="_blank">
+                <a href="{{ asset($order->deliveryShipment->delivery_proof_photo) }}" target="_blank">
                     <img
-                        src="{{ asset('storage/' . $order->deliveryShipment->delivery_proof_photo) }}"
+                        src="{{ asset($order->deliveryShipment->delivery_proof_photo) }}"
                         alt="Bukti Handover Delivery"
                         style="width:100%; display:block;">
                 </a>
@@ -1184,9 +1184,9 @@
                 overflow:hidden;
                 max-width:320px;
             ">
-                <a href="{{ asset('storage/' . $order->handoverProof->photo_path) }}" target="_blank">
+                <a href="{{ asset($order->handoverProof->photo_path) }}" target="_blank">
                     <img
-                        src="{{ asset('storage/' . $order->handoverProof->photo_path) }}"
+                        src="{{ asset($order->handoverProof->photo_path) }}"
                         alt="Foto Bukti Serah Barang"
                         style="width:100%; display:block;">
                 </a>
@@ -1207,7 +1207,7 @@
         <div style="text-align:center; margin-top:10px">
             <div style="display: inline-block; background: white; padding: 8px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 @if($order->qr_code && file_exists(storage_path('app/public/' . $order->qr_code)))
-                    <img src="{{ asset('storage/'.$order->qr_code) }}"
+                    <img src="{{ asset($order->qr_code) }}"
                         alt="QR Code Pesanan"
                         style="width: 180px; height: 180px; display: block;">
                 @else

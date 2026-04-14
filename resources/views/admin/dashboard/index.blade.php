@@ -245,7 +245,7 @@
 
             <div class="order-left">
                 <img
-                    src="{{ asset('storage/' . ($order->productRental->product->images->first()?->image_path ?? 'placeholder.png')) }}"
+                    src="{{ asset($order->productRental->product->images->first()?->image_path ?? 'placeholder.png') }}"
                     class="order-img">
 
 

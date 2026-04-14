@@ -245,7 +245,7 @@
     <div class="detail-card">
     <div class="image-gallery">
         @if($product->images->count() > 0)
-            <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
+            <img src="{{ asset($product->images->first()->image_path) }}" 
                  alt="{{ $product->name }}"
                  class="main-image"
                  id="mainImage">
@@ -253,7 +253,7 @@
             @if($product->images->count() > 1)
                 <div class="thumbnail-gallery">
                     @foreach($product->images as $index => $image)
-                        <img src="{{ asset('storage/' . $image->image_path) }}" 
+                        <img src="{{ asset($image->image_path) }}" 
                              alt="Thumbnail {{ $index + 1 }}"
                              class="thumbnail {{ $index === 0 ? 'active' : '' }}"
                              onclick="changeMainImage(this)">

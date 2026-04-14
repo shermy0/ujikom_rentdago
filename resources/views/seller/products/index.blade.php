@@ -321,7 +321,7 @@
         @forelse($products as $product)
             <div class="product-card">
                 @if($product->images->count() > 0)
-                    <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
+                    <img src="{{ asset($product->images->first()->image_path) }}" 
                          alt="{{ $product->name }}"
                          class="product-image">
                 @else

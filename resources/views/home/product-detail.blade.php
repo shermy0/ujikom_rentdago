@@ -34,7 +34,7 @@
         {{-- FOTO UTAMA --}}
         <div class="product-main-image mb-2">
             @if($product->images->count())
-                <img id="mainProductImage" src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->name }}">
+                <img id="mainProductImage" src="{{ asset($product->images->first()->image_path) }}" alt="{{ $product->name }}">
             @else
                 <div class="product-main-placeholder">
                     <i class="fa-solid {{ $icon }}"></i>
@@ -46,7 +46,7 @@
         @if($product->images->count() > 1)
             <div class="product-thumbnails">
                 @foreach($product->images as $image)
-                    <img src="{{ asset('storage/' . $image->image_path) }}" class="thumbnail-item" onclick="changeMainImage(this)">
+                    <img src="{{ asset($image->image_path) }}" class="thumbnail-item" onclick="changeMainImage(this)">
                 @endforeach
             </div>
         @endif

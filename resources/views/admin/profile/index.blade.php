@@ -25,7 +25,7 @@
                 <!-- Avatar -->
                 <div class="profile-avatar-wrapper">
                     @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}" 
+                        <img src="{{ asset($user->avatar) }}" 
                              alt="{{ $user->name }}" 
                              class="profile-avatar">
                     @else

@@ -70,7 +70,7 @@
                         <td>{{ $users->firstItem() + $index }}</td>
                         <td>
                             @if($user->avatar)
-                                <img src="{{ asset('storage/' . $user->avatar) }}"
+                                <img src="{{ asset($user->avatar) }}"
                                      alt="{{ $user->name }}"
                                      class="rounded-circle"
                                      style="width: 40px; height: 40px; object-fit: cover;">

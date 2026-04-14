@@ -24,7 +24,7 @@
                             <label class="form-label fw-medium">Logo</label>
                             @if($setting && $setting->logo)
                             <div class="mb-2">
-                                <img src="{{ Storage::url($setting->logo) }}" alt="Logo" class="img-thumbnail" style="max-width: 150px;">
+                                <img src="{{ asset($setting->logo) }}" alt="Logo" class="img-thumbnail" style="max-width: 150px;">
                             </div>
                             @endif
                             <input type="file" name="logo" class="form-control" accept="image/*">

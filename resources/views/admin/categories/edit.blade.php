@@ -82,7 +82,7 @@
                         <label class="form-label">Preview Icon</label>
                         <div class="icon-preview p-3 border rounded text-center" id="iconPreview">
                             @if($category->icon)
-                                <img src="{{ asset('storage/' . $category->icon) }}" alt="Icon" style="max-width: 80px; max-height: 80px; border-radius: 8px; object-fit: cover;">
+                                <img src="{{ asset($category->icon) }}" alt="Icon" style="max-width: 80px; max-height: 80px; border-radius: 8px; object-fit: cover;">
                                 <p class="text-muted mt-2 mb-0 small">Icon saat ini</p>
                             @else
                                 <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>

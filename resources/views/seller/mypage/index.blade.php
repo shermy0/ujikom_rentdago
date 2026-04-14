@@ -771,7 +771,7 @@
         <!-- Profile Card -->
         <div class="profile-card">
             @if($user->avatar)
-                <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="profile-avatar">
+                <img src="{{ asset($user->avatar) }}" alt="Avatar" class="profile-avatar">
             @else
                 <div class="profile-avatar-placeholder">
                     <i class="fa fa-user" style="font-size: 28px; color: #fff;"></i>
@@ -892,7 +892,7 @@
                     <!-- Shop Info -->
                     <div class="shop-info-card">
                         @if($shop->logo)
-                            <img src="{{ asset('storage/' . $shop->logo) }}" alt="Logo Toko" class="shop-logo">
+                            <img src="{{ asset($shop->logo) }}" alt="Logo Toko" class="shop-logo">
                         @else
                             <div class="shop-logo-placeholder">
                                 <i class="fa fa-store" style="font-size: 24px; color: #fff;"></i>

@@ -496,7 +496,7 @@
                 <div class="order-body">
                     <div class="product-img">
                         @if($order->productRental->product->images->first())
-                            <img src="{{ asset('storage/' . $order->productRental->product->images->first()->image_path) }}" 
+                            <img src="{{ asset($order->productRental->product->images->first()->image_path) }}" 
                                  alt="{{ $order->productRental->product->name }}">
                         @else
                             📷
