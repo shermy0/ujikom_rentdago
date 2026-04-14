@@ -20,7 +20,7 @@
                 type="text" 
                 name="search"
                 class="search-input"
-                placeholder="Cari di Toko"
+                placeholder="Cari barang"
                 value="{{ $search }}"
             >
             <button type="submit" class="search-btn">

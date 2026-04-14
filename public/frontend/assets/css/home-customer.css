@@ -145,9 +145,7 @@ body {
    SEARCH BAR SHOPEE
 ======================================== */
 .shopee-search-section {
-    padding: 0 16px 12px 16px;
-    background: var(--shopee-gradient);
-    margin: 0;
+    padding: 12px 16px 12px 16px;
 }
 
 .shopee-search-bar {
