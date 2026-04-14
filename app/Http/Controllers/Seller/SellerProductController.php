@@ -243,6 +243,23 @@ public function store(Request $request)
     }
 }
 
+    public function show($id)
+    {
+        $shop = Auth::user()->shop;
+
+        if (!$shop) {
+            return redirect()
+                ->route('seller.dashboard.index')
+                ->with('error', 'Buka toko terlebih dahulu.');
+        }
+
+        $product = Product::with(['category', 'images'])
+            ->where('shop_id', $shop->id)
+            ->findOrFail($id);
+
+        return view('seller.products.show', compact('product'))->with('title', 'Detail Produk');;
+    }
+
 
 /**
  * ======================================================
