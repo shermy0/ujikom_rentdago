@@ -31,7 +31,7 @@
         }
 
         .form-card-title i {
-            color: #ff5722;
+            color: #A20B0B;
         }
 
         .form-group {
@@ -68,7 +68,7 @@
         .form-input:focus,
         .form-select:focus {
             outline: none;
-            border-color: #ff5722;
+            border-color: #A20B0B;
             box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
         }
 
@@ -144,14 +144,14 @@
         }
 
         .checkbox-option label:hover {
-            border-color: #ff8a65;
+            border-color: #A20B0B;
             background: #fff5f2;
         }
 
         .checkbox-option input[type="checkbox"]:checked+label {
-            border-color: #ff5722;
+            border-color: #A20B0B;
             background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            color: #ff5722;
+            color: #A20B0B;
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(255, 87, 34, 0.2);
         }
@@ -166,7 +166,7 @@
             right: 8px;
             width: 24px;
             height: 24px;
-            background: #ff5722;
+            background: #A20B0B;
             color: #fff;
             border-radius: 50%;
             display: flex;
@@ -193,7 +193,7 @@
         .submit-btn {
             width: 100%;
             padding: 0.875rem;
-            background: #28a745;
+            background: #A20B0B;
             border: none;
             color: #fff;
             border-radius: 8px;
@@ -209,7 +209,7 @@
         }
 
         .submit-btn:hover {
-            background: #218838;
+            background: #770C0C;
             transform: translateY(-1px);
         }
 

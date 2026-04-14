@@ -34,7 +34,6 @@ class ScanQRController extends Controller
      * - Ada order lain
      * - Dengan product_rental_id yang sama
      * - Statusnya masih ongoing
-     * - Bukan order yang sedang discan sekarang
      * Kalau barang fisik SUDAH tersedia,
      * maka pickup boleh dilakukan kapan pun
      */
@@ -232,31 +231,42 @@ if (!$hasStartPhoto) {
         );
     }
 
-    public function uploadStartProof(Request $request)
+public function uploadStartProof(Request $request)
 {
+    // Validasi input dari request
+    // order_id harus ada di tabel orders
+    // photo wajib berupa gambar dengan ukuran maksimal 2MB
     $request->validate([
         'order_id' => 'required|exists:orders,id',
         'photo'    => 'required|image|max:2048',
     ]);
 
+    // Ambil data order berdasarkan ID
+    // Jika tidak ditemukan, otomatis error 404
     $order = Order::findOrFail($request->order_id);
 
-    // Pastikan milik toko seller
+    // Pastikan order tersebut milik toko seller yang sedang login
+    // validateShopOwnership kemungkinan method custom untuk keamanan akses data
     if ($response = $this->validateShopOwnership($order)) {
-        return $response;
+        return $response; // Jika tidak valid, langsung return response error
     }
 
+    // Cek apakah status order sudah 'confirmed'
+    // Hanya order dengan status ini yang boleh upload bukti serah terima awal
     if ($order->status !== 'confirmed') {
         return $this->errorResponse('Order tidak dalam status confirmed', 400);
     }
 
+    // Simpan file foto ke storage (folder: public/handover/start)
+    // Mengembalikan path file yang disimpan
     $path = $request->file('photo')->store('handover/start', 'public');
 
+    // Simpan data bukti serah terima ke database
     OrderHandoverProof::create([
-        'order_id'  => $order->id,
-        'type'      => 'start',
-        'photo_path'=> $path,
-        'taken_by'  => 'seller',
+        'order_id'  => $order->id,     // relasi ke order
+        'type'      => 'start',        // tipe bukti (awal penyewaan)
+        'photo_path'=> $path,          // lokasi file foto
+        'taken_by'  => 'seller',       // diambil oleh seller
     ]);
 
     return $this->successResponse('Foto serah barang berhasil disimpan');
@@ -272,27 +282,36 @@ if (!$hasStartPhoto) {
      */
     public function returnItem(Request $request)
     {
+        // Validasi request: order_id wajib ada dan harus valid di tabel orders
         $request->validate([
             'order_id' => 'required|exists:orders,id'
         ]);
 
+        // Ambil data order beserta relasi productRental dan product (eager loading)
         $order = Order::with(['productRental.product'])->findOrFail($request->order_id);
 
+        // Validasi bahwa order ini milik toko seller yang login (security layer)
         if ($response = $this->validateShopOwnership($order)) {
             return $response;
         }
 
+        // Pastikan hanya order dengan status 'ongoing' yang bisa dikembalikan
         if ($order->status !== 'ongoing') {
             return $this->errorResponse('Order tidak dalam status ongoing', 400);
         }
 
         try {
+            // Gunakan database transaction agar semua proses aman (atomic)
             return DB::transaction(function () use ($order) {
 
+                // Ambil waktu sekarang dan waktu akhir sewa
                 $now = Carbon::now();
                 $scheduledEnd = Carbon::parse($order->end_time);
 
+                // Cek apakah pengembalian terlambat
                 $isOverdue = $now->gt($scheduledEnd);
+
+                // Inisialisasi nilai denda dan keterlambatan
                 $lateFee = 0;
                 $overdueHours = 0;
 
@@ -302,31 +321,40 @@ if (!$hasStartPhoto) {
                  * ===========================
                  */
                 if ($isOverdue) {
+
+                    // Hitung selisih keterlambatan dalam menit
                     $overdueMinutes = $scheduledEnd->diffInMinutes($now);
+
+                    // Konversi ke jam (dibulatkan ke atas)
                     $overdueHours = ceil($overdueMinutes / 60);
 
+                    // Ambil data paket rental terkait
                     $rental = $order->productRental;
 
+                    // Hitung berapa kali siklus denda terjadi
+                    // penalties_cycle_value dalam jam → dikali 60 jadi menit
                     $lateCycles = ceil(
                         $overdueMinutes / ($rental->penalties_cycle_value * 60)
                     );
 
+                    // Hitung total denda
                     $lateFee = $lateCycles * $rental->penalties_price;
 
-                    // Simpan data denda
+                    // Simpan data pengembalian + denda ke tabel OrderReturn
                     OrderReturn::create([
                         'order_id'         => $order->id,
                         'returned_at'      => $now,
                         'penalties_amount' => $lateFee,
-                        'payment_status'   => 'unpaid',
+                        'payment_status'   => 'unpaid', // denda belum dibayar
                     ]);
 
+                    // Update status order menjadi 'penalty'
                     $order->update([
                         'status'      => 'penalty',
                         'returned_at' => $now,
                     ]);
 
-                    // 🔥 NEW: Trigger Penalty Notification
+                    // Trigger notifikasi ke customer bahwa ada denda
                     \App\Helpers\CustomerNotificationHelper::notifyPenalty($order, $lateFee, $overdueHours);
                 } 
                 /**
@@ -335,24 +363,29 @@ if (!$hasStartPhoto) {
                  * ===========================
                  */
                 else {
+
+                    // Jika tidak terlambat, langsung update status menjadi 'completed'
                     $order->update([
                         'status'      => 'completed',
                         'returned_at' => $now,
                     ]);
                 }
 
+                // Response sukses dengan informasi apakah terlambat atau tidak
                 return $this->successResponse(
                     $isOverdue
                         ? 'Barang berhasil dikembalikan, namun melewati batas waktu sewa. Denda menunggu pembayaran. Jaminan sewa (KTP) dapat dikembalikan setelah denda dilunasi.'
                         : 'Barang dikembalikan tepat waktu',
                     [
-                        'is_overdue'    => $isOverdue,
-                        'late_fee'      => $lateFee,
-                        'overdue_hours' => $overdueHours,
+                        'is_overdue'    => $isOverdue,     // status keterlambatan
+                        'late_fee'      => $lateFee,       // total denda
+                        'overdue_hours' => $overdueHours,  // lama keterlambatan (jam)
                     ]
                 );
             });
         } catch (\Exception $e) {
+
+            // Jika terjadi error, kembalikan response gagal
             return $this->errorResponse(
                 'Gagal memproses pengembalian: ' . $e->getMessage(),
                 500
@@ -371,13 +404,14 @@ if (!$hasStartPhoto) {
      */
     private function findOrder(string $orderCode): ?Order
     {
+        // Mengambil data order beserta relasi-relasinya (eager loading)
         return Order::with([
-            'productRental.product.images',
-            'user',
-            'payment',
+            'productRental.product.images', // Ambil data paket rental → produk → gambar produk
+            'user',                         // Ambil data user yang melakukan order
+            'payment',                      // Ambil data pembayaran dari order tersebut
         ])
-        ->where('order_code', $orderCode)
-        ->first();
+        ->where('order_code', $orderCode) // Mencari order berdasarkan kode unik order
+        ->first(); // Mengambil data pertama yang ditemukan (atau null jika tidak ada)
     }
 
     /**
@@ -385,10 +419,13 @@ if (!$hasStartPhoto) {
      */
     private function validateOrderBasics(Order $order): ?JsonResponse
     {
+        // Validasi bahwa metode pengambilan harus "pickup" (scan QR hanya berlaku untuk ambil langsung)
         if ($order->delivery_method !== 'pickup') {
             return $this->errorResponse('QR Code hanya untuk metode pickup', 400);
         }
 
+        // Validasi status order harus "confirmed" atau "ongoing"
+        // Artinya: hanya order yang siap diserahkan atau sedang berjalan yang boleh discan
         if (!in_array($order->status, ['confirmed', 'ongoing'])) {
             return $this->errorResponse(
                 'Status order tidak valid untuk scan. Status: ' . $order->status,
@@ -396,30 +433,38 @@ if (!$hasStartPhoto) {
             );
         }
 
+        // Validasi bahwa pembayaran sudah lunas
+        // Menggunakan null-safe operator (?->) untuk menghindari error jika relasi payment kosong
         if ($order->payment?->payment_status !== 'paid') {
             return $this->errorResponse('Order belum dibayar', 400);
         }
 
+        // Jika semua validasi lolos, kembalikan null (artinya tidak ada error)
         return null;
     }
 
-    /**
-     * Validasi kepemilikan toko seller
-     */
-    private function validateShopOwnership(Order $order): ?JsonResponse
-    {
-        $user = Auth::user();
+/**
+ * Validasi kepemilikan toko seller
+ */
+private function validateShopOwnership(Order $order): ?JsonResponse
+{
+    // Ambil user yang sedang login
+    $user = Auth::user();
 
-        if ($user->role !== 'seller' || !$user->shop) {
-            return $this->errorResponse('Akses ditolak', 403);
-        }
-
-        if ((int) $order->productRental->product->shop_id !== (int) $user->shop->id) {
-            return $this->errorResponse('QR ini bukan milik toko Anda', 403);
-        }
-
-        return null;
+    // Validasi apakah user adalah seller dan memiliki toko
+    if ($user->role !== 'seller' || !$user->shop) {
+        return $this->errorResponse('Akses ditolak', 403);
     }
+
+    // Validasi apakah order ini benar-benar milik toko seller tersebut
+    // Dibandingkan antara shop_id pada produk dengan shop milik user
+    if ((int) $order->productRental->product->shop_id !== (int) $user->shop->id) {
+        return $this->errorResponse('QR ini bukan milik toko Anda', 403);
+    }
+
+    // Jika valid, kembalikan null (tidak ada error)
+    return null;
+}
 
 /**
  * Validasi waktu mulai rental
