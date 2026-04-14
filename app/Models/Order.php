@@ -12,7 +12,6 @@ class Order extends Model
 
     // Order Status Constants
     const STATUS_PENDING = 'pending';
-    const STATUS_PAID = 'paid';
     const STATUS_CONFIRMED = 'confirmed';
     const STATUS_ONGOING = 'ongoing';
     const STATUS_COMPLETED = 'completed';
@@ -115,7 +114,6 @@ class Order extends Model
     {
         return [
             self::STATUS_PENDING,
-            self::STATUS_PAID,
             self::STATUS_CONFIRMED,
             self::STATUS_ONGOING,
             self::STATUS_COMPLETED,
@@ -138,7 +136,6 @@ class Order extends Model
 
         $labels = [
             self::STATUS_PENDING => 'Menunggu',
-            self::STATUS_PAID => 'Dibayar',
             self::STATUS_CONFIRMED => 'Dikonfirmasi',
             self::STATUS_ONGOING => 'Sedang Berlangsung',
             self::STATUS_COMPLETED => 'Selesai',
@@ -175,7 +172,6 @@ class Order extends Model
     {
         $colors = [
             self::STATUS_PENDING => 'warning',
-            self::STATUS_PAID => 'info',
             self::STATUS_CONFIRMED => 'primary',
             self::STATUS_ONGOING => 'success',
             self::STATUS_COMPLETED => 'success',
