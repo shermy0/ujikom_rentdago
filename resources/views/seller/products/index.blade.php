@@ -215,6 +215,12 @@
         border: 1px solid #c3e6cb;
         color: #155724;
     }
+
+    .alert-danger {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
     
     .alert-close {
         position: absolute;
@@ -276,7 +282,14 @@
 
     @if(session('success'))
     <div class="alert alert-success">
-        {{ session('success') }}
+        <i class="fa fa-check-circle"></i> {{ session('success') }}
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger">
+        <i class="fa fa-exclamation-triangle"></i> {{ session('error') }}
         <button class="alert-close" onclick="this.parentElement.remove()">×</button>
     </div>
     @endif

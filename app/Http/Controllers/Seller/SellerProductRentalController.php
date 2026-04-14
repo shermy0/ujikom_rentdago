@@ -267,9 +267,16 @@ public function edit($id)
                 ->with('error', 'Buka toko terlebih dahulu.');
         }
 
-        $rental = ProductRental::whereHas('product', function ($q) use ($shop) {
-            $q->where('shop_id', $shop->id);
-        })->findOrFail($id);
+        // Ambil data dengan hitungan order
+        $rental = ProductRental::withCount('orders')
+            ->whereHas('product', function ($q) use ($shop) {
+                $q->where('shop_id', $shop->id);
+            })->findOrFail($id);
+
+        // 🛑 VALIDASI: Jangan boleh hapus jika sudah ada pesanan berkorelasi
+        if ($rental->orders_count > 0) {
+            return back()->with('error', 'Paket sewa ini tidak bisa dihapus karena sudah memiliki riwayat pesanan. Anda tetap bisa mengubah harga atau durasinya jika diperlukan.');
+        }
 
         $rental->delete();
 

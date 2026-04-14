@@ -206,8 +206,18 @@ class SellerProductController extends Controller
         DB::beginTransaction();
         try {
             $shop = Auth::user()->shop;
-            $product = Product::where('shop_id', $shop->id)->findOrFail($id);
+            
+            // Menggunakan withCount untuk efisiensi pengecekan relasi
+            $product = Product::withCount('orders')
+                ->where('shop_id', $shop->id)
+                ->findOrFail($id);
 
+            // 🛑 JANGAN BOLEH HAPUS jika sudah ada riwayat pesanan (Cegah Cascade Delete data penting)
+            if ($product->orders_count > 0) {
+                return back()->with('error', 'Produk tidak bisa dihapus karena sudah memiliki riwayat pesanan. Silakan gunakan fitur "Maintenance" saja untuk menonaktifkan produk.');
+            }
+
+            // Hapus file foto dari storage sebelum hapus database
             foreach ($product->images as $image) {
                 if (Storage::disk('public')->exists($image->image_path)) {
                     Storage::disk('public')->delete($image->image_path);
