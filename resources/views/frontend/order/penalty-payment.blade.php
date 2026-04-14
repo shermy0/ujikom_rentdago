@@ -8,14 +8,15 @@
 @endsection
 @section('content')
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/order.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/protail.css') }}?v={{ time() }}">
 
-<div class="order-container">
-
-    <div class="order-header">
-        <a href="{{ route('customer.order.show', $penalty->order_id) }}" class="header-back">
+    {{-- HEADER DETAIL PRODUK --}}
+    <div class="product-detail-header">
+        <a href="{{ route('customer.order.index') }}" class="header-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         <div class="header-title">Bayar Denda</div>
+        <div class="header-spacer"></div>
     </div>
 
     <div class="order-card">
