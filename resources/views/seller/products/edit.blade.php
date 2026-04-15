@@ -461,6 +461,7 @@
                     <div class="form-card-title">Foto Barang</div>
 
                     @if ($product->images->count() > 0)
+                        <div class="existing-photos-section">
                         <div class="images-section-title">
                             <span>Foto Tersimpan</span>
                             <span class="badge-count" id="existing-count">{{ $product->images->count() }}</span>
@@ -483,6 +484,7 @@
                         </div>
 
                         <div class="divider"></div>
+                        </div>
                     @endif
 
                     <div class="image-upload-wrapper">
@@ -655,9 +657,13 @@
                             const remainingImages = container.querySelectorAll('.existing-image-item').length;
                             document.getElementById('existing-count').textContent = remainingImages;
 
-                            // Jika tidak ada foto lagi, sembunyikan section
+                            // Jika tidak ada foto lagi, sembunyikan blok "Foto Tersimpan" saja
+                            // Form "Tambah Foto Baru" di bawahnya tetap tampil
                             if (remainingImages === 0) {
-                                container.parentElement.remove();
+                                const existingSection = container.closest('.existing-photos-section');
+                                if (existingSection) {
+                                    existingSection.style.display = 'none';
+                                }
                             }
                         }, 300);
                     } else {
