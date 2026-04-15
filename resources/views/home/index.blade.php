@@ -69,7 +69,7 @@
                class="category-item {{ (isset($activeParentSlug) && $activeParentSlug == $cat->slug) ? 'active' : '' }}">
                 <div class="category-icon-box">
                     @if ($cat->icon)
-                        <img src="{{ asset('storage/' . $cat->icon) }}" alt="{{ $cat->name }}">
+                        <img src="{{ asset($cat->icon) }}" alt="{{ $cat->name }}">
                     @else
                         <i class="bi bi-box-seam"></i>
                     @endif

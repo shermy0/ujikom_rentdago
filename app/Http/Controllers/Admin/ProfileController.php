@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 use Illuminate\Validation\Rules\Password;
 
 /**
@@ -68,10 +68,12 @@ class ProfileController extends Controller
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
             // Delete old avatar if exists
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
             }
-            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $filename = time() . '_' . uniqid() . '.' . $request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->move(public_path('avatars'), $filename);
+            $validated['avatar'] = 'avatars/' . $filename;
         }
 
         $user->update($validated);

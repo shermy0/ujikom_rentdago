@@ -134,7 +134,7 @@
                         <small class="text-muted d-block mb-1" style="font-size: 10px;">
                             <i class="fa fa-camera me-1"></i>Bukti Pengiriman:
                         </small>
-                        <img src="{{ asset('storage/' . $shipment->delivery_proof_photo) }}" 
+                        <img src="{{ asset($shipment->delivery_proof_photo) }}" 
                              alt="Proof" 
                              class="img-fluid rounded-3" 
                              style="max-height: 120px; cursor: pointer;"

@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 use App\Models\Otp;
 use App\Models\SellerRequest;
 use Illuminate\Support\Facades\Hash;
@@ -108,13 +108,14 @@ class ProfileCustomerController extends Controller
         // Update avatar jika ada
         if ($request->hasFile('avatar')) {
             // Hapus avatar lama jika ada
-            if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
-                Storage::delete('public/' . $user->avatar);
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
             }
 
             // Upload avatar baru
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $avatarPath;
+            $filename = time() . '_' . uniqid() . '.' . $request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->move(public_path('avatars'), $filename);
+            $user->avatar = 'avatars/' . $filename;
         }
 
         // Jika nomor telepon berubah, mulai proses verifikasi 2 tahap

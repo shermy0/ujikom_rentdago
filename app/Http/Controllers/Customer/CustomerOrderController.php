@@ -257,14 +257,14 @@ class CustomerOrderController extends Controller
                             'lat' => $shop->latitude,
                             'lng' => $shop->longitude,
                             'address' => $shop->address_store,
-                            'image' => $shop->logo ? asset('storage/' . $shop->logo) : 'https://ui-avatars.com/api/?name=' . urlencode($shop->name_store) . '&background=0D8ABC&color=fff'
+                            'image' => $shop->logo ? asset($shop->logo) : 'https://ui-avatars.com/api/?name=' . urlencode($shop->name_store) . '&background=0D8ABC&color=fff'
                         ],
                         'customer' => [
                             'name' => Auth::user()->name,
                             'lat' => $actorLat,
                             'lng' => $actorLng,
                             'address' => $userAddress->address ?? 'Lokasi Anda',
-                            'image' => Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=random'
+                            'image' => Auth::user()->avatar ? asset(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=random'
                         ],
                         'shipment' => $shipment ? [
                             'is_tracking_active' => $shipment->is_tracking_active,
@@ -284,13 +284,13 @@ class CustomerOrderController extends Controller
                             'lat' => $destLat,
                             'lng' => $destLng,
                             'address' => $userAddress->address ?? 'Alamat Anda',
-                            'image' => Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=random'
+                            'image' => Auth::user()->avatar ? asset(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=random'
                         ],
                         'courier' => [
                             'name' => $shipment->courier->user->name ?? 'Kurir',
                             'lat' => $actorLat,
                             'lng' => $actorLng,
-                            'image' => ($shipment->courier && $shipment->courier->user->avatar) ? asset('storage/' . $shipment->courier->user->avatar) : 'https://ui-avatars.com/api/?name=Kurir&background=random'
+                            'image' => ($shipment->courier && $shipment->courier->user->avatar) ? asset($shipment->courier->user->avatar) : 'https://ui-avatars.com/api/?name=Kurir&background=random'
                         ],
                         'shipment' => [
                             'id' => $shipment->id,
@@ -754,10 +754,10 @@ class CustomerOrderController extends Controller
         $qrData = $order->order_code;
 
         $qrCodePath = 'qrcodes/' . $order->order_code . '.png';
-        $fullPath = storage_path('app/public/' . $qrCodePath);
+        $fullPath = public_path($qrCodePath);
 
-        if (!file_exists(storage_path('app/public/qrcodes'))) {
-            mkdir(storage_path('app/public/qrcodes'), 0755, true);
+        if (!file_exists(public_path('qrcodes'))) {
+            mkdir(public_path('qrcodes'), 0755, true);
         }
 
         QrCode::format('png')
@@ -1034,8 +1034,8 @@ class CustomerOrderController extends Controller
 
             // ✅ Ambil QR Code dari database (kolom qr_code di tabel orders)
             if (!empty($order->qr_code) && $order->delivery_method !== 'delivery') {
-                // Path lengkap ke file QR code di storage
-                $qrCodePath = config('app.url') . Storage::url($order->qr_code);
+                // URL lengkap untuk file QR code di public
+                $qrCodePath = config('app.url') . '/' . $order->qr_code;
                 logger($qrCodePath);
 
                 // Cek apakah file fisik ada

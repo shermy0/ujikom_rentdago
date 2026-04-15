@@ -140,10 +140,10 @@ class SellerController extends Controller
         ) {
             try {
                 $qrCodePath = 'qrcodes/' . $order->order_code . '.png';
-                $fullPath = storage_path('app/public/' . $qrCodePath);
+                $fullPath = public_path($qrCodePath);
 
-                if (!file_exists(storage_path('app/public/qrcodes'))) {
-                    mkdir(storage_path('app/public/qrcodes'), 0755, true);
+                if (!file_exists(public_path('qrcodes'))) {
+                    mkdir(public_path('qrcodes'), 0755, true);
                 }
 
                 QrCode::format('png')

@@ -122,7 +122,7 @@
             <div class="shop-left">
                 <div class="shop-logo-wrapper">
                     @if($product->shop->logo)
-                        <img src="{{ asset('storage/' . $product->shop->logo) }}" alt="{{ $product->shop->name_store }}">
+                        <img src="{{ asset($product->shop->logo) }}" alt="{{ $product->shop->name_store }}">
                     @else
                         <div class="shop-logo-placeholder">
                             <i class="fa-solid fa-store"></i>

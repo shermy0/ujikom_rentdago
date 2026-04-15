@@ -6,7 +6,7 @@ use App\Models\SellerRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 use Illuminate\Support\Facades\Log;
 use App\Helpers\CustomerNotificationHelper;
 
@@ -68,7 +68,13 @@ class SellerRequestController extends Controller
         DB::beginTransaction();
         try {
             // Upload KTP
-            $ktpPath = $request->file('ktp_photo')->store('ktp', 'public');
+            if (!file_exists(public_path('ktp'))) {
+                mkdir(public_path('ktp'), 0755, true);
+            }
+            $ktpFile = $request->file('ktp_photo');
+            $ktpFilename = time() . '_' . uniqid() . '.' . $ktpFile->getClientOriginalExtension();
+            $ktpFile->move(public_path('ktp'), $ktpFilename);
+            $ktpPath = 'ktp/' . $ktpFilename;
 
             // Simpan ke seller_requests HANYA KTP
             $sellerRequest = SellerRequest::create([

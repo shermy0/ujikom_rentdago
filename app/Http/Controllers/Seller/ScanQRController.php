@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 
 class ScanQRController extends Controller
 {
@@ -130,7 +130,7 @@ class ScanQRController extends Controller
             ?? $product->images->first();
 
         $imageUrl = $mainImage
-            ? asset('storage/' . $mainImage->image_path)
+            ? asset($mainImage->image_path)
             : asset('images/no-image.png');
 
         /**
@@ -257,9 +257,14 @@ public function uploadStartProof(Request $request)
         return $this->errorResponse('Order tidak dalam status confirmed', 400);
     }
 
-    // Simpan file foto ke storage (folder: public/handover/start)
+    // Simpan file foto ke public (folder: public/handover/start)
     // Mengembalikan path file yang disimpan
-    $path = $request->file('photo')->store('handover/start', 'public');
+    if (!file_exists(public_path('handover/start'))) {
+        mkdir(public_path('handover/start'), 0755, true);
+    }
+    $filename = time() . '_' . uniqid() . '.' . $request->file('photo')->getClientOriginalExtension();
+    $request->file('photo')->move(public_path('handover/start'), $filename);
+    $path = 'handover/start/' . $filename;
 
     // Simpan data bukti serah terima ke database
     OrderHandoverProof::create([

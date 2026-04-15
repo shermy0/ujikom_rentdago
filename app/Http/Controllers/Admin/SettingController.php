@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 
 /**
  * SettingController — Mengelola pengaturan umum aplikasi oleh Admin.
@@ -75,14 +75,15 @@ class SettingController extends Controller
         if ($request->hasFile('logo')) {
             $setting = DB::table('settings')->first();
 
-            // Hapus logo lama dari storage jika ada, sebelum menyimpan yang baru
-            if ($setting && $setting->logo) {
-                Storage::disk('public')->delete($setting->logo);
+            // Hapus logo lama jika ada
+            if ($setting && $setting->logo && file_exists(public_path($setting->logo))) {
+                @unlink(public_path($setting->logo));
             }
 
-            // Simpan logo baru ke folder logos di storage public
-            $logoPath = $request->file('logo')->store('logos', 'public');
-            $data['logo'] = $logoPath;
+            // Simpan logo baru ke folder logos di public
+            $filename = time() . '_' . uniqid() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $request->file('logo')->move(public_path('logos'), $filename);
+            $data['logo'] = 'logos/' . $filename;
         }
 
         // Catat waktu perubahan terakhir

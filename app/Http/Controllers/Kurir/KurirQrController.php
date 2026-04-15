@@ -8,7 +8,7 @@ use App\Models\Shipment;
 use App\Models\Courier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -103,8 +103,12 @@ public function completeDelivery(Request $request)
         $prefix = 'delivery_';
         $photoName = $prefix . $shipment->order->order_code . '_' . time() . '.' . $photo->getClientOriginalExtension();
 
-        // 💾 Simpan ke storage/public/delivery-proofs
-        $photoPath = $photo->storeAs('delivery-proofs', $photoName, 'public');
+        // 💾 Simpan ke public/delivery-proofs
+        if (!file_exists(public_path('delivery-proofs'))) {
+            mkdir(public_path('delivery-proofs'), 0755, true);
+        }
+        $photo->move(public_path('delivery-proofs'), $photoName);
+        $photoPath = 'delivery-proofs/' . $photoName;
 
         // 🕒 Simpan waktu upload foto
         $photoTimestamp = now();

@@ -7,7 +7,7 @@ use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 use Illuminate\Support\Str;
 
 class MyPageSellerController extends Controller
@@ -56,12 +56,12 @@ class MyPageSellerController extends Controller
 
         // Update avatar
         if ($request->hasFile('avatar')) {
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
             }
-            
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $avatarPath;
+            $filename = time() . '_' . uniqid() . '.' . $request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->move(public_path('avatars'), $filename);
+            $user->avatar = 'avatars/' . $filename;
         }
 
         // Update password
@@ -127,7 +127,9 @@ class MyPageSellerController extends Controller
         // Upload logo
         $logoPath = null;
         if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('logos', 'public');
+            $filename = time() . '_' . uniqid() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $request->file('logo')->move(public_path('logos'), $filename);
+            $logoPath = 'logos/' . $filename;
         }
 
         // Buat toko
@@ -194,12 +196,12 @@ class MyPageSellerController extends Controller
 
         // Update logo
         if ($request->hasFile('logo')) {
-            if ($shop->logo) {
-                Storage::disk('public')->delete($shop->logo);
+            if ($shop->logo && file_exists(public_path($shop->logo))) {
+                @unlink(public_path($shop->logo));
             }
-            
-            $logoPath = $request->file('logo')->store('logos', 'public');
-            $shop->logo = $logoPath;
+            $filename = time() . '_' . uniqid() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $request->file('logo')->move(public_path('logos'), $filename);
+            $shop->logo = 'logos/' . $filename;
         }
 
         $shop->save();

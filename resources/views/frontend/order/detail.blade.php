@@ -159,8 +159,8 @@
         <h6 style="margin-top: 20px;"><i class="fa fa-qrcode"></i> QR Verifikasi</h6>
         <div style="text-align:center; margin-top:10px">
             <div style="display: inline-block; background: white; padding: 8px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                @if($order->qr_code && file_exists(storage_path('app/public/' . $order->qr_code)))
-                    <img src="{{ asset('storage/'.$order->qr_code) }}"
+                @if($order->qr_code && file_exists(public_path($order->qr_code)))
+                    <img src="{{ asset($order->qr_code) }}"
                         alt="QR Code"
                         style="width:180px; height:180px; display:block;">
                 @else

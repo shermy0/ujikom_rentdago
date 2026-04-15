@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/ langsung
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -133,8 +133,9 @@ class CategoryController extends Controller
 
         // Upload icon kategori jika ada file yang dikirim
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('categories', 'public');
-            $categoryData['icon'] = $iconPath;
+            $filename = time() . '_' . uniqid() . '.' . $request->file('icon')->getClientOriginalExtension();
+            $request->file('icon')->move(public_path('categories'), $filename);
+            $categoryData['icon'] = 'categories/' . $filename;
         }
 
         Category::create($categoryData);
@@ -219,19 +220,19 @@ class CategoryController extends Controller
 
         // Upload icon baru jika ada file yang dikirim
         if ($request->hasFile('icon')) {
-            // Hapus icon lama dari storage sebelum menyimpan yang baru
-            if ($category->icon && Storage::disk('public')->exists($category->icon)) {
-                Storage::disk('public')->delete($category->icon);
+            // Hapus icon lama dari public sebelum menyimpan yang baru
+            if ($category->icon && file_exists(public_path($category->icon))) {
+                @unlink(public_path($category->icon));
             }
-            
-            $iconPath = $request->file('icon')->store('categories', 'public');
-            $categoryData['icon'] = $iconPath;
+            $filename = time() . '_' . uniqid() . '.' . $request->file('icon')->getClientOriginalExtension();
+            $request->file('icon')->move(public_path('categories'), $filename);
+            $categoryData['icon'] = 'categories/' . $filename;
         }
 
         // Hapus icon jika checkbox "Hapus Icon" dicentang oleh admin
         if ($request->has('remove_icon') && $request->remove_icon) {
-            if ($category->icon && Storage::disk('public')->exists($category->icon)) {
-                Storage::disk('public')->delete($category->icon);
+            if ($category->icon && file_exists(public_path($category->icon))) {
+                @unlink(public_path($category->icon));
             }
             $categoryData['icon'] = null;
         }

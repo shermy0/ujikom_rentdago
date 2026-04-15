@@ -160,7 +160,7 @@
             {{-- LOGO TOKO --}}
             <div class="shop-logo-large">
                 @if($shop->logo)
-                    <img src="{{ asset('storage/' . $shop->logo) }}" alt="{{ $shop->name_store }}">
+                    <img src="{{ asset($shop->logo) }}" alt="{{ $shop->name_store }}">
                 @else
                     <div class="shop-logo-placeholder-large">
                         <i class="fa-solid fa-store"></i>

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — tidak digunakan lagi
 
 class Shipment extends Model
 {
@@ -415,7 +415,7 @@ class Shipment extends Model
             return null;
         }
 
-        return Storage::url($this->delivery_proof_photo);
+        return asset($this->delivery_proof_photo);
     }
 
     /**

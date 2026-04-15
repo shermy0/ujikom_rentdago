@@ -102,7 +102,9 @@ class UserController extends Controller
 
         // Upload foto avatar jika ada
         if ($request->hasFile('avatar')) {
-            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $filename = time() . '_' . uniqid() . '.' . $request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->move(public_path('avatars'), $filename);
+            $validated['avatar'] = 'avatars/' . $filename;
         }
 
         // Hash password sebelum disimpan ke database

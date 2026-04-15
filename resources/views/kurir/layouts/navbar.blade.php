@@ -13,7 +13,7 @@ $setting = \App\Models\Setting::first();
 
             @if ($setting && $setting->logo)
             <div class="app-logo-box">
-                <img src="{{ asset('storage/' . $setting->logo) }}" class="app-logo-img" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset($setting->logo) }}" class="app-logo-img" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             @else
             <div class="app-logo-box">

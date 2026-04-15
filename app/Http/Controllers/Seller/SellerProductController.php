@@ -8,7 +8,7 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+// Storage facade dihapus — menggunakan move() ke public/products langsung
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -204,7 +204,9 @@ public function store(Request $request)
          */
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
+                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('products'), $filename);
+                $path = 'products/' . $filename;
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -233,8 +235,9 @@ public function store(Request $request)
          */
         if (isset($product) && $product->images) {
             foreach ($product->images as $image) {
-                if (Storage::disk('public')->exists($image->image_path)) {
-                    Storage::disk('public')->delete($image->image_path);
+                $fullPath = public_path($image->image_path);
+                if (file_exists($fullPath)) {
+                    @unlink($fullPath);
                 }
             }
         }
@@ -375,7 +378,9 @@ public function update(Request $request, $id)
          */
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
+                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('products'), $filename);
+                $path = 'products/' . $filename;
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -426,10 +431,11 @@ public function update(Request $request, $id)
                 return back()->with('error', 'Produk tidak bisa dihapus karena sudah memiliki riwayat pesanan. Silakan gunakan fitur "Maintenance" saja untuk menonaktifkan produk.');
             }
 
-            // Hapus file foto dari storage sebelum hapus database
+            // Hapus file foto dari public/ sebelum hapus database
             foreach ($product->images as $image) {
-                if (Storage::disk('public')->exists($image->image_path)) {
-                    Storage::disk('public')->delete($image->image_path);
+                $fullPath = public_path($image->image_path);
+                if (file_exists($fullPath)) {
+                    @unlink($fullPath);
                 }
             }
 
@@ -486,8 +492,9 @@ public function deleteImage($id)
          * - Cek apakah file ada
          * - Jika ada → hapus dari storage
          */
-        if (Storage::disk('public')->exists($image->image_path)) {
-            Storage::disk('public')->delete($image->image_path);
+        $fullPath = public_path($image->image_path);
+        if (file_exists($fullPath)) {
+            @unlink($fullPath);
         }
 
         /**
