@@ -26,20 +26,11 @@ class AccountSwitchController extends Controller
         if ($currentMode === 'seller') {
             // Switch ke customer mode
             session(['account_mode' => 'customer']);
-            $message = 'Berhasil switch ke mode Customer';
-            $redirectRoute = '/'; // Ganti dengan route homepage customer kamu
+            return redirect('/')->with('success', 'Berhasil switch ke mode Customer');
         } else {
             // Switch ke seller mode
             session(['account_mode' => 'seller']);
-            $message = 'Berhasil switch ke mode Seller';
-            $redirectRoute = 'seller.dashboard.index'; // Route seller
-        }
-
-        // Cek apakah route ada, kalau tidak redirect ke home
-        try {
-            return redirect()->route($redirectRoute)->with('success', $message);
-        } catch (\Exception $e) {
-            return redirect($redirectRoute)->with('success', $message);
+            return redirect()->route('seller.dashboard.index')->with('success', 'Berhasil switch ke mode Seller');
         }
     }
 

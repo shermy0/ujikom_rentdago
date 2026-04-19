@@ -174,7 +174,7 @@
             <td>{{ $order->created_at->format('d/m/Y') }}</td>
             <td>{{ $order->delivery_method === 'delivery' ? 'Antar' : 'Ambil' }}</td>
             <td><span class="badge {{ $badge }}">{{ $label }}</span></td>
-            <td class="text-right">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
+            <td class="text-right">Rp {{ number_format($order->payment->total_amount ?? 0, 0, ',', '.') }}</td>
         </tr>
         @empty
         <tr><td colspan="9" style="text-align:center; color:#9ca3af; padding:16px;">Tidak ada data pesanan</td></tr>

@@ -80,6 +80,12 @@ Route::get('/verify-otp', function () {
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify.otp.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
+// Account switch - hanya untuk seller, pengecekan role di controller
+Route::middleware(['auth'])->group(function () {
+    Route::post('/account/switch', [AccountSwitchController::class, 'switch'])->name('account.switch');
+});
+
+
 /* =======================
 | AUTHENTICATED USER ROUTES
 ======================= */
@@ -115,8 +121,6 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/profile/resend-otp', [ProfileCustomerController::class, 'resendOtp'])
         ->name('profile.resend.otp');
 
-    // Account switch (khusus seller)
-    Route::post('/account/switch', [AccountSwitchController::class, 'switch'])->name('account.switch');
 
     // API Routes for Customers (Session based)
     Route::prefix('api')->group(function () {
@@ -242,7 +246,6 @@ Route::middleware(['auth', 'role:seller'])
 
         Route::get('/dashboard', [SellerController::class, 'index'])->name('dashboard.index');
         Route::get('/analytics', [SellerController::class, 'analytics'])->name('analytics');
-
 
         Route::prefix('api')->name('api.')->group(function () {
             // ✅ Unified endpoint (INI SAJA)
